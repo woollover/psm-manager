@@ -1,8 +1,21 @@
-import { bucket } from "./storage";
+import { eventStoreTable } from "./tables/eventStore";
 
-export const api = new sst.aws.ApiGatewayV2("Api)")
+export const eventStoreApi = new sst.aws.ApiGatewayV2("Api");
 
-api.route("GET /", {
-  link: [bucket],
+eventStoreApi.route("GET /events", {
+  link: [eventStoreTable],
   handler: "packages/functions/src/api.handler",
+  name: "event-store-getter",
 });
+
+eventStoreApi.route("POST /commands", {
+  link: [eventStoreTable],
+  handler: "packages/functions/src/api.handler",
+  name: "command-handler",
+});
+
+// api.route("GET /poets", {
+//   link: [poetsTable],
+//   handler: "packages/functions/src/api.handler",
+//   name: "poets-getter",
+// });

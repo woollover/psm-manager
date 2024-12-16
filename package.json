@@ -2,11 +2,16 @@
   "name": "psm",
   "version": "0.0.0",
   "scripts": {
-    "dev:infra": "sst dev"
+    "dev:infra": "sst dev",
+    "test": "vitest",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
-    "typescript": "^5.6.2"
+    "@vitest/coverage-v8": "^2.1.8",
+    "typescript": "^5.6.2",
+    "vitest": "^2.0.3"
   },
   "dependencies": {
     "sst": "^3"

@@ -9,11 +9,11 @@ export default $config({
     };
   },
   async run() {
-    await import("./infra/storage");
+    await import("./infra/tables/eventStore");
     const api = await import("./infra/api");
 
     return {
-      api: api.myApi.url,
+      api: api.eventStoreApi.url,
     };
   },
 });

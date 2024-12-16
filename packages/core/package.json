@@ -2,7 +2,7 @@
   "name": "@psm/core",
   "version": "0.0.0",
   "scripts": {
-    "test": "sst shell vitest"
+    "test": "vitest"
   },
   "exports": {
     "./*": [
@@ -11,6 +11,7 @@
     ]
   },
   "dependencies": {
+    "@aws-sdk/lib-dynamodb": "^3.712.0",
     "sst": "*"
   },
   "devDependencies": {
