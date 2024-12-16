@@ -1,15 +1,19 @@
 {
-  "name": "monorepo-template",
+  "name": "psm",
   "version": "0.0.0",
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {},
+  "scripts": {
+    "dev:infra": "sst dev"
+  },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
-    "typescript": "5.6.2"
+    "typescript": "^5.6.2"
   },
   "dependencies": {
     "sst": "^3"
-  }
+  },
+  "description": "A template to create a monorepo SST ❍ Ion project.",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
