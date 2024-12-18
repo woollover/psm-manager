@@ -1,7 +1,7 @@
 import { PSMEvent } from "../../../../core/src/Event/Event";
 
 export type PoetDeletedEventPayload = {
-  mcId: string;
+  poetId: string;
   occurredAt: Date;
 };
 

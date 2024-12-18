@@ -1,7 +1,7 @@
 import { PSMEvent } from "../../../../core/src/Event/Event";
 
 export type PoetEditedEventPayload = {
-  mcId: string;
+  poetId: string;
   name: string | undefined;
   email: string | undefined;
   instagram_handle: string | undefined;

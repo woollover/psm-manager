@@ -10,7 +10,7 @@ eventStoreApi.route("GET /events", {
 
 eventStoreApi.route("POST /commands", {
   link: [EventStoreTable],
-  handler: "packages/functions/src/api.handler",
+  handler: "packages/modules/src/poetsapi.handler",
   name: "command-handler",
 });
 

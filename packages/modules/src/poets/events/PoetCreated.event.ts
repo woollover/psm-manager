@@ -1,7 +1,7 @@
 import { PSMEvent } from "../../../../core/src/Event/Event";
 
 export type PoetCreatedEventPayload = {
-  mcId: string;
+  poetId: string;
   name: string;
   email: string;
   occurredAt: Date;
