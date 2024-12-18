@@ -9,6 +9,12 @@ eventStoreApi.route("GET /events", {
   name: "event-store-getter",
 });
 
+eventStoreApi.route("GET /poets", {
+  link: [EventStoreTable],
+  handler: "packages/modules/src/poets/functions/queryHandler.handler",
+  name: "get-all-poets",
+});
+
 eventStoreApi.route("POST /poets/commands", {
   link: [EventStoreTable],
   handler: "packages/modules/src/poets/functions/commandHandler.handler",

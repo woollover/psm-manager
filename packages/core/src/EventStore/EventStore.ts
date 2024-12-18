@@ -81,7 +81,7 @@ export class EventStore {
     });
 
     const response = await this.client.send(command);
-
+    console.log("🚀 Response:", response);
     return (
       response.Items?.map((item) => {
         return new PSMEvent({

@@ -1,6 +1,6 @@
 import { Command } from "../../../../core/src/Command/Command";
 export type EditPoetCommandInput = {
-  id: string;
+  aggregateId: string;
   name?: string;
   email?: string;
   instagram_handle?: string;
@@ -8,10 +8,10 @@ export type EditPoetCommandInput = {
 
 export class EditPoetCommand extends Command<EditPoetCommandInput> {
   validate(input: EditPoetCommandInput): void | Promise<void> {
-    if (!input.id) {
+    if (!input.aggregateId) {
       this.append_error({
-        field: "id",
-        cue: "Id is required",
+        field: "aggregateId",
+        cue: "aggregateId is required",
       });
     }
     if (!input.name && !input.email && !input.instagram_handle) {

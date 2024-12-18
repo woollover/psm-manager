@@ -1,13 +1,13 @@
 import { Command } from "../../../../core/src/Command/Command";
 export type SetPoetAsMCCommandInput = {
-  poetId: string;
+  aggregateId: string;
 };
 
 export class SetPoetAsMCCommand extends Command<SetPoetAsMCCommandInput> {
   validate(input: SetPoetAsMCCommandInput): void | Promise<void> {
-    if (!input.poetId) {
+    if (!input.aggregateId) {
       this.append_error({
-        field: "poetId",
+        field: "aggregateId",
         cue: "Poet ID is required",
       });
     }

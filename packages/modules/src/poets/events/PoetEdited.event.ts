@@ -5,12 +5,17 @@ export type PoetEditedEventPayload = {
   name: string | undefined;
   email: string | undefined;
   instagram_handle: string | undefined;
-  occurredAt: Date;
 };
 
 export class PoetEditedEvent extends PSMEvent {
-  constructor(payload: PoetEditedEventPayload) {
-    super(payload.occurredAt);
+  constructor(payload: PoetEditedEventPayload, occurredAt: Date) {
+    super({
+      aggregateId: payload.poetId,
+      version: 1,
+      eventType: "PoetEdited",
+      payload: payload,
+      occurredAt: occurredAt,
+    });
     this.payload = payload;
   }
 }

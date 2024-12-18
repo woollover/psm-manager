@@ -1,13 +1,18 @@
 import { PSMEvent } from "../../../../core/src/Event/Event";
 
 export type PoetSetAsMCEventPayload = {
-  poetId: string;
-  occurredAt: Date;
+  aggregateId: string;
 };
 
 export class PoetSetAsMCEvent extends PSMEvent {
-  constructor(payload: PoetSetAsMCEventPayload) {
-    super(payload.occurredAt);
+  constructor(payload: PoetSetAsMCEventPayload, occurredAt: Date) {
+    super({
+      aggregateId: payload.aggregateId,
+      eventType: "PoetSetAsMC",
+      payload: {},
+      occurredAt: occurredAt,
+      version: 1,
+    });
     this.payload = payload;
   }
 }

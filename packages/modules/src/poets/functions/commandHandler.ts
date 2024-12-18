@@ -10,6 +10,9 @@ import { Poet } from "../aggregates/Poet";
 import { CreatePoetCommand } from "../commands/CreatePoet.command";
 import { InvalidCommandError } from "../../../../core/src/Errors/InvalidCommandError";
 import { PoetSetAsMCEvent } from "../events";
+import { PoetCommands } from "../commands";
+import { EditPoetCommand } from "../commands/EditPoet.command";
+import { SetPoetAsMCCommand } from "../commands/SetPoetAsMC.command";
 //rule of thumb: stateless instnces OUTSIDE the handler, Stateful instances inside the handler
 
 const client = new DynamoDBClient({
@@ -30,11 +33,9 @@ const eventStore = new EventStore(
 // instantiate the eventStore, it's stateless so we can do it outside the handler
 
 export const handler: Handler = async (_event) => {
-  console.log("📥 Lambda ENV:", process.env);
-
   const body = JSON.parse(_event.body!);
   console.log("📥 Body received:", body);
-  const aggregateId = body.aggregateId ?? `poet-${randomUUID()}`;
+  const aggregateId = body.payload.aggregateId || `poet-${randomUUID()}`;
 
   let result = {};
   try {
@@ -47,30 +48,49 @@ export const handler: Handler = async (_event) => {
     console.log("📥 Aggregate events:", aggregateEvents);
     // create the aggregate class
     const poet = new Poet(aggregateId);
+
     poet.loadFromHistory(aggregateEvents);
-    console.log("📥 Poet:", poet);
+
+    console.log("🔍 Hydrated Poet:", poet);
 
     switch (body.command) {
       // apply the command
       case "create-poet":
-        const command = new CreatePoetCommand(body.payload);
+        const createCommand = new CreatePoetCommand(body.payload);
         try {
-          result = await poet.applyCommand(command);
+          result = await poet.applyCommand(createCommand);
         } catch (error) {
-          console.log("🚀 Command errors:", command.errors);
+          console.log("🚀 Command errors:", createCommand.errors);
           throw error;
         }
         console.log("🚀 after applyCommand:", result);
-        // persist uncommitted events
-        await eventStore.saveEvents(poet.getUncommittedEvents());
 
         break;
-      case "update":
+      case "edit-poet":
+        console.log("🚀 Editing poet");
+        const editCommand = new EditPoetCommand(body.payload);
+        try {
+          result = await poet.applyCommand(editCommand);
+        } catch (error) {
+          console.log("🚀 Command errors:", editCommand.errors);
+          throw error;
+        }
+        break;
+
+      case "set-poet-as-mc":
+        const setAsMCCommand = new SetPoetAsMCCommand(body.payload);
+        try {
+          result = await poet.applyCommand(setAsMCCommand);
+        } catch (error) {
+          console.log("🚀 Command errors:", setAsMCCommand.errors);
+          throw error;
+        }
         break;
       default:
         throw new Error("Invalid command");
     }
-
+    // persist uncommitted events
+    await eventStore.saveEvents(poet.getUncommittedEvents());
     // return the result
   } catch (error) {
     if (error instanceof InvalidCommandError) {

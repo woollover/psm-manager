@@ -1,4 +1,3 @@
-import { randomUUID } from "crypto";
 import { AggregateRoot } from "../../../../core/src/AggregateRoot";
 import { CreatePoetCommand } from "../commands/CreatePoet.command";
 
@@ -13,7 +12,6 @@ import { EditPoetCommand } from "../commands/EditPoet.command";
 import { DeletePoetCommand } from "../commands/DeletePoet.command";
 import { SetPoetAsMCCommand } from "../commands/SetPoetAsMC.command";
 import { PoetCommands } from "../commands";
-import { Command } from "../../../../core/src/Command/Command";
 
 export class Poet extends AggregateRoot<string> {
   private name: string = "";
@@ -28,13 +26,17 @@ export class Poet extends AggregateRoot<string> {
   // apply events to this very aggregate (BUSINESS LOGIC)
   protected mutate(event: PoetEvent): void {
     const payload = event.getPayload;
-    switch (event.constructor) {
-      case PoetCreatedEvent:
+    console.log("🚀 Mutating event:", event.constructor);
+    switch (event.getEventType) {
+      case "PoetCreated":
         // TODO this logic can be a method in the future
+        console.log("🚀 Mutating PoetCreatedEvent");
+        console.log("🚀 Mutating PoetCreatedEvent payload:", payload);
         this.name = payload.name;
         this.email = payload.email;
         break;
-      case PoetEditedEvent:
+
+      case "PoetEdited":
         if (payload.name) {
           this.name = payload.name;
         }
@@ -45,12 +47,11 @@ export class Poet extends AggregateRoot<string> {
           this.instagram_handle = payload.instagram_handle;
         }
         break;
-      case PoetSetAsMCEvent:
-        this.name = payload.name;
-        this.email = payload.email;
+      case "PoetSetAsMC":
+        this.is_mc = true;
         break;
 
-      case PoetDeletedEvent:
+      case "PoetDeleted":
         this.is_deleted = true;
         break;
     }
@@ -83,9 +84,11 @@ export class Poet extends AggregateRoot<string> {
       case SetPoetAsMCCommand: {
         const setCommand = command as SetPoetAsMCCommand;
         await setCommand.validateOrThrow(setCommand.payload);
-        this.apply(
-          new PoetSetAsMCEvent({ poetId: this.id, occurredAt: new Date() })
-        );
+        if (this.getIsMc == true) {
+          throw new Error("Poet is already set as MC");
+          // reject the command
+        }
+        this.apply(new PoetSetAsMCEvent({ aggregateId: this.id }, new Date()));
         return this;
       }
       case EditPoetCommand: {
@@ -93,13 +96,15 @@ export class Poet extends AggregateRoot<string> {
         await editCommand.validateOrThrow(editCommand.payload);
         if (this.is_deleted) throw new Error("Poet is deleted");
         this.apply(
-          new PoetEditedEvent({
-            poetId: this.id,
-            name: editCommand.payload.name,
-            email: editCommand.payload.email,
-            instagram_handle: editCommand.payload.instagram_handle,
-            occurredAt: new Date(),
-          })
+          new PoetEditedEvent(
+            {
+              poetId: this.id,
+              name: editCommand.payload.name,
+              email: editCommand.payload.email,
+              instagram_handle: editCommand.payload.instagram_handle,
+            },
+            new Date()
+          )
         );
         return this;
       }
