@@ -1,3 +1,4 @@
+import sstConfig from "../sst.config";
 import { EventStoreTable } from "./tables/eventStore";
 
 export const eventStoreApi = new sst.aws.ApiGatewayV2("Api");
@@ -8,10 +9,13 @@ eventStoreApi.route("GET /events", {
   name: "event-store-getter",
 });
 
-eventStoreApi.route("POST /commands", {
+eventStoreApi.route("POST /poets/commands", {
   link: [EventStoreTable],
-  handler: "packages/modules/src/poetsapi.handler",
+  handler: "packages/modules/src/poets/functions/commandHandler.handler",
   name: "command-handler",
+  environment: {
+    EVENT_STORE_TABLE_NAME: EventStoreTable.name,
+  },
 });
 
 EventStoreTable.subscribe(

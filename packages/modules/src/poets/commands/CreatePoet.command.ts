@@ -5,7 +5,7 @@ export type CreatePoetCommandInput = {
 };
 
 export class CreatePoetCommand extends Command<CreatePoetCommandInput> {
-  validate(input: CreatePoetCommandInput): void | Promise<void> {
+  validate(input: CreatePoetCommandInput): void {
     if (!input.name) {
       this.append_error({
         field: "name",

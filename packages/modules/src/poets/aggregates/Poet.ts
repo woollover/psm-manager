@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import { AggregateRoot } from "../../../../core/src/AggregateRoot";
 import { CreatePoetCommand } from "../commands/CreatePoet.command";
-import { PoetCommands } from "../commands";
+
 import {
   PoetCreatedEvent,
   PoetDeletedEvent,
@@ -12,14 +12,15 @@ import {
 import { EditPoetCommand } from "../commands/EditPoet.command";
 import { DeletePoetCommand } from "../commands/DeletePoet.command";
 import { SetPoetAsMCCommand } from "../commands/SetPoetAsMC.command";
+import { PoetCommands } from "../commands";
+import { Command } from "../../../../core/src/Command/Command";
 
 export class Poet extends AggregateRoot<string> {
   private name: string = "";
-  private poetId: string = "";
   private email: string = "";
   private instagram_handle: string | null = null;
   private is_deleted: boolean = false;
-  private is_mc: boolean = true;
+  private is_mc: boolean = false;
   constructor(public readonly id: string) {
     super(id);
   }
@@ -31,7 +32,6 @@ export class Poet extends AggregateRoot<string> {
       case PoetCreatedEvent:
         // TODO this logic can be a method in the future
         this.name = payload.name;
-        this.poetId = payload.poetId;
         this.email = payload.email;
         break;
       case PoetEditedEvent:
@@ -56,23 +56,29 @@ export class Poet extends AggregateRoot<string> {
     }
   }
 
-  public async applyCommand(command: PoetCommands): Promise<void> {
+  public async applyCommand(command: PoetCommands): Promise<Poet> {
     // Business invariants validation
     switch (command.constructor) {
       case CreatePoetCommand: {
         const createCommand = command as CreatePoetCommand;
-        await createCommand.validateOrThrow(createCommand.payload);
-        const poetId = this.id || randomUUID();
+        try {
+          createCommand.validateOrThrow(createCommand.payload);
+        } catch (error) {
+          console.log("🚀 Command payload:", createCommand.payload);
+          throw error;
+        }
         const payload = createCommand.payload;
         this.apply(
-          new PoetCreatedEvent({
-            poetId: poetId,
-            name: payload.name,
-            email: payload.email,
-            occurredAt: new Date(),
-          })
+          new PoetCreatedEvent(
+            {
+              poetId: this.id,
+              name: payload.name,
+              email: payload.email,
+            },
+            new Date()
+          )
         );
-        break;
+        return this;
       }
       case SetPoetAsMCCommand: {
         const setCommand = command as SetPoetAsMCCommand;
@@ -80,7 +86,7 @@ export class Poet extends AggregateRoot<string> {
         this.apply(
           new PoetSetAsMCEvent({ poetId: this.id, occurredAt: new Date() })
         );
-        break;
+        return this;
       }
       case EditPoetCommand: {
         const editCommand = command as EditPoetCommand;
@@ -95,7 +101,7 @@ export class Poet extends AggregateRoot<string> {
             occurredAt: new Date(),
           })
         );
-        break;
+        return this;
       }
       case DeletePoetCommand: {
         const deleteCommand = command as DeletePoetCommand;
@@ -104,8 +110,11 @@ export class Poet extends AggregateRoot<string> {
         this.apply(
           new PoetDeletedEvent({ poetId: this.id, occurredAt: new Date() })
         );
-        break;
+        return this;
       }
+      default:
+        console.log("🚀 Default case, problem in command Switch");
+        throw new Error("Invalid command");
     }
   }
 

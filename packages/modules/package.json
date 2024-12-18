@@ -1,12 +1,21 @@
 {
-  "name": "modules",
+  "name": "@psm/modules",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf dist"
   },
+  "devDependencies": {},
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/lib-dynamodb": "^3.712.0",
+    "@psm/core": "workspace:*"
+  }
 }

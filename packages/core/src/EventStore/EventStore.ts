@@ -3,14 +3,7 @@ import {
   QueryCommand,
   PutCommand,
 } from "@aws-sdk/lib-dynamodb";
-
-export interface Event {
-  aggregateId: string;
-  version: number;
-  eventType: string;
-  payload: Record<string, any>;
-  timestamp: string;
-}
+import { PSMEvent } from "../Event/Event";
 
 export class EventStore {
   private tableName: string;
@@ -21,21 +14,25 @@ export class EventStore {
     this.client = client;
   }
 
+  async saveEvents(events: PSMEvent[]): Promise<void> {
+    for (const event of events) {
+      await this.saveEvent(event);
+    }
+  }
   /**
    * Save a new event to the store
    * @param event The event to store
    */
-  async saveEvent(event: Event): Promise<void> {
-    const nextVersion = await this.getNextVersion(event.aggregateId);
-    event.version = nextVersion;
+  async saveEvent(event: PSMEvent): Promise<void> {
+    const nextVersion = await this.getNextVersion(event.getAggregateId);
     const command = new PutCommand({
       TableName: this.tableName,
       Item: {
-        aggregateId: event.aggregateId,
-        version: event.version,
-        eventType: event.eventType,
-        payload: event.payload,
-        timestamp: event.timestamp,
+        aggregateId: event.getAggregateId,
+        version: nextVersion,
+        eventType: event.getEventType,
+        payload: event.getPayload,
+        timestamp: event.getTimestamp,
       },
       ConditionExpression:
         "attribute_not_exists(aggregateId) AND attribute_not_exists(version)",
@@ -45,9 +42,9 @@ export class EventStore {
     while (retries > 0) {
       try {
         await this.client.send(command);
-        console.log("Event saved successfully", {
-          aggregateId: event.aggregateId,
-          version: event.version,
+        console.log("💾 Event saved successfully", {
+          aggregateId: event.getAggregateId,
+          version: event.getVersion,
         });
         return;
       } catch (error) {
@@ -59,8 +56,8 @@ export class EventStore {
           retries--;
         } else {
           console.error("Failed to save event", {
-            aggregateId: event.aggregateId,
-            version: event.version,
+            aggregateId: event.getAggregateId,
+            version: event.getVersion,
             error,
           });
           throw error;
@@ -73,7 +70,7 @@ export class EventStore {
    * Retrieve all events for a specific aggregate
    * @param aggregateId The ID of the aggregate
    */
-  async getEvents(aggregateId: string): Promise<Event[]> {
+  async getEvents(aggregateId: string): Promise<PSMEvent[]> {
     const command = new QueryCommand({
       TableName: this.tableName,
       KeyConditionExpression: "aggregateId = :id",
@@ -87,13 +84,13 @@ export class EventStore {
 
     return (
       response.Items?.map((item) => {
-        return {
+        return new PSMEvent({
           aggregateId: item.aggregateId ?? "",
           version: item.version ?? 0,
           eventType: item.eventType ?? "UnknownEvent",
           payload: item.payload ?? {},
-          timestamp: item.timestamp ?? new Date().toISOString(),
-        };
+          occurredAt: new Date(item.timestamp ?? new Date().toISOString()),
+        });
       }) || []
     );
   }

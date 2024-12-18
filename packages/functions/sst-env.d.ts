@@ -6,5 +6,13 @@ import "sst"
 export {}
 declare module "sst" {
   export interface Resource {
+    "Api": {
+      "type": "sst.aws.ApiGatewayV2"
+      "url": string
+    }
+    "EventStore": {
+      "name": string
+      "type": "sst.aws.Dynamo"
+    }
   }
 }

@@ -5,10 +5,10 @@ import {
 
 export abstract class Command<I> {
   readonly #errors: CommandValidationError<I>[] = [];
-  readonly #payload: I;
+  #payload: I;
 
-  constructor(payload: I) {
-    this.#payload = payload;
+  constructor(input: I) {
+    this.#payload = input;
   }
 
   abstract validate(input: I): void | Promise<void>;
@@ -22,6 +22,7 @@ export abstract class Command<I> {
     if (this.#errors.length > 0) {
       throw new InvalidCommandError("Command validation failed", this.#errors);
     }
+    this.#payload = input;
   }
 
   get payload(): I {

@@ -6,6 +6,7 @@ export default $config({
       name: "psm",
       removal: input?.stage === "production" ? "retain" : "remove",
       home: "aws",
+      region: "eu-central-1",
     };
   },
   async run() {
