@@ -11,9 +11,11 @@
     "@tsconfig/node20": "^20.1.4",
     "@vitest/coverage-v8": "^2.1.8",
     "typescript": "^5.6.2",
+    "@types/node": "^20.14.11",
     "vitest": "^2.0.3"
   },
   "dependencies": {
+    "node": "^23.4.0",
     "sst": "^3"
   },
   "description": "A template to create a monorepo SST ❍ Ion project.",

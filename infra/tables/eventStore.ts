@@ -1,4 +1,4 @@
-export const eventStoreTable = new sst.aws.Dynamo("EventStore", {
+export const EventStoreTable = new sst.aws.Dynamo("EventStore", {
   fields: {
     aggregateId: "string",
     version: "number",
