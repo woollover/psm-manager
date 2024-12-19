@@ -9,7 +9,7 @@ export class PoetDeletedEvent extends PSMEvent {
     super({
       aggregateId: payload.poetId,
       version: 1,
-      eventType: "PoetEdited",
+      eventType: "PoetDeleted",
       payload: payload,
       occurredAt: occurredAt,
     });

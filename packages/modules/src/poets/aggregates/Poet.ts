@@ -6,6 +6,7 @@ import {
   PoetDeletedEvent,
   PoetEditedEvent,
   PoetEvent,
+  PoetReactivatedEvent,
   PoetSetAsMCEvent,
 } from "../events";
 import { EditPoetCommand } from "../commands/EditPoet.command";
@@ -16,6 +17,7 @@ import { timeStamp } from "console";
 import { InvalidCommandError } from "../../../../core/src/Errors/InvalidCommandError";
 import { SetPoetAsPoetCommand } from "../commands/SetPoetAsPoet.command";
 import { PoetSetAsPoetEvent } from "../events/PoetSetAsPoet.event";
+import { ReactivatePoetCommand } from "../commands/ReactivatePoet.command";
 
 export class Poet extends AggregateRoot<string> {
   private name: string = "";
@@ -89,6 +91,12 @@ export class Poet extends AggregateRoot<string> {
         console.log("🚀 Mutating PoetDeletedEvent");
         console.log("🚀 Mutating PoetDeletedEvent payload:", payload);
         this.is_deleted = true;
+        break;
+
+      case "PoetReactivated":
+        console.log("🚀 Mutating PoetReactivatedEvent");
+        console.log("🚀 Mutating PoetReactivatedEvent payload:", payload);
+        this.is_deleted = false;
         break;
       default:
         console.log("🚀 Default case, problem in mutate switch");
@@ -165,6 +173,13 @@ export class Poet extends AggregateRoot<string> {
         if (this.is_deleted) throw new Error("Poet is deleted");
         await deleteCommand.validateOrThrow(deleteCommand.payload);
         this.apply(new PoetDeletedEvent({ poetId: this.id }, new Date()));
+        return this;
+      }
+      case ReactivatePoetCommand: {
+        const reactivateCommand = command as ReactivatePoetCommand;
+        await reactivateCommand.validateOrThrow(reactivateCommand.payload);
+        if (!this.is_deleted) throw new Error("Poet is not deleted");
+        this.apply(new PoetReactivatedEvent({ poetId: this.id }, new Date()));
         return this;
       }
       default:

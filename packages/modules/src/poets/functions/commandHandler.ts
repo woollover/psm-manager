@@ -1,18 +1,15 @@
 import { APIGatewayProxyResultV2, Handler } from "aws-lambda";
 import { EventStore } from "../../../../core/src/EventStore";
-import {
-  DynamoDBDocument,
-  DynamoDBDocumentClient,
-} from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { randomUUID } from "crypto";
 import { Poet } from "../aggregates/Poet";
 import { CreatePoetCommand } from "../commands/CreatePoet.command";
 import { InvalidCommandError } from "../../../../core/src/Errors/InvalidCommandError";
-import { PoetSetAsMCEvent } from "../events";
-import { PoetCommands } from "../commands";
 import { EditPoetCommand } from "../commands/EditPoet.command";
 import { SetPoetAsMCCommand } from "../commands/SetPoetAsMC.command";
+import { SetPoetAsPoetCommand } from "../commands/SetPoetAsPoet.command";
+import { DeletePoetCommand } from "../commands/DeletePoet.command";
 //rule of thumb: stateless instnces OUTSIDE the handler, Stateful instances inside the handler
 
 const client = new DynamoDBClient({
@@ -87,8 +84,28 @@ export const handler: Handler = async (_event) => {
           throw error;
         }
         break;
+      case "set-poet-as-poet":
+        const setAsPoetCommand = new SetPoetAsPoetCommand(body.payload);
+        try {
+          await poet.applyCommand(setAsPoetCommand);
+        } catch (error) {
+          console.log("🚀 Command errors:", setAsPoetCommand.errors);
+          throw error;
+        }
+        break;
+      case "delete-poet":
+        const deleteCommand = new DeletePoetCommand(body.payload);
+        try {
+          await poet.applyCommand(deleteCommand);
+        } catch (error) {
+          console.log("🚀 Command errors:", deleteCommand.errors);
+          throw error;
+        }
+        break;
+
       default:
-        throw new Error("Invalid command");
+        console.warn(`🚨 I don't know this command ${body.command}`);
+        throw new Error(`I don't know this command ${body.command}`);
     }
     // persist uncommitted events
     await eventStore.saveEvents(poet.getUncommittedEvents());

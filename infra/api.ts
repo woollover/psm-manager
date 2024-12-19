@@ -1,4 +1,3 @@
-import sstConfig from "../sst.config";
 import { EventStoreTable } from "./tables/eventStore";
 
 export const eventStoreApi = new sst.aws.ApiGatewayV2("Api");

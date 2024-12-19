@@ -16,14 +16,14 @@ export class PSMEvent {
     occurredAt,
   }: {
     aggregateId: string;
-    version: number;
+    version: number | undefined;
     eventType: string;
     payload: Record<string, any>;
     occurredAt: Date; // iso string
   }) {
     this.event_id = `evt-${randomUUID()}`;
     this.aggregateId = aggregateId;
-    this.version = version;
+    this.version = version || 1;
     this.timestamp = occurredAt.getTime();
     this.eventType = eventType;
     this.occurredAt = occurredAt.toISOString();
