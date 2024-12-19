@@ -12,6 +12,10 @@ import { EditPoetCommand } from "../commands/EditPoet.command";
 import { DeletePoetCommand } from "../commands/DeletePoet.command";
 import { SetPoetAsMCCommand } from "../commands/SetPoetAsMC.command";
 import { PoetCommands } from "../commands";
+import { timeStamp } from "console";
+import { InvalidCommandError } from "../../../../core/src/Errors/InvalidCommandError";
+import { SetPoetAsPoetCommand } from "../commands/SetPoetAsPoet.command";
+import { PoetSetAsPoetEvent } from "../events/PoetSetAsPoet.event";
 
 export class Poet extends AggregateRoot<string> {
   private name: string = "";
@@ -26,7 +30,6 @@ export class Poet extends AggregateRoot<string> {
   // apply events to this very aggregate (BUSINESS LOGIC)
   protected mutate(event: PoetEvent): void {
     const payload = event.getPayload;
-    console.log("🚀 Mutating event:", event.constructor);
     switch (event.getEventType) {
       case "PoetCreated":
         // TODO this logic can be a method in the future
@@ -37,6 +40,8 @@ export class Poet extends AggregateRoot<string> {
         break;
 
       case "PoetEdited":
+        console.log("🚀 Mutating PoetEditedEvent");
+        console.log("🚀 Mutating PoetEditedEvent payload:", payload);
         if (payload.name) {
           this.name = payload.name;
         }
@@ -48,12 +53,46 @@ export class Poet extends AggregateRoot<string> {
         }
         break;
       case "PoetSetAsMC":
+        if (this.is_deleted) {
+          throw new InvalidCommandError("poet is deleted, cannot set as MC", [
+            { field: "aggregateId", cue: "this poet is deleted" },
+          ]);
+        }
+
+        if (this.is_mc == true) {
+          throw new InvalidCommandError("poet is already a MC", [
+            { field: "aggregateId", cue: "this poet is already a MC" },
+          ]);
+        }
+        console.log("🚀 Mutating PoetSetAsMCEvent");
+        console.log("🚀 Mutating PoetSetAsMCEvent payload:", payload);
         this.is_mc = true;
         break;
 
+      case "PoetSetAsPoet":
+        if (this.is_deleted) {
+          throw new InvalidCommandError("poet is deleted, cannot set as Poet", [
+            { field: "aggregateId", cue: "this poet is deleted" },
+          ]);
+        }
+        if (this.is_mc == false) {
+          throw new InvalidCommandError("poet is already a Poet", [
+            { field: "aggregateId", cue: "this poet is not set as MC" },
+          ]);
+        }
+        console.log("🚀 Mutating PoetSetAsPoetEvent");
+        console.log("🚀 Mutating PoetSetAsPoetEvent payload:", payload);
+        this.is_mc = false;
+        break;
+
       case "PoetDeleted":
+        console.log("🚀 Mutating PoetDeletedEvent");
+        console.log("🚀 Mutating PoetDeletedEvent payload:", payload);
         this.is_deleted = true;
         break;
+      default:
+        console.log("🚀 Default case, problem in mutate switch");
+        throw new Error("Invalid event");
     }
   }
 
@@ -91,6 +130,19 @@ export class Poet extends AggregateRoot<string> {
         this.apply(new PoetSetAsMCEvent({ aggregateId: this.id }, new Date()));
         return this;
       }
+
+      case SetPoetAsPoetCommand: {
+        const setCommand = command as SetPoetAsPoetCommand;
+        await setCommand.validateOrThrow(setCommand.payload);
+        if (this.getIsMc == false) {
+          throw new Error("Poet is already set as Poet");
+          // reject the command
+        }
+        this.apply(
+          new PoetSetAsPoetEvent({ aggregateId: this.id }, new Date())
+        );
+        return this;
+      }
       case EditPoetCommand: {
         const editCommand = command as EditPoetCommand;
         await editCommand.validateOrThrow(editCommand.payload);
@@ -112,9 +164,7 @@ export class Poet extends AggregateRoot<string> {
         const deleteCommand = command as DeletePoetCommand;
         if (this.is_deleted) throw new Error("Poet is deleted");
         await deleteCommand.validateOrThrow(deleteCommand.payload);
-        this.apply(
-          new PoetDeletedEvent({ poetId: this.id, occurredAt: new Date() })
-        );
+        this.apply(new PoetDeletedEvent({ poetId: this.id }, new Date()));
         return this;
       }
       default:

@@ -67,6 +67,35 @@ export class EventStore {
   }
 
   /**
+   *
+   * @param eventType
+   * @returns
+   */
+  async getEventsByType(eventType: string): Promise<PSMEvent[]> {
+    // eventually check if the request event Type is a mapped type in application
+    const command = new QueryCommand({
+      TableName: this.tableName,
+      IndexName: "eventTypeIndex",
+      KeyConditionExpression: "eventType = :type",
+      ExpressionAttributeValues: {
+        ":type": eventType,
+      },
+    });
+    const response = await this.client.send(command);
+    return (
+      response.Items?.map((item) => {
+        return new PSMEvent({
+          aggregateId: item.aggregateId ?? "",
+          version: item.version ?? 0,
+          eventType: item.eventType ?? "UnknownEvent",
+          payload: item.payload ?? {},
+          occurredAt: new Date(item.timestamp ?? new Date().toISOString()),
+        });
+      }) || []
+    );
+  }
+
+  /**
    * Retrieve all events for a specific aggregate
    * @param aggregateId The ID of the aggregate
    */
@@ -81,9 +110,9 @@ export class EventStore {
     });
 
     const response = await this.client.send(command);
-    console.log("🚀 Response:", response);
     return (
       response.Items?.map((item) => {
+        console.log("🚀 Item:", item);
         return new PSMEvent({
           aggregateId: item.aggregateId ?? "",
           version: item.version ?? 0,

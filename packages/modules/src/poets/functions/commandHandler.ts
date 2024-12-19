@@ -1,4 +1,4 @@
-import { Handler } from "aws-lambda";
+import { APIGatewayProxyResultV2, Handler } from "aws-lambda";
 import { EventStore } from "../../../../core/src/EventStore";
 import {
   DynamoDBDocument,
@@ -38,17 +38,18 @@ export const handler: Handler = async (_event) => {
   const aggregateId = body.payload.aggregateId || `poet-${randomUUID()}`;
 
   let result = {};
+
+  // pull up the aggregate
+  // insert backticks around aggregateId
+
+  console.log("📥 Aggregate ID:", aggregateId);
+  // load from history from event store and rehydrate the aggregate
+  const aggregateEvents = await eventStore.getEvents(aggregateId);
+  console.log("📥 Aggregate events:", aggregateEvents);
+  // create the aggregate class
+  const poet = new Poet(aggregateId);
+
   try {
-    // pull up the aggregate
-    // insert backticks around aggregateId
-
-    console.log("📥 Aggregate ID:", aggregateId);
-    // load from history from event store and rehydrate the aggregate
-    const aggregateEvents = await eventStore.getEvents(aggregateId);
-    console.log("📥 Aggregate events:", aggregateEvents);
-    // create the aggregate class
-    const poet = new Poet(aggregateId);
-
     poet.loadFromHistory(aggregateEvents);
 
     console.log("🔍 Hydrated Poet:", poet);
@@ -58,7 +59,7 @@ export const handler: Handler = async (_event) => {
       case "create-poet":
         const createCommand = new CreatePoetCommand(body.payload);
         try {
-          result = await poet.applyCommand(createCommand);
+          await poet.applyCommand(createCommand);
         } catch (error) {
           console.log("🚀 Command errors:", createCommand.errors);
           throw error;
@@ -70,7 +71,7 @@ export const handler: Handler = async (_event) => {
         console.log("🚀 Editing poet");
         const editCommand = new EditPoetCommand(body.payload);
         try {
-          result = await poet.applyCommand(editCommand);
+          await poet.applyCommand(editCommand);
         } catch (error) {
           console.log("🚀 Command errors:", editCommand.errors);
           throw error;
@@ -80,7 +81,7 @@ export const handler: Handler = async (_event) => {
       case "set-poet-as-mc":
         const setAsMCCommand = new SetPoetAsMCCommand(body.payload);
         try {
-          result = await poet.applyCommand(setAsMCCommand);
+          await poet.applyCommand(setAsMCCommand);
         } catch (error) {
           console.log("🚀 Command errors:", setAsMCCommand.errors);
           throw error;
@@ -91,6 +92,10 @@ export const handler: Handler = async (_event) => {
     }
     // persist uncommitted events
     await eventStore.saveEvents(poet.getUncommittedEvents());
+
+    // clear uncommitted events in the aggregate
+    poet.clearUncommittedEvents();
+
     // return the result
   } catch (error) {
     if (error instanceof InvalidCommandError) {
@@ -104,12 +109,15 @@ export const handler: Handler = async (_event) => {
       body: { message: "unknown error", error },
     };
   }
-  return {
+
+  const response: APIGatewayProxyResultV2 = {
     statusCode: 200,
-    body: {
+    body: JSON.stringify({
       message: "Command processed successfully",
-      result,
+      poet,
       aggregateID: aggregateId,
-    },
+    }),
   };
+
+  return response;
 };

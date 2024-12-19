@@ -3,5 +3,11 @@
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "Bundler",
-  },
+    "baseUrl": ".",
+    "paths": {
+      "@psm/*": ["../packages/*"],
+      "@psm/core/*": ["../packages/core/src/*"]
+    },
+    "types": ["node"]
+  }
 }

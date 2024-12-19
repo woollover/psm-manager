@@ -1,4 +1,4 @@
-import { APIGatewayProxyResultV2, Handler } from "aws-lambda";
+import { Handler } from "aws-lambda";
 import { EventStore } from "../../../../core/src/EventStore";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
@@ -25,24 +25,10 @@ const eventStore = new EventStore(
 
 export const handler: Handler = async (_event) => {
   const poetID = "poet-c898c914-5f1a-4bf1-8e5f-d70e73cc79f7";
-
   const aggregateEvents = await eventStore.getEvents(poetID);
 
-  const poet = new Poet(poetID);
-  try {
-    poet.loadFromHistory(aggregateEvents);
-  } catch (error) {
-    console.log(error);
-    return {
-      statusCode: 500,
-      body: { error: "Failed to load poet from history" },
-    };
-  }
-
-  const response: APIGatewayProxyResultV2 = {
+  return {
     statusCode: 200,
-    body: JSON.stringify({ poet }),
+    body: JSON.stringify({ events: aggregateEvents }),
   };
-
-  return response;
 };

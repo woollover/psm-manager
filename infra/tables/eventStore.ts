@@ -2,11 +2,14 @@ export const EventStoreTable = new sst.aws.Dynamo("EventStore", {
   fields: {
     aggregateId: "string",
     version: "number",
+    eventType: "string",
     createdAt: "number",
   },
   primaryIndex: { hashKey: "aggregateId", rangeKey: "version" },
+
   localIndexes: {
     createdAtIndex: { rangeKey: "createdAt" },
+    eventTypeIndex: { rangeKey: "eventType" },
   },
   stream: "new-image",
 });

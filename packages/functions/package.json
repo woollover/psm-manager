@@ -2,6 +2,7 @@
   "name": "@psm/functions",
   "version": "0.0.0",
   "dependencies": {
+    "@aws-sdk/lib-dynamodb": "^3.712.0",
     "@psm/core": "workspace:*",
     "sst": "*"
   },

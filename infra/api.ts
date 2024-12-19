@@ -5,14 +5,20 @@ export const eventStoreApi = new sst.aws.ApiGatewayV2("Api");
 
 eventStoreApi.route("GET /events", {
   link: [EventStoreTable],
-  handler: "packages/functions/src/api.handler",
+  handler: "packages/modules/src/poets/functions/getAllPoetEvents.handler",
   name: "event-store-getter",
+  environment: {
+    EVENT_STORE_TABLE_NAME: EventStoreTable.name,
+  },
 });
 
 eventStoreApi.route("GET /poets", {
   link: [EventStoreTable],
   handler: "packages/modules/src/poets/functions/queryHandler.handler",
   name: "get-all-poets",
+  environment: {
+    EVENT_STORE_TABLE_NAME: EventStoreTable.name,
+  },
 });
 
 eventStoreApi.route("POST /poets/commands", {
