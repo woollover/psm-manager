@@ -11,7 +11,7 @@ export class PoetEditedEvent extends PSMEvent {
   constructor(payload: PoetEditedEventPayload, occurredAt: Date) {
     super({
       aggregateId: payload.poetId,
-      version: 1,
+      aggregateOffset: 1,
       eventType: "PoetEdited",
       payload: payload,
       occurredAt: occurredAt,

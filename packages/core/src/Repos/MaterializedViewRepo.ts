@@ -19,29 +19,29 @@ export class MaterializedViewRepository<MVType> {
     this.#viewKey = viewKey;
   }
 
-  set materializedView(materializedView: MVType) {
-    this.#materializedView = materializedView;
-  }
-
   get materializedView(): MVType | null {
     return this.#materializedView;
   }
 
-  async load() {
+  async load(): Promise<MVType> {
+    if (this.#materializedView) {
+      return this.#materializedView;
+    }
     const result = await this.#client.get({
       TableName: this.#tablename,
       Key: { id: this.#viewKey },
     });
     this.#materializedView = result.Item as MVType;
+    return this.#materializedView;
   }
 
   async save() {
-    if (!this.materializedView) {
+    if (!this.#materializedView) {
       throw new Error("Materialized view not loaded");
     }
     await this.#client.put({
       TableName: this.#tablename,
-      Item: this.materializedView,
+      Item: this.#materializedView,
     });
   }
 }

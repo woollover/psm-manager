@@ -2,7 +2,6 @@ import { Handler } from "aws-lambda";
 import { EventStore } from "../../../../core/src/EventStore";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { Poet } from "../aggregates/Poet";
 
 //rule of thumb: stateless instnces OUTSIDE the handler, Stateful instances inside the handler
 
@@ -24,11 +23,23 @@ const eventStore = new EventStore(
 // instantiate the eventStore, it's stateless so we can do it outside the handler
 
 export const handler: Handler = async (_event) => {
-  const poetID = "poet-c898c914-5f1a-4bf1-8e5f-d70e73cc79f7";
+  const poetID = "poet-9b00c375-7b02-48e8-9d57-dbeb15ebb032";
   const aggregateEvents = await eventStore.getEvents(poetID);
+  const events = await eventStore.getEventsByType("PoetCreated");
+  const globalIndexFilteredEvents = await eventStore.getEventsByGlobalOffset(
+    6,
+    10
+  );
 
   return {
+    headers: {
+      "Content-Type": "application/json",
+    },
     statusCode: 200,
-    body: JSON.stringify({ events: aggregateEvents }),
+    body: JSON.stringify({
+      aggregateEvents: aggregateEvents,
+      createdPoetEvents: events,
+      globalIndexFilteredEvents: globalIndexFilteredEvents,
+    }),
   };
 };

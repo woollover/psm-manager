@@ -13,7 +13,6 @@ import { EditPoetCommand } from "../commands/EditPoet.command";
 import { DeletePoetCommand } from "../commands/DeletePoet.command";
 import { SetPoetAsMCCommand } from "../commands/SetPoetAsMC.command";
 import { PoetCommands } from "../commands";
-import { timeStamp } from "console";
 import { InvalidCommandError } from "../../../../core/src/Errors/InvalidCommandError";
 import { SetPoetAsPoetCommand } from "../commands/SetPoetAsPoet.command";
 import { PoetSetAsPoetEvent } from "../events/PoetSetAsPoet.event";

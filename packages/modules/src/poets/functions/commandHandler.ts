@@ -32,7 +32,7 @@ const eventStore = new EventStore(
 export const handler: Handler = async (_event) => {
   const body = JSON.parse(_event.body!);
   console.log("📥 Body received:", body);
-  const aggregateId = body.payload.aggregateId || `poet-${randomUUID()}`;
+  const aggregateId = body.payload.aggregateId || `poet-${randomUUID()}`; // TO REFACTOR
 
   let result = {};
 
@@ -128,6 +128,9 @@ export const handler: Handler = async (_event) => {
   }
 
   const response: APIGatewayProxyResultV2 = {
+    headers: {
+      "Content-Type": "application/json",
+    },
     statusCode: 200,
     body: JSON.stringify({
       message: "Command processed successfully",

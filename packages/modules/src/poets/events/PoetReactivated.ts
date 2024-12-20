@@ -11,7 +11,7 @@ export class PoetReactivatedEvent extends PSMEvent {
       eventType: "PoetReactivated",
       payload: payload,
       occurredAt: occurredAt,
-      version: undefined,
+      aggregateOffset: undefined,
     });
     this.payload = payload;
   }

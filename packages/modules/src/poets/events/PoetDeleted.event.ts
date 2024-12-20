@@ -8,7 +8,7 @@ export class PoetDeletedEvent extends PSMEvent {
   constructor(payload: PoetDeletedEventPayload, occurredAt: Date) {
     super({
       aggregateId: payload.poetId,
-      version: 1,
+      aggregateOffset: 1,
       eventType: "PoetDeleted",
       payload: payload,
       occurredAt: occurredAt,

@@ -2,13 +2,14 @@ import { PSMEvent } from "../Event/Event";
 
 export abstract class AggregateRoot<TId> {
   private readonly _uncommittedEvents: PSMEvent[] = [];
-  protected _version: number = 0;
+  protected _version: number = 1;
+  protected _aggregateOffset: number = 0;
 
   constructor(public readonly id: TId) {}
 
   // Apply an event and mutate state
   protected apply(event: PSMEvent): void {
-    this._version++;
+    this._aggregateOffset++;
     this.mutate(event);
     this._uncommittedEvents.push(event);
   }
@@ -30,11 +31,11 @@ export abstract class AggregateRoot<TId> {
   public loadFromHistory(events: PSMEvent[]): void {
     for (const event of events) {
       this.mutate(event);
-      this._version++;
+      this._aggregateOffset++;
     }
   }
 
-  public get version(): number {
-    return this._version;
+  public get offset(): number {
+    return this._aggregateOffset;
   }
 }

@@ -2,6 +2,7 @@ import {
   DynamoDBDocument,
   QueryCommand,
   PutCommand,
+  ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { PSMEvent } from "../Event/Event";
 
@@ -24,18 +25,25 @@ export class EventStore {
    * @param event The event to store
    */
   async saveEvent(event: PSMEvent): Promise<void> {
-    const nextVersion = await this.getNextVersion(event.getAggregateId);
+    const aggregateOffset = await this.getNextAggregateOffset(
+      event.getAggregateId
+    );
+
+    const globalOffset = await this.getNextGlobalOffset();
+
     const command = new PutCommand({
       TableName: this.tableName,
       Item: {
         aggregateId: event.getAggregateId,
-        version: nextVersion,
+        aggregateOffset: aggregateOffset,
         eventType: event.getEventType,
         payload: event.getPayload,
         timestamp: event.getTimestamp,
+        globalOffset: globalOffset,
+        pivotKey: "event",
       },
       ConditionExpression:
-        "attribute_not_exists(aggregateId) AND attribute_not_exists(version)",
+        "attribute_not_exists(aggregateId) AND attribute_not_exists(aggregateOffset)",
     });
 
     let retries = 3;
@@ -44,7 +52,8 @@ export class EventStore {
         await this.client.send(command);
         console.log("💾 Event saved successfully", {
           aggregateId: event.getAggregateId,
-          version: event.getVersion,
+          aggregateOffset: event.getAggregateOffset,
+          globalOffset: event.getGlobalOffset,
         });
         return;
       } catch (error) {
@@ -57,8 +66,8 @@ export class EventStore {
         } else {
           console.error("Failed to save event", {
             aggregateId: event.getAggregateId,
-            version: event.getVersion,
-            error,
+            aggregateOffset: event.getAggregateOffset,
+            globalOffset: event.getGlobalOffset,
           });
           throw error;
         }
@@ -72,6 +81,7 @@ export class EventStore {
    * @returns
    */
   async getEventsByType(eventType: string): Promise<PSMEvent[]> {
+    console.log("🚀 Getting events by type", { eventType });
     // eventually check if the request event Type is a mapped type in application
     const command = new QueryCommand({
       TableName: this.tableName,
@@ -86,10 +96,12 @@ export class EventStore {
       response.Items?.map((item) => {
         return new PSMEvent({
           aggregateId: item.aggregateId ?? "",
-          version: item.version ?? 0,
+          aggregateOffset: item.version ?? 0,
           eventType: item.eventType ?? "UnknownEvent",
           payload: item.payload ?? {},
           occurredAt: new Date(item.timestamp ?? new Date().toISOString()),
+          globalOffset: item.globalSequence ?? 0,
+          version: item.version ?? 1,
         });
       }) || []
     );
@@ -115,16 +127,19 @@ export class EventStore {
         console.log("🚀 Item:", item);
         return new PSMEvent({
           aggregateId: item.aggregateId ?? "",
-          version: item.version ?? 0,
+          aggregateOffset: item.version ?? 0,
           eventType: item.eventType ?? "UnknownEvent",
           payload: item.payload ?? {},
           occurredAt: new Date(item.timestamp ?? new Date().toISOString()),
+          globalOffset: item.globalSequence ?? 0,
+          version: item.version ?? 1,
         });
       }) || []
     );
   }
 
-  async getNextVersion(aggregateId: string): Promise<number> {
+  async getNextAggregateOffset(aggregateId: string): Promise<number> {
+    console.log("🚀 Getting next aggregate offset", { aggregateId });
     const command = new QueryCommand({
       TableName: this.tableName,
       KeyConditionExpression: "aggregateId = :id",
@@ -136,7 +151,71 @@ export class EventStore {
     });
 
     const response = await this.client.send(command);
-    const lastVersion = response.Items?.[0]?.version ?? 0;
-    return lastVersion + 1;
+    const lastOffset = response.Items?.[0]?.aggregateOffset ?? 0;
+    return lastOffset + 1;
+  }
+
+  private async getNextGlobalOffset(): Promise<number> {
+    console.log("🚀 Getting next global offset");
+    try {
+      const command = new QueryCommand({
+        TableName: this.tableName,
+        IndexName: "globalOffsetIndex",
+        KeyConditionExpression: "pivotKey = :pivotKey",
+        ExpressionAttributeValues: {
+          ":pivotKey": "event",
+        },
+        ScanIndexForward: false,
+        Limit: 1,
+      });
+
+      const response = await this.client.send(command);
+      const lastSequence = response.Items?.[0]?.globalOffset ?? 0;
+      return lastSequence + 1;
+    } catch (error) {
+      console.error("Failed to get next global sequence", error);
+      return 1; // Start from 1 if no events exist
+    }
+  }
+
+  async getEventsByGlobalOffset(
+    start: number,
+    end?: number
+  ): Promise<PSMEvent[]> {
+    console.log("🚀 Getting events by global offset", { start, end });
+
+    // Since we can't do BETWEEN on globalOffset directly anymore,
+    // we'll need to use a Scan operation or query by eventType
+    const command = new QueryCommand({
+      TableName: this.tableName,
+      IndexName: "globalOffsetIndex",
+      KeyConditionExpression: end
+        ? "#pk = :event AND #go BETWEEN :start AND :end"
+        : "#pk = :event AND #go >= :start",
+      ExpressionAttributeNames: {
+        "#go": "globalOffset",
+        "#pk": "pivotKey",
+      },
+      ExpressionAttributeValues: {
+        ":event": "event",
+        ":start": start,
+        ...(end ? { ":end": end } : {}),
+      },
+    });
+
+    const response = await this.client.send(command);
+    return (
+      response.Items?.map((item) => {
+        return new PSMEvent({
+          aggregateId: item.aggregateId,
+          aggregateOffset: item.aggregateOffset,
+          globalOffset: item.globalOffset,
+          eventType: item.eventType,
+          payload: item.payload,
+          version: item.version,
+          occurredAt: new Date(item.timestamp),
+        });
+      }) || []
+    );
   }
 }

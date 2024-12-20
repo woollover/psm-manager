@@ -11,7 +11,7 @@ export class PoetSetAsPoetEvent extends PSMEvent {
       eventType: "PoetSetAsPoet",
       payload: {},
       occurredAt: occurredAt,
-      version: 1,
+      aggregateOffset: 1,
     });
     this.payload = payload;
   }
