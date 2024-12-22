@@ -11,6 +11,8 @@ export default $config({
   },
   async run() {
     await import("./infra/tables/eventStore");
+    await import("./infra/tables/materializedViewsTable");
+    await import("./infra/queues/poetsProjectionsQueue");
     const api = await import("./infra/api");
 
     return {

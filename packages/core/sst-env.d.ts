@@ -14,5 +14,17 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Dynamo"
     }
+    "MaterializedViewsTable": {
+      "name": string
+      "type": "sst.aws.Dynamo"
+    }
+    "PSM-DLQ": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
+    "PoetsProjections": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
   }
 }
