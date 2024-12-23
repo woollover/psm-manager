@@ -118,7 +118,7 @@ export class Poet extends AggregateRoot<string> {
         this.apply(
           new PoetCreatedEvent(
             {
-              poetId: this.id,
+              aggregateId: this.id,
               name: payload.name,
               email: payload.email,
             },
@@ -157,7 +157,7 @@ export class Poet extends AggregateRoot<string> {
         this.apply(
           new PoetEditedEvent(
             {
-              poetId: this.id,
+              aggregateId: this.id,
               name: editCommand.payload.name,
               email: editCommand.payload.email,
               instagram_handle: editCommand.payload.instagram_handle,
@@ -171,14 +171,16 @@ export class Poet extends AggregateRoot<string> {
         const deleteCommand = command as DeletePoetCommand;
         if (this.is_deleted) throw new Error("Poet is deleted");
         await deleteCommand.validateOrThrow(deleteCommand.payload);
-        this.apply(new PoetDeletedEvent({ poetId: this.id }, new Date()));
+        this.apply(new PoetDeletedEvent({ aggregateId: this.id }, new Date()));
         return this;
       }
       case ReactivatePoetCommand: {
         const reactivateCommand = command as ReactivatePoetCommand;
         await reactivateCommand.validateOrThrow(reactivateCommand.payload);
         if (!this.is_deleted) throw new Error("Poet is not deleted");
-        this.apply(new PoetReactivatedEvent({ poetId: this.id }, new Date()));
+        this.apply(
+          new PoetReactivatedEvent({ aggregateId: this.id }, new Date())
+        );
         return this;
       }
       default:
@@ -191,7 +193,7 @@ export class Poet extends AggregateRoot<string> {
   get getName(): string {
     return this.name;
   }
-  get getpoetId(): string {
+  get getaggregateId(): string {
     return this.id;
   }
   get getEmail(): string {

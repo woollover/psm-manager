@@ -5,13 +5,26 @@ export type PoetSetAsPoetEventPayload = {
 };
 
 export class PoetSetAsPoetEvent extends PSMEvent {
-  constructor(payload: PoetSetAsPoetEventPayload, occurredAt: Date) {
+  constructor({
+    payload,
+    occurredAt,
+    aggregateId,
+    aggregateOffset,
+    globalOffset,
+  }: {
+    payload: PoetSetAsPoetEventPayload;
+    occurredAt: Date;
+    aggregateId?: string | undefined;
+    aggregateOffset?: number | undefined;
+    globalOffset?: number | undefined;
+  }) {
     super({
-      aggregateId: payload.aggregateId,
+      aggregateId: aggregateId ?? payload.aggregateId,
+      aggregateOffset: aggregateOffset ?? 1,
       eventType: "PoetSetAsPoet",
       payload: {},
       occurredAt: occurredAt,
-      aggregateOffset: 1,
+      globalOffset: globalOffset ?? undefined,
     });
     this.payload = payload;
   }

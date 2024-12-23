@@ -13,26 +13,29 @@ export const handler: Handler = async (_event) => {
 
   for (const event of _event.Records) {
     console.log("📥 Event type:", event.dynamodb);
-    console.log("📥 Event type:", event.eventSource);
-    console.log("📥 Event type:", event);
+    //console.log("📥 Event type:", event.eventSource);
+    //console.log("📥 Event type:", event);
     const savedEvent = event.dynamodb.NewImage;
     // get the event type
-    const eventType = savedEvent.eventType as string;
+    const eventType = savedEvent.eventType.S as String;
+    console.log("📥 Event type:", eventType);
     if (eventType.includes("Poet")) {
       // get the aggregate id
-      const aggregateId = savedEvent.aggregateId as string;
+      const aggregateId = savedEvent.aggregateId.S as String;
+      console.log("📥 Aggregate id:", aggregateId);
       // forward the event to the poet queue / service or something
       const command = new SendMessageCommand({
         QueueUrl: poetsProjectionsQueueUrl,
         MessageBody: JSON.stringify(savedEvent),
+        // add 2 message Attributes with event type and aggregate id
         MessageAttributes: {
-          aggregateId: {
-            DataType: "string",
-            StringValue: aggregateId,
-          },
           eventType: {
-            DataType: "string",
-            StringValue: eventType,
+            DataType: "String",
+            StringValue: eventType as string,
+          },
+          aggregateId: {
+            DataType: "String",
+            StringValue: aggregateId as string,
           },
         },
       });

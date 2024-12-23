@@ -30,8 +30,8 @@ const eventStore = new EventStore(
 // instantiate the eventStore, it's stateless so we can do it outside the handler
 
 export const handler: Handler = async (_event: APIGatewayProxyEventV2) => {
-  const poetID = _event.pathParameters?.poetId;
-  console.log("🚀 Poet ID:", poetID);
+  const aggregateId = _event.pathParameters?.aggregateId;
+  console.log("🚀 Poet ID:", aggregateId);
 
   // instnatiate the materialized view repo
   const poetsMaterializedViewRepository = new PoetMaterializedViewRepository({

@@ -1,17 +1,30 @@
 import { PSMEvent } from "../../../../core/src/Event/Event";
 
 export type PoetDeletedEventPayload = {
-  poetId: string;
+  aggregateId: string;
 };
 
 export class PoetDeletedEvent extends PSMEvent {
-  constructor(payload: PoetDeletedEventPayload, occurredAt: Date) {
+  constructor({
+    payload,
+    occurredAt,
+    aggregateId,
+    aggregateOffset,
+    globalOffset,
+  }: {
+    payload: PoetDeletedEventPayload;
+    occurredAt: Date;
+    aggregateId?: string | undefined;
+    aggregateOffset?: number | undefined;
+    globalOffset?: number | undefined;
+  }) {
     super({
-      aggregateId: payload.poetId,
-      aggregateOffset: 1,
+      aggregateId: aggregateId ?? payload.aggregateId,
+      aggregateOffset: aggregateOffset ?? 1,
       eventType: "PoetDeleted",
       payload: payload,
       occurredAt: occurredAt,
+      globalOffset: globalOffset ?? undefined,
     });
     this.payload = payload;
   }

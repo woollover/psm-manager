@@ -23,8 +23,8 @@ const eventStore = new EventStore(
 // instantiate the eventStore, it's stateless so we can do it outside the handler
 
 export const handler: Handler = async (_event) => {
-  const poetID = "poet-9b00c375-7b02-48e8-9d57-dbeb15ebb032";
-  const aggregateEvents = await eventStore.getEvents(poetID);
+  const aggregateId = "poet-9b00c375-7b02-48e8-9d57-dbeb15ebb032";
+  const aggregateEvents = await eventStore.getEvents(aggregateId);
   const events = await eventStore.getEventsByType("PoetCreated");
   const globalIndexFilteredEvents = await eventStore.getEventsByGlobalOffset(
     6,

@@ -3,14 +3,14 @@ import { PoetMaterializedViewRepository } from "../../repository/PoetMaterialize
 import { PoetCreatedEvent, PoetEvent } from "src/poets/events";
 
 export class PoetProjector {
-  private poetRepository: PoetMaterializedViewRepository;
+  private poetMaterializedViewRepository: PoetMaterializedViewRepository;
 
   constructor(poetRepository: PoetMaterializedViewRepository) {
-    this.poetRepository = poetRepository;
+    this.poetMaterializedViewRepository = poetRepository;
   }
 
   async project(event: PoetEvent): Promise<void> {
-    this.poetRepository.load();
+    this.poetMaterializedViewRepository.load();
     console.log("event processed", event.getEventType);
     switch (event.getEventType) {
       case "PoetCreated":
@@ -27,7 +27,7 @@ export class PoetProjector {
   }
 
   private async handlePoetCreated(event: PoetCreatedEvent): Promise<void> {
-    const poets = (await this.poetRepository.load()) || [];
+    const poets = (await this.poetMaterializedViewRepository.load()) || [];
     const payload = event.getPayload;
     const newPoet = new PoetMaterializedView({
       id: event.getAggregateId,
@@ -39,13 +39,15 @@ export class PoetProjector {
     });
 
     poets.push(newPoet);
-    await this.poetRepository.save();
+    await this.poetMaterializedViewRepository.save();
   }
 
   private async handlePoetUpdated(event: PoetEvent): Promise<void> {
-    const poets = (await this.poetRepository.load()) || [];
+    const poets = (await this.poetMaterializedViewRepository.load()) || [];
 
-    const poet = this.poetRepository.getById(event.getAggregateId);
+    const poet = this.poetMaterializedViewRepository.getById(
+      event.getAggregateId
+    );
     const index = poets.findIndex((p) => p.id === event.getAggregateId);
     const payload = event.getPayload;
     const updatedPoet = new PoetMaterializedView({
@@ -54,6 +56,6 @@ export class PoetProjector {
     });
 
     poets[index] = updatedPoet;
-    this.poetRepository.updatePoet(updatedPoet);
+    this.poetMaterializedViewRepository.updatePoet(updatedPoet);
   }
 }
