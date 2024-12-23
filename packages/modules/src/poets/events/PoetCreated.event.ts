@@ -1,7 +1,6 @@
 import { PSMEvent } from "../../../../core/src/Event/Event";
 
 export type PoetCreatedEventPayload = {
-  aggregateId: string;
   name: string;
   email: string;
 };
@@ -16,12 +15,12 @@ export class PoetCreatedEvent extends PSMEvent {
   }: {
     payload: PoetCreatedEventPayload;
     occurredAt: Date;
-    aggregateId?: string | undefined;
+    aggregateId: string;
     aggregateOffset?: number | undefined;
     globalOffset?: number | undefined;
   }) {
     super({
-      aggregateId: aggregateId || payload.aggregateId,
+      aggregateId: aggregateId,
       eventType: "PoetCreated",
       payload: payload,
       occurredAt: occurredAt,

@@ -1,10 +1,9 @@
 import { PSMEvent } from "../../../../core/src/Event/Event";
 
 export type PoetEditedEventPayload = {
-  aggregateId: string;
-  name: string | undefined;
-  email: string | undefined;
-  instagram_handle: string | undefined;
+  name?: string | undefined;
+  email?: string | undefined;
+  instagram_handle?: string | undefined;
 };
 
 export class PoetEditedEvent extends PSMEvent {
@@ -22,7 +21,7 @@ export class PoetEditedEvent extends PSMEvent {
     globalOffset?: number | undefined;
   }) {
     super({
-      aggregateId: aggregateId || payload.aggregateId,
+      aggregateId: aggregateId!,
       eventType: "PoetEdited",
       payload: payload,
       occurredAt: occurredAt,

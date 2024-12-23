@@ -116,14 +116,13 @@ export class Poet extends AggregateRoot<string> {
         }
         const payload = createCommand.payload;
         this.apply(
-          new PoetCreatedEvent(
-            {
-              aggregateId: this.id,
-              name: payload.name,
-              email: payload.email,
+          new PoetCreatedEvent({
+            aggregateId: this.id,
+            payload: {
+              ...payload,
             },
-            new Date()
-          )
+            occurredAt: new Date(),
+          })
         );
         return this;
       }
@@ -134,7 +133,13 @@ export class Poet extends AggregateRoot<string> {
           throw new Error("Poet is already set as MC");
           // reject the command
         }
-        this.apply(new PoetSetAsMCEvent({ aggregateId: this.id }, new Date()));
+        this.apply(
+          new PoetSetAsMCEvent({
+            aggregateId: this.id,
+            payload: setCommand.payload,
+            occurredAt: new Date(),
+          })
+        );
         return this;
       }
 
@@ -146,7 +151,11 @@ export class Poet extends AggregateRoot<string> {
           // reject the command
         }
         this.apply(
-          new PoetSetAsPoetEvent({ aggregateId: this.id }, new Date())
+          new PoetSetAsPoetEvent({
+            aggregateId: this.id,
+            payload: setCommand.payload,
+            occurredAt: new Date(),
+          })
         );
         return this;
       }
@@ -155,15 +164,11 @@ export class Poet extends AggregateRoot<string> {
         await editCommand.validateOrThrow(editCommand.payload);
         if (this.is_deleted) throw new Error("Poet is deleted");
         this.apply(
-          new PoetEditedEvent(
-            {
-              aggregateId: this.id,
-              name: editCommand.payload.name,
-              email: editCommand.payload.email,
-              instagram_handle: editCommand.payload.instagram_handle,
-            },
-            new Date()
-          )
+          new PoetEditedEvent({
+            aggregateId: this.id,
+            payload: editCommand.payload,
+            occurredAt: new Date(),
+          })
         );
         return this;
       }
@@ -171,7 +176,13 @@ export class Poet extends AggregateRoot<string> {
         const deleteCommand = command as DeletePoetCommand;
         if (this.is_deleted) throw new Error("Poet is deleted");
         await deleteCommand.validateOrThrow(deleteCommand.payload);
-        this.apply(new PoetDeletedEvent({ aggregateId: this.id }, new Date()));
+        this.apply(
+          new PoetDeletedEvent({
+            aggregateId: this.id,
+            payload: deleteCommand.payload,
+            occurredAt: new Date(),
+          })
+        );
         return this;
       }
       case ReactivatePoetCommand: {
@@ -179,7 +190,11 @@ export class Poet extends AggregateRoot<string> {
         await reactivateCommand.validateOrThrow(reactivateCommand.payload);
         if (!this.is_deleted) throw new Error("Poet is not deleted");
         this.apply(
-          new PoetReactivatedEvent({ aggregateId: this.id }, new Date())
+          new PoetReactivatedEvent({
+            aggregateId: this.id,
+            payload: reactivateCommand.payload,
+            occurredAt: new Date(),
+          })
         );
         return this;
       }

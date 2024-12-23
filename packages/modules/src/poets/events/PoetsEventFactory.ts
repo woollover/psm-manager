@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import {
   PoetDeletedEvent,
   PoetEditedEvent,
@@ -20,6 +21,7 @@ export class PoetsEventFactory {
   static createEvent(eventType: PoetEventType, eventInput: EventInput) {
     const baseEventData = {
       occurredAt: eventInput.occurredAt || new Date(),
+      aggregateId: eventInput.aggregateId ?? "evt-" + randomUUID(),
       aggregateOffset: eventInput.aggregateOffset || 0,
       globalOffset: eventInput.globalOffset || 0,
     };
@@ -28,23 +30,19 @@ export class PoetsEventFactory {
       case "PoetCreated":
         return new PoetCreatedEvent({
           payload: {
-            aggregateId: eventInput.payload.aggregateId,
             name: eventInput.payload.name,
             email: eventInput.payload.email,
           },
-          aggregateId: eventInput.aggregateId ?? eventInput.payload.aggregateId,
           ...baseEventData,
         });
 
       case "PoetEdited":
         return new PoetEditedEvent({
           payload: {
-            aggregateId: eventInput.payload.aggregateId,
             name: eventInput.payload.name,
             email: eventInput.payload.email,
             instagram_handle: eventInput.payload.instagram_handle,
           },
-          aggregateId: eventInput.aggregateId ?? eventInput.payload.aggregateId,
           ...baseEventData,
         });
 
