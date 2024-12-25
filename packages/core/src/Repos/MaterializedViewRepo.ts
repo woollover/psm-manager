@@ -1,4 +1,9 @@
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
+/**
+ * The repository takes the materialized view class as Generic Param
+ *
+ *
+ */
 
 export class MaterializedViewRepository<MVType> {
   #tablename: string;

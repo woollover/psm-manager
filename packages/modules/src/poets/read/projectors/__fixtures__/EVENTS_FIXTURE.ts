@@ -1,0 +1,98 @@
+export const EVENTS_FIXTURE = [
+  {
+    aggregateId: "poet-4c20baff-50c6-4a9f-8c0c-2f449ba2fc86",
+    aggregateOffset: 1,
+    eventType: "PoetCreated",
+    globalOffset: 1,
+    payload: {
+      email: "mail@mail.com",
+      name: "Dario Woollover",
+    },
+    pivotKey: "event",
+    timestamp: 1735166029,
+  },
+  {
+    aggregateId: "poet-4c20baff-50c6-4a9f-8c0c-2f449ba2fc86",
+    aggregateOffset: 2,
+    eventType: "PoetEdited",
+    globalOffset: 2,
+    payload: {
+      aggregateId: "poet-4c20baff-50c6-4a9f-8c0c-2f449ba2fc86",
+      instagram_handle: "dariowollover",
+    },
+    pivotKey: "event",
+    timestamp: 1735166078,
+  },
+  {
+    aggregateId: "poet-4c20baff-50c6-4a9f-8c0c-2f449ba2fc86",
+    aggregateOffset: 3,
+    eventType: "PoetEdited",
+    globalOffset: 3,
+    payload: {
+      aggregateId: "poet-4c20baff-50c6-4a9f-8c0c-2f449ba2fc86",
+      email: "info@woollover.it",
+    },
+    pivotKey: "event",
+    timestamp: 1735166100,
+  },
+  {
+    aggregateId: "poet-4c20baff-50c6-4a9f-8c0c-2f449ba2fc86",
+    aggregateOffset: 4,
+    eventType: "PoetSetAsMC",
+    globalOffset: 4,
+    payload: {
+      aggregateId: "poet-4c20baff-50c6-4a9f-8c0c-2f449ba2fc86",
+    },
+    pivotKey: "event",
+    timestamp: 1735166106,
+  },
+  {
+    aggregateId: "poet-7f4e149c-af85-48b1-8a58-50a7b4ff1b24",
+    aggregateOffset: 1,
+    eventType: "PoetCreated",
+    globalOffset: 5,
+    payload: {
+      email: "mail@mail.com",
+      name: "Bano Autieri",
+    },
+    pivotKey: "event",
+    timestamp: 1735166137,
+  },
+  {
+    aggregateId: "poet-7f4e149c-af85-48b1-8a58-50a7b4ff1b24",
+    aggregateOffset: 2,
+    eventType: "PoetEdited",
+    globalOffset: 6,
+    payload: {
+      aggregateId: "poet-7f4e149c-af85-48b1-8a58-50a7b4ff1b24",
+      email: "bano@woollover.it",
+      instagram: "bano.autieri",
+    },
+    pivotKey: "event",
+    timestamp: 1735166179,
+  },
+  {
+    aggregateId: "poet-7f4e149c-af85-48b1-8a58-50a7b4ff1b24",
+    aggregateOffset: 3,
+    eventType: "PoetEdited",
+    globalOffset: 7,
+    payload: {
+      aggregateId: "poet-7f4e149c-af85-48b1-8a58-50a7b4ff1b24",
+      email: "bano@woollover.it",
+      instagram_handle: "bano.autieri",
+    },
+    pivotKey: "event",
+    timestamp: 1735166212,
+  },
+  {
+    aggregateId: "poet-7f4e149c-af85-48b1-8a58-50a7b4ff1b24",
+    aggregateOffset: 4,
+    eventType: "PoetDeleted",
+    globalOffset: 8,
+    payload: {
+      aggregateId: "poet-7f4e149c-af85-48b1-8a58-50a7b4ff1b24",
+    },
+    pivotKey: "event",
+    timestamp: 1735166223,
+  },
+];

@@ -8,7 +8,6 @@ export class PSMEvent {
   protected aggregateOffset: number;
   protected timestamp: number;
   protected eventType: string;
-  protected occurredAt: string;
   protected version: number = 1;
   protected pivotKey: string = "event";
   constructor({
@@ -17,26 +16,32 @@ export class PSMEvent {
     globalOffset,
     eventType,
     payload,
-    occurredAt,
     version,
+    timestamp,
+    eventId,
   }: {
     aggregateId: string;
     aggregateOffset?: number | undefined;
     globalOffset?: number | undefined;
     eventType: string;
     payload: Record<string, any>;
-    occurredAt: Date; // iso string
+    timestamp?: number | undefined;
+    eventId?: string | undefined;
+    // fix The timestamp data when pulling events from the event store
     version?: number | undefined;
   }) {
-    this.event_id = `evt-${randomUUID()}`;
+    this.event_id = eventId || `evt-${randomUUID()}`;
     this.aggregateId = aggregateId;
     this.aggregateOffset = aggregateOffset || 1;
     this.globalOffset = globalOffset || 1;
     this.version = version || 1;
-    this.timestamp = occurredAt.getTime();
+    this.timestamp = timestamp || new Date().getTime();
     this.eventType = eventType;
-    this.occurredAt = occurredAt.toISOString();
     this.payload = payload;
+  }
+
+  get getEventId(): string {
+    return this.event_id;
   }
 
   get getPayload(): any {

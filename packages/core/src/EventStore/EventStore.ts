@@ -33,11 +33,12 @@ export class EventStore {
     const command = new PutCommand({
       TableName: this.tableName,
       Item: {
+        eventId: event.getEventId,
         aggregateId: event.getAggregateId,
         aggregateOffset: aggregateOffset,
         eventType: event.getEventType,
         payload: event.getPayload,
-        timestamp: Math.floor(new Date(event.getTimestamp).getTime() / 1000), // Convert to Unix timestamp
+        timestamp: Math.floor(new Date(event.getTimestamp).getTime()), // Convert to Unix timestamp
         globalOffset: globalOffset,
         pivotKey: "event",
       },
@@ -98,7 +99,7 @@ export class EventStore {
           aggregateOffset: item.version ?? 0,
           eventType: item.eventType ?? "UnknownEvent",
           payload: item.payload ?? {},
-          occurredAt: new Date(item.timestamp ?? new Date().toISOString()),
+          timestamp: item.timestamp ?? new Date().getTime(),
           globalOffset: item.globalSequence ?? 0,
           version: item.version ?? 1,
         });
@@ -123,14 +124,15 @@ export class EventStore {
     const response = await this.client.send(command);
     return (
       response.Items?.map((item) => {
-        console.log("🚀 Item:", item);
+        // console.log("🚀 Item:", item);
         return new PSMEvent({
+          eventId: item.event_id ?? undefined,
           aggregateId: item.aggregateId ?? "",
           aggregateOffset: item.version ?? 0,
           eventType: item.eventType ?? "UnknownEvent",
           payload: item.payload ?? {},
-          occurredAt: new Date(item.timestamp ?? new Date().toISOString()),
-          globalOffset: item.globalSequence ?? 0,
+          timestamp: item.timestamp ?? new Date().getTime(),
+          globalOffset: item.globalOffset ?? 0,
           version: item.version ?? 1,
         });
       }) || []
@@ -215,7 +217,8 @@ export class EventStore {
               ? JSON.parse(item.payload)
               : item.payload,
           version: item.version,
-          occurredAt: new Date(item.timestamp * 1000), // Convert Unix timestamp back to Date
+          timestamp: item.timestamp,
+          eventId: item.event_id,
         });
       }) || []
     );
