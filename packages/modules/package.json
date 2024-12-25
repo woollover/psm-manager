@@ -10,12 +10,12 @@
     "test:coverage": "vitest run --coverage",
     "clean": "rm -rf dist"
   },
-  "devDependencies": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/lib-dynamodb": "^3.712.0",
+    "@aws-sdk/util-dynamodb": "^3.716.0",
     "@psm/core": "workspace:*"
   }
 }

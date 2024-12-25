@@ -3,17 +3,18 @@ import { PoetMaterializedViewRepository } from "../../repository/PoetMaterialize
 import { PoetCreatedEvent, PoetEvent } from "src/poets/events";
 
 export class PoetProjector {
-  private poetMaterializedViewRepository: PoetMaterializedViewRepository;
+  private poetsMaterializedViewRepository: PoetMaterializedViewRepository;
 
   constructor(poetRepository: PoetMaterializedViewRepository) {
-    this.poetMaterializedViewRepository = poetRepository;
+    this.poetsMaterializedViewRepository = poetRepository;
   }
 
   async project(event: PoetEvent): Promise<void> {
-    this.poetMaterializedViewRepository.load();
-    console.log("event processed", event.getEventType);
+    await this.poetsMaterializedViewRepository.load();
+    console.log("event processed for projection", event.getEventType);
     switch (event.getEventType) {
       case "PoetCreated":
+        console.log("⚙️ PoetCreated", event);
         await this.handlePoetCreated(event);
         break;
       case "PoetSetAsMC":
@@ -27,7 +28,13 @@ export class PoetProjector {
   }
 
   private async handlePoetCreated(event: PoetCreatedEvent): Promise<void> {
-    const poets = (await this.poetMaterializedViewRepository.load()) || [];
+    let poets: PoetMaterializedView[] = [];
+    try {
+      poets = await this.poetsMaterializedViewRepository.load();
+      console.log("🔥 Poets", poets);
+    } catch (error) {
+      console.log(error);
+    }
     const payload = event.getPayload;
     const newPoet = new PoetMaterializedView({
       id: event.getAggregateId,
@@ -39,13 +46,14 @@ export class PoetProjector {
     });
 
     poets.push(newPoet);
-    await this.poetMaterializedViewRepository.save();
+    console.log("🔥 Poets", poets);
+    await this.poetsMaterializedViewRepository.updatePoet(newPoet);
   }
 
   private async handlePoetUpdated(event: PoetEvent): Promise<void> {
-    const poets = (await this.poetMaterializedViewRepository.load()) || [];
+    const poets = (await this.poetsMaterializedViewRepository.load()) || [];
 
-    const poet = this.poetMaterializedViewRepository.getById(
+    const poet = this.poetsMaterializedViewRepository.getById(
       event.getAggregateId
     );
     const index = poets.findIndex((p) => p.id === event.getAggregateId);
@@ -56,6 +64,6 @@ export class PoetProjector {
     });
 
     poets[index] = updatedPoet;
-    this.poetMaterializedViewRepository.updatePoet(updatedPoet);
+    //await this.poetsMaterializedViewRepository.update(poets);
   }
 }

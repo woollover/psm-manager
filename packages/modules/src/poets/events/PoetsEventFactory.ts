@@ -26,12 +26,20 @@ export class PoetsEventFactory {
       globalOffset: eventInput.globalOffset || 0,
     };
 
+    console.log("📥 Base Event Data", baseEventData);
+    console.log("📥 Event Type", eventType);
+    console.log("📥 Event Input", eventInput);
+    const payload =
+      typeof eventInput.payload === "string"
+        ? JSON.parse(eventInput.payload)
+        : eventInput.payload;
+    console.log("📥 Payload", payload);
     switch (eventType) {
       case "PoetCreated":
         return new PoetCreatedEvent({
           payload: {
-            name: eventInput.payload.name,
-            email: eventInput.payload.email,
+            name: payload.name,
+            email: payload.email,
           },
           ...baseEventData,
         });
@@ -39,9 +47,9 @@ export class PoetsEventFactory {
       case "PoetEdited":
         return new PoetEditedEvent({
           payload: {
-            name: eventInput.payload.name,
-            email: eventInput.payload.email,
-            instagram_handle: eventInput.payload.instagram_handle,
+            name: payload.name,
+            email: payload.email,
+            instagram_handle: payload.instagram_handle,
           },
           ...baseEventData,
         });
@@ -49,7 +57,7 @@ export class PoetsEventFactory {
       case "PoetDeleted":
         return new PoetDeletedEvent({
           payload: {
-            aggregateId: eventInput.payload.aggregateId,
+            aggregateId: payload.aggregateId,
           },
           ...baseEventData,
         });
@@ -57,7 +65,7 @@ export class PoetsEventFactory {
       case "PoetSetAsMC":
         return new PoetSetAsMCEvent({
           payload: {
-            aggregateId: eventInput.payload.aggregateId,
+            aggregateId: payload.aggregateId,
           },
           ...baseEventData,
         });
@@ -65,7 +73,7 @@ export class PoetsEventFactory {
       case "PoetSetAsPoet":
         return new PoetSetAsPoetEvent({
           payload: {
-            aggregateId: eventInput.payload.aggregateId,
+            aggregateId: payload.aggregateId,
           },
           ...baseEventData,
         });
@@ -73,7 +81,7 @@ export class PoetsEventFactory {
       case "PoetReactivated":
         return new PoetReactivatedEvent({
           payload: {
-            aggregateId: eventInput.payload.aggregateId,
+            aggregateId: payload.aggregateId,
           },
           ...baseEventData,
         });

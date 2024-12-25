@@ -7,12 +7,13 @@ const sqs = new SQSClient({
 });
 
 export const handler: Handler = async (_event) => {
+  console.log("📥 Event", _event);
   // make this responding to an event :D
 
   // instantiate the materializedViewRepo
 
   for (const event of _event.Records) {
-    console.log("📥 Event type:", event.dynamodb);
+    console.log("📥 Event body:", event.dynamodb);
     //console.log("📥 Event type:", event.eventSource);
     //console.log("📥 Event type:", event);
     const savedEvent = event.dynamodb.NewImage;

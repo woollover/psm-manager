@@ -2,7 +2,6 @@ import {
   DynamoDBDocument,
   QueryCommand,
   PutCommand,
-  ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { PSMEvent } from "../Event/Event";
 
@@ -38,7 +37,7 @@ export class EventStore {
         aggregateOffset: aggregateOffset,
         eventType: event.getEventType,
         payload: event.getPayload,
-        timestamp: event.getTimestamp,
+        timestamp: Math.floor(new Date(event.getTimestamp).getTime() / 1000), // Convert to Unix timestamp
         globalOffset: globalOffset,
         pivotKey: "event",
       },
@@ -211,9 +210,12 @@ export class EventStore {
           aggregateOffset: item.aggregateOffset,
           globalOffset: item.globalOffset,
           eventType: item.eventType,
-          payload: item.payload,
+          payload:
+            typeof item.payload === "string"
+              ? JSON.parse(item.payload)
+              : item.payload,
           version: item.version,
-          occurredAt: new Date(item.timestamp),
+          occurredAt: new Date(item.timestamp * 1000), // Convert Unix timestamp back to Date
         });
       }) || []
     );

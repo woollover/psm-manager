@@ -1,3 +1,4 @@
+import { MaterializedViewsTable } from "../tables/materializedViewsTable";
 import { deadLetterQueue } from "./deadLetterQueue";
 
 export const poetsProjectionsQueue = new sst.aws.Queue("PoetsProjections", {
@@ -10,4 +11,9 @@ export const poetsProjectionsQueue = new sst.aws.Queue("PoetsProjections", {
 poetsProjectionsQueue.subscribe({
   handler:
     "packages/modules/src/poets/functions/poetsProjectionsSubscriber.handler",
+  environment: {
+    MATERIALIZED_VIEW_TABLE_NAME: MaterializedViewsTable.name,
+  },
+  link: [MaterializedViewsTable],
+  name: "poets-projections-subscriber",
 });

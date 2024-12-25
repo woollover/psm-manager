@@ -13,6 +13,8 @@ export default $config({
     await import("./infra/tables/eventStore");
     await import("./infra/tables/materializedViewsTable");
     await import("./infra/queues/poetsProjectionsQueue");
+    await import("./infra/queues/deadLetterQueue");
+
     const api = await import("./infra/api");
 
     return {

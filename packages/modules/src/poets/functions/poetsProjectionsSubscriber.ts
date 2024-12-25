@@ -1,13 +1,10 @@
 import { Handler } from "aws-lambda";
-import { MaterializedViewRepository } from "../../../../core/src/Repos/MaterializedViewRepo";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
-import { PoetMaterializedView } from "../read/materialized-view/Poet.materialized-view";
 import { PoetMaterializedViewRepository } from "../repository/PoetMaterializedViewRepository";
 import { PoetProjector } from "../read/projectors/PoetProjector";
-import { PoetEditedEvent, PoetEvent } from "../events";
-import { event } from "sst/event";
 import { PoetsEventFactory } from "../events/PoetsEventFactory";
+import { unmarshall } from "@aws-sdk/util-dynamodb";
 
 const client = new DynamoDBClient({
   region: process.env.EVENT_STORE_TABLE_REGION,
@@ -17,13 +14,15 @@ const documentClient = DynamoDBDocument.from(client, {
   marshallOptions: {
     removeUndefinedValues: true,
     convertEmptyValues: true,
+    convertClassInstanceToMap: true,
+  },
+  unmarshallOptions: {
+    wrapNumbers: false,
+    convertWithoutMapWrapper: true,
   },
 });
+
 export const handler: Handler = async (_event) => {
-  console.log(
-    "📥 Event received in poets projections subscriber queue:",
-    _event
-  );
   // make this responding to an event :D
 
   const poetsMaterializedViewRepo = new PoetMaterializedViewRepository({
@@ -38,17 +37,32 @@ export const handler: Handler = async (_event) => {
     // create a factory to return the correct Event Object
 
     console.log("📥 Message", event);
-    const eventType = event.messageAttributes.eventType.S;
-    const aggregateId = event.messageAttributes.aggregateId.S;
+    const eventType = event.messageAttributes.eventType.stringValue;
+    const aggregateId = event.messageAttributes.aggregateId.stringValue;
+    // console.log("📥 Event Type", eventType);
+    // console.log("📥 Aggregate Id", aggregateId);
     // get the event body object
 
     const eventData = JSON.parse(event.body);
-    console.log("📥 Event Data", eventData);
+    // console.log("📥 Event Data", eventData);
+    const unmarshalledEventData = unmarshall(eventData, {
+      wrapNumbers: false,
+    });
 
-    const eventObject = PoetsEventFactory.createEvent(eventType, eventData);
-    console.log("📥 Event Object", eventObject);
+    // console.log("📥 Unmarshalled Event Data", unmarshalledEventData);
+
+    const eventObject = PoetsEventFactory.createEvent(eventType, {
+      ...unmarshalledEventData,
+      payload: unmarshalledEventData.payload,
+    });
+    // console.log("📥 Event Object", eventObject);
 
     await poetsProjector.project(eventObject);
+
+    console.log(
+      "📥 Poets Materialized View Repo",
+      poetsProjector["poetsMaterializedViewRepository"]["materializedView"]
+    );
 
     await poetsMaterializedViewRepo.save();
   }

@@ -12,7 +12,12 @@ export class PoetMaterializedViewRepository extends MaterializedViewRepository<
     tablename: string;
     client: DynamoDBDocument;
   }) {
-    super({ tablename, client, viewKey: "poets-materialized-view" });
+    super({
+      tablename,
+      client,
+      viewKey: "poets-materialized-view",
+      defaultValue: [],
+    });
   }
 
   async getById(id: string): Promise<PoetMaterializedView> {
@@ -44,11 +49,15 @@ export class PoetMaterializedViewRepository extends MaterializedViewRepository<
     if (!poets || poets.length === 0) {
       poets = await this.load();
     }
+    console.log("🔥 Poets PRE", poets);
     let index = poets.findIndex((poet) => poet.id === poet.id);
     if (index == -1) {
       throw new Error("Poet not found");
     }
     poets[index] = poet;
+
+    console.log("🔥 Poets AFTER", poets);
+    // TODO - Dont's save classes, save objects. Fuck you!
     await this.save();
   }
 }

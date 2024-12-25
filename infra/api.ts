@@ -35,10 +35,9 @@ eventStoreApi.route("POST /poets/commands", {
 
 EventStoreTable.subscribe("event-store-listener", {
   handler: "packages/functions/src/listeners/eventStoreListener.handler",
-  link: [MaterializedViewsTable, EventStoreTable, poetsProjectionsQueue],
+  link: [EventStoreTable, poetsProjectionsQueue],
   environment: {
     EVENT_STORE_TABLE_NAME: EventStoreTable.name,
-    MATERIALIZED_VIEWS_TABLE_NAME: MaterializedViewsTable.name,
     POETS_PROJECTIONS_QUEUE_URL: poetsProjectionsQueue.url,
   },
   name: "event-store-listener",
