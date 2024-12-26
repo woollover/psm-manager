@@ -7,24 +7,24 @@ export type PoetSetAsMCEventPayload = {
 export class PoetSetAsMCEvent extends PSMEvent {
   constructor({
     payload,
-    occurredAt,
+    timestamp,
     aggregateId,
     aggregateOffset,
     globalOffset,
   }: {
     payload: PoetSetAsMCEventPayload;
-    occurredAt: Date;
+    timestamp: number;
     aggregateId?: string | undefined;
     aggregateOffset?: number | undefined;
     globalOffset?: number | undefined;
   }) {
     super({
       aggregateId: aggregateId ?? payload.aggregateId,
-      aggregateOffset: aggregateOffset ?? 1,
+      aggregateOffset: aggregateOffset,
       eventType: "PoetSetAsMC",
-      payload: {},
-      occurredAt: occurredAt,
-      globalOffset: globalOffset ?? undefined,
+      payload: payload,
+      timestamp: timestamp,
+      globalOffset: globalOffset,
     });
     this.payload = payload;
   }

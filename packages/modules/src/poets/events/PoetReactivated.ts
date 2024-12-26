@@ -7,24 +7,24 @@ export type PoetReactivatedEventPayload = {
 export class PoetReactivatedEvent extends PSMEvent {
   constructor({
     payload,
-    occurredAt,
+    timestamp,
     aggregateId,
     aggregateOffset,
     globalOffset,
   }: {
     payload: PoetReactivatedEventPayload;
-    occurredAt: Date;
+    timestamp: number;
     aggregateId?: string | undefined;
     aggregateOffset?: number | undefined;
     globalOffset?: number | undefined;
   }) {
     super({
       aggregateId: aggregateId ?? payload.aggregateId,
-      aggregateOffset: aggregateOffset ?? 1,
+      aggregateOffset: aggregateOffset,
       eventType: "PoetReactivated",
       payload: payload,
-      occurredAt: occurredAt,
-      globalOffset: globalOffset ?? undefined,
+      timestamp: timestamp,
+      globalOffset: globalOffset,
     });
     this.payload = payload;
   }

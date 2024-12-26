@@ -1,6 +1,7 @@
 export const EVENTS_FIXTURE = [
   {
     aggregateId: "poet-4c20baff-50c6-4a9f-8c0c-2f449ba2fc86",
+    eventId: "evt-5c20baff-50c6-4a9f-8c0c-2f449ba2fc86",
     aggregateOffset: 1,
     eventType: "PoetCreated",
     globalOffset: 1,

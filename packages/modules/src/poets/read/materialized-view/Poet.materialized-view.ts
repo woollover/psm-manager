@@ -1,5 +1,3 @@
-
-
 export class PoetMaterializedView {
   #viewKey = "poet-materialized-view";
   #id: string; // (aggregate Root id)
@@ -60,33 +58,5 @@ export class PoetMaterializedView {
     return `${this.#name} is a ${this.#isMC ? "MC" : "Poet"} and ${
       this.#isMC ? "MC" : "Poet"
     }, instagram handle: @${this.#instagramHandle}`;
-  }
-}
-
-export class PoetsListMaterializedView {
-  #poets: PoetMaterializedView[] = [];
-
-  constructor(poets: PoetMaterializedView[]) {
-    this.#poets = poets;
-  }
-
-  get count() {
-    return this.#poets.length;
-  }
-
-  get mcs() {
-    return this.#poets.filter((poet) => poet.isMC);
-  }
-
-  get mcsCount() {
-    return this.mcs.length;
-  }
-
-  get poets() {
-    return this.#poets.filter((poet) => poet.isPoet);
-  }
-
-  get poetsCount() {
-    return this.poets.length;
   }
 }

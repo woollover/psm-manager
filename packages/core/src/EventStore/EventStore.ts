@@ -95,12 +95,13 @@ export class EventStore {
     return (
       response.Items?.map((item) => {
         return new PSMEvent({
+          eventId: item.eventId ?? undefined,
           aggregateId: item.aggregateId ?? "",
-          aggregateOffset: item.version ?? 0,
+          aggregateOffset: item.aggregateOffset ?? 0,
           eventType: item.eventType ?? "UnknownEvent",
           payload: item.payload ?? {},
           timestamp: item.timestamp ?? new Date().getTime(),
-          globalOffset: item.globalSequence ?? 0,
+          globalOffset: item.globalOffset ?? 0,
           version: item.version ?? 1,
         });
       }) || []

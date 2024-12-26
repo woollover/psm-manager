@@ -1,4 +1,10 @@
+import { PoetCreatedEvent } from "src/poets/events/PoetCreated.event";
 import { PoetMaterializedView } from "./Poet.materialized-view";
+import { PoetEditedEvent } from "src/poets/events/PoetEdited.event";
+import { PoetSetAsMCEvent } from "src/poets/events/PoetSetAsMC.event";
+import { PoetSetAsPoetEvent } from "src/poets/events/PoetSetAsPoet.event";
+import { PoetDeletedEvent } from "src/poets/events/PoetDeleted.event";
+import { PoetReactivatedEvent } from "src/poets/events/PoetReactivated";
 /**
  * this projection is an enriched version of the poets list, and it's used to display the poets list in the UI
  * It can be queried by the poets list materialized view
@@ -17,12 +23,66 @@ export type PoetsListPoet = {
   instagramHandle: string;
 };
 
-export class PoetListMaterializedView {
-  #viewKey = "poet-list-materialized-view";
+export class PoetsListMaterializedView {
+  #viewKey = "poets-list-materialized-view";
   #poets: PoetsListPoet[] = [];
+  #deletedPoets: PoetsListPoet[] = [];
 
   constructor({ poets }: { poets: PoetsListPoet[] }) {
     this.#poets = poets ?? [];
+  }
+
+  createPoet(event: PoetCreatedEvent) {
+    const poet: PoetsListPoet = {
+      id: event.getAggregateId,
+      name: event.getPayload.name,
+      birthDate: event.getPayload.birthDate,
+      isMC: event.getPayload.isMC || false,
+      isPoet: true,
+      instagramHandle: event.getPayload.instagramHandle || "",
+    };
+    this.#poets.push(poet);
+    console.log("🚀 ~ PoetsListMaterializedView ~ createPoet ~ poet:", poet);
+  }
+
+  updatePoet(event: PoetEditedEvent) {
+    this.#poets = this.#poets.map((p) =>
+      p.id === event.getAggregateId ? { ...p, ...event.getPayload } : p
+    );
+  }
+
+  setPoetAsMC(event: PoetSetAsMCEvent) {
+    this.#poets = this.#poets.map((p) =>
+      p.id === event.getAggregateId ? { ...p, isMC: true } : p
+    );
+  }
+
+  setPoetAsPoet(event: PoetSetAsPoetEvent) {
+    this.#poets = this.#poets.map((p) =>
+      p.id === event.getAggregateId ? { ...p, isPoet: true, isMC: false } : p
+    );
+  }
+
+  deletePoet(event: PoetDeletedEvent) {
+    const poet = this.#poets.find((p) => p.id === event.getAggregateId);
+    if (poet) {
+      this.#deletedPoets.push(poet);
+      this.#poets = this.#poets.filter((p) => p.id !== event.getAggregateId);
+    } else {
+      throw new Error("Poet not found");
+    }
+  }
+
+  reactivatePoet(event: PoetReactivatedEvent) {
+    const poet = this.#deletedPoets.find((p) => p.id === event.getAggregateId);
+    if (poet) {
+      this.#poets.push(poet);
+      this.#deletedPoets = this.#deletedPoets.filter(
+        (p) => p.id !== event.getAggregateId
+      );
+    } else {
+      throw new Error("Poet not found");
+    }
   }
 
   get data() {
@@ -47,6 +107,14 @@ export class PoetListMaterializedView {
 
   get totalCount() {
     return this.#poets.length;
+  }
+
+  get deletedCount() {
+    return this.#deletedPoets.length;
+  }
+
+  get materializedViewKey() {
+    return this.#viewKey;
   }
 
   searchPoetByName(searchKey: string) {

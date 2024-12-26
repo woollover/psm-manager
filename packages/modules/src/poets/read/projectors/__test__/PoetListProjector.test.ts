@@ -5,7 +5,27 @@ import { EventStore } from "../../../../../../core/src/EventStore/EventStore";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 
 const mockDynamoClient = {
-  send: vitest.fn().mockResolvedValue({ Items: EVENTS_FIXTURE }),
+  send: vitest.fn().mockImplementation((command) => {
+    // Check command name to return different responses
+    if (command.constructor.name === "QueryCommand") {
+      // If IndexName is 'eventTypeIndex', it's getEventsByType
+      if (command.input.IndexName === "eventTypeIndex") {
+        return {
+          Items: EVENTS_FIXTURE.filter(
+            (event) => event.eventType === "PoetCreated"
+          ),
+        };
+      }
+      // Otherwise it's getEvents for a specific aggregateId
+      return {
+        Items: EVENTS_FIXTURE.filter(
+          (event) =>
+            event.aggregateId === command.input.ExpressionAttributeValues[":id"]
+        ),
+      };
+    }
+    return { Items: [] };
+  }),
 } as unknown as DynamoDBDocument;
 
 describe("PoetsListProjector", () => {
@@ -23,7 +43,13 @@ describe("PoetsListProjector", () => {
     const projector = new PoetsListProjector({
       eventStore: new EventStore("null", mockDynamoClient as DynamoDBDocument),
     });
-
     await projector.recreateProjection({ originEventType: "PoetCreated" });
+    const readModel = projector.readModel;
+    expect(readModel.poets.length).toBe(1);
+    expect(readModel.mcs.length).toBe(1);
+    expect(readModel.poetsCount).toBe(1);
+    expect(readModel.mcsCount).toBe(1);
+    expect(readModel.totalCount).toBe(2);
+    console.log(readModel);
   });
 });

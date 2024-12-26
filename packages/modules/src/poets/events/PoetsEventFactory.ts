@@ -11,7 +11,7 @@ import { PoetCreatedEvent } from "./PoetCreated.event";
 
 interface EventInput {
   payload: Record<string, any>;
-  occurredAt?: Date;
+  timestamp?: number;
   aggregateId?: string;
   aggregateOffset?: number;
   globalOffset?: number;
@@ -20,7 +20,7 @@ interface EventInput {
 export class PoetsEventFactory {
   static createEvent(eventType: PoetEventType, eventInput: EventInput) {
     const baseEventData = {
-      occurredAt: eventInput.occurredAt || new Date(),
+      timestamp: eventInput.timestamp || new Date().getTime(),
       aggregateId: eventInput.aggregateId ?? "evt-" + randomUUID(),
       aggregateOffset: eventInput.aggregateOffset || 0,
       globalOffset: eventInput.globalOffset || 0,

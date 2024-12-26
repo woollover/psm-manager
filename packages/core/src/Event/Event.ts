@@ -10,6 +10,7 @@ export class PSMEvent {
   protected eventType: string;
   protected version: number = 1;
   protected pivotKey: string = "event";
+
   constructor({
     aggregateId,
     aggregateOffset,

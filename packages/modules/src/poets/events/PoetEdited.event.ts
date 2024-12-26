@@ -9,13 +9,13 @@ export type PoetEditedEventPayload = {
 export class PoetEditedEvent extends PSMEvent {
   constructor({
     payload,
-    occurredAt,
+    timestamp,
     aggregateId,
     aggregateOffset,
     globalOffset,
   }: {
     payload: PoetEditedEventPayload;
-    occurredAt: Date;
+    timestamp: number;
     aggregateId?: string | undefined;
     aggregateOffset?: number | undefined;
     globalOffset?: number | undefined;
@@ -24,9 +24,9 @@ export class PoetEditedEvent extends PSMEvent {
       aggregateId: aggregateId!,
       eventType: "PoetEdited",
       payload: payload,
-      occurredAt: occurredAt,
-      aggregateOffset: aggregateOffset ?? undefined,
-      globalOffset: globalOffset ?? undefined,
+      timestamp: timestamp,
+      aggregateOffset: aggregateOffset,
+      globalOffset: globalOffset,
     });
     this.payload = payload;
   }
