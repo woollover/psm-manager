@@ -6,8 +6,6 @@ import {
 import { EventStore } from "../../../../core/src/EventStore";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { Poet } from "../aggregates/Poet";
-import { PoetsReadModel } from "../read/read-models/PoetListReadModel";
 import { PoetMaterializedViewRepository } from "../repository/PoetMaterializedViewRepository";
 
 //rule of thumb: stateless instnces OUTSIDE the handler, Stateful instances inside the handler
@@ -48,10 +46,7 @@ export const handler: Handler = async (_event: APIGatewayProxyEventV2) => {
   await poetsMaterializedViewRepository.load();
 
   // insantiate the Read Model
-  const poetsReadModel = new PoetsReadModel(
-    poetsMaterializedViewRepository.materializedView || []
-  ).serve();
-
+  const poetsReadModel = {};
   // serve the read model
   const response: APIGatewayProxyResultV2 = {
     headers: {

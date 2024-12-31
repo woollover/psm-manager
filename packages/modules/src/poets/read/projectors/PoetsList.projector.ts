@@ -1,4 +1,3 @@
-import { Poet } from "src/poets/aggregates/Poet";
 import { PSMEvent } from "../../../../../core/src/Event/Event";
 import { EventStore } from "../../../../../core/src/EventStore/EventStore";
 import {
@@ -33,10 +32,6 @@ export class PoetsListProjector {
   }
 
   project(event: PSMEvent) {
-    console.log(
-      "🚀 ~ PoetsListProjector ~ project ~ event:",
-      event.getEventType
-    );
     switch (event.getEventType) {
       case "PoetCreated":
         this.#materializedView.createPoet(event);

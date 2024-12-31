@@ -3,7 +3,7 @@ import { MaterializedViewRepository } from "../../../../core/src/Repos/Materiali
 import { PoetMaterializedView } from "../read/materialized-view/Poet.materialized-view";
 
 export class PoetMaterializedViewRepository extends MaterializedViewRepository<
-  PoetMaterializedView[]
+  PoetListMaterializedView[]
 > {
   constructor({
     tablename,

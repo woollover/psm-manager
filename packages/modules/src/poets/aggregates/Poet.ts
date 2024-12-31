@@ -121,7 +121,7 @@ export class Poet extends AggregateRoot<string> {
             payload: {
               ...payload,
             },
-            occurredAt: new Date(),
+            timestamp: new Date().getTime(),
           })
         );
         return this;
@@ -137,7 +137,7 @@ export class Poet extends AggregateRoot<string> {
           new PoetSetAsMCEvent({
             aggregateId: this.id,
             payload: setCommand.payload,
-            occurredAt: new Date(),
+            timestamp: new Date().getTime(),
           })
         );
         return this;
@@ -154,7 +154,7 @@ export class Poet extends AggregateRoot<string> {
           new PoetSetAsPoetEvent({
             aggregateId: this.id,
             payload: setCommand.payload,
-            occurredAt: new Date(),
+            timestamp: new Date().getTime(),
           })
         );
         return this;
@@ -167,7 +167,7 @@ export class Poet extends AggregateRoot<string> {
           new PoetEditedEvent({
             aggregateId: this.id,
             payload: editCommand.payload,
-            occurredAt: new Date(),
+            timestamp: new Date().getTime(),
           })
         );
         return this;
@@ -180,7 +180,7 @@ export class Poet extends AggregateRoot<string> {
           new PoetDeletedEvent({
             aggregateId: this.id,
             payload: deleteCommand.payload,
-            occurredAt: new Date(),
+            timestamp: new Date().getTime(),
           })
         );
         return this;
@@ -193,7 +193,7 @@ export class Poet extends AggregateRoot<string> {
           new PoetReactivatedEvent({
             aggregateId: this.id,
             payload: reactivateCommand.payload,
-            occurredAt: new Date(),
+            timestamp: new Date().getTime(),
           })
         );
         return this;

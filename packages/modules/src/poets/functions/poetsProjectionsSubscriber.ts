@@ -5,6 +5,8 @@ import { PoetMaterializedViewRepository } from "../repository/PoetMaterializedVi
 import { PoetProjector } from "../read/projectors/PoetProjector";
 import { PoetsEventFactory } from "../events/PoetsEventFactory";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
+import { PoetsListProjector } from "../read/projectors/PoetsList.projector";
+import { EventStore } from "../../../../core/src/EventStore";
 
 const client = new DynamoDBClient({
   region: process.env.EVENT_STORE_TABLE_REGION,
@@ -30,8 +32,16 @@ export const handler: Handler = async (_event) => {
     client: documentClient,
   });
 
+  // intantiate the EventStore
+  const eventStore = new EventStore(
+    process.env.EVENT_STORE_TABLE!,
+    documentClient
+  );
+
   // instantiate the poets projector
-  const poetsProjector = new PoetProjector(poetsMaterializedViewRepo);
+  const poetsProjector = new PoetsListProjector({ eventStore: eventStore });
+
+  await poetsProjector.recreateProjection({ originEventType: "PoetCreated" });
 
   for (const event of _event.Records) {
     // create a factory to return the correct Event Object
@@ -51,18 +61,12 @@ export const handler: Handler = async (_event) => {
 
     // console.log("📥 Unmarshalled Event Data", unmarshalledEventData);
 
-    const eventObject = PoetsEventFactory.createEvent(eventType, {
+    const eventInstance = PoetsEventFactory.createEvent(eventType, {
       ...unmarshalledEventData,
       payload: unmarshalledEventData.payload,
     });
     // console.log("📥 Event Object", eventObject);
-
-    await poetsProjector.project(eventObject);
-
-    console.log(
-      "📥 Poets Materialized View Repo",
-      poetsProjector["poetsMaterializedViewRepository"]["materializedView"]
-    );
+    await poetsProjector.project(eventInstance);
 
     await poetsMaterializedViewRepo.save();
   }

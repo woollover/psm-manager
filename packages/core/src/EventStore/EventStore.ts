@@ -127,7 +127,7 @@ export class EventStore {
       response.Items?.map((item) => {
         // console.log("🚀 Item:", item);
         return new PSMEvent({
-          eventId: item.event_id ?? undefined,
+          eventId: item.eventId ?? undefined,
           aggregateId: item.aggregateId ?? "",
           aggregateOffset: item.version ?? 0,
           eventType: item.eventType ?? "UnknownEvent",
@@ -219,7 +219,7 @@ export class EventStore {
               : item.payload,
           version: item.version,
           timestamp: item.timestamp,
-          eventId: item.event_id,
+          eventId: item.eventId,
         });
       }) || []
     );

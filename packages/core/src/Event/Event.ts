@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 
 export class PSMEvent {
   protected payload: Record<string, any>;
-  protected event_id: string;
+  protected eventId: string;
   protected aggregateId: string;
   protected globalOffset: number;
   protected aggregateOffset: number;
@@ -31,7 +31,7 @@ export class PSMEvent {
     // fix The timestamp data when pulling events from the event store
     version?: number | undefined;
   }) {
-    this.event_id = eventId || `evt-${randomUUID()}`;
+    this.eventId = eventId || `evt-${randomUUID()}`;
     this.aggregateId = aggregateId;
     this.aggregateOffset = aggregateOffset || 1;
     this.globalOffset = globalOffset || 1;
@@ -42,7 +42,7 @@ export class PSMEvent {
   }
 
   get getEventId(): string {
-    return this.event_id;
+    return this.eventId;
   }
 
   get getPayload(): any {
