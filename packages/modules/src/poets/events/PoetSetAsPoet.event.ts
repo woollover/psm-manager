@@ -1,8 +1,8 @@
 import { PSMEvent } from "../../../../core/src/Event/Event";
 
-export type PoetSetAsPoetEventPayload = {
+export interface PoetSetAsPoetEventPayload {
   aggregateId: string;
-};
+}
 
 export class PoetSetAsPoetEvent extends PSMEvent {
   constructor({

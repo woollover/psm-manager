@@ -1,10 +1,10 @@
 import { Command } from "../../../../core/src/Command/Command";
-export type EditPoetCommandInput = {
+export interface EditPoetCommandInput {
   aggregateId: string;
   name?: string;
   email?: string;
   instagram_handle?: string;
-};
+}
 
 export class EditPoetCommand extends Command<EditPoetCommandInput> {
   validate(input: EditPoetCommandInput): void | Promise<void> {

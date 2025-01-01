@@ -1,10 +1,20 @@
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { MaterializedViewRepository } from "../../../../core/src/Repos/MaterializedViewRepo";
-import { PoetMaterializedView } from "../read/materialized-view/Poet.materialized-view";
 
-export class PoetMaterializedViewRepository extends MaterializedViewRepository<
-  PoetListMaterializedView[]
-> {
+export interface PoetsListPoet {
+  id: string;
+  name: string;
+  birthDate: string;
+  isMC: boolean;
+  isPoet: boolean;
+  instagramHandle: string;
+}
+
+export interface PoetsListMaterializedViewDBShape {
+  poets: PoetsListPoet[];
+}
+
+export class PoetsListMaterializedViewRepo extends MaterializedViewRepository<PoetsListMaterializedViewDBShape> {
   constructor({
     tablename,
     client,
@@ -16,48 +26,9 @@ export class PoetMaterializedViewRepository extends MaterializedViewRepository<
       tablename,
       client,
       viewKey: "poets-materialized-view",
-      defaultValue: [],
+      defaultValue: { poets: [] },
     });
   }
 
-  async getById(id: string): Promise<PoetMaterializedView> {
-    let poets = this.materializedView;
-    if (!poets || poets.length === 0) {
-      poets = await this.load();
-    }
-    let poet = poets.find((poet) => poet.id === id);
-    if (!poet) {
-      throw new Error("Poet not found");
-    }
-    return poet;
-  }
-
-  async getIndex(id: string): Promise<number> {
-    let poets = this.materializedView;
-    if (!poets || poets.length === 0) {
-      poets = await this.load();
-    }
-    let index = poets.findIndex((poet) => poet.id === id);
-    if (index == -1) {
-      throw new Error("Poet not found");
-    }
-    return index;
-  }
-
-  async updatePoet(poet: PoetMaterializedView) {
-    let poets = this.materializedView;
-    if (!poets || poets.length === 0) {
-      poets = await this.load();
-    }
-    console.log("🔥 Poets PRE", poets);
-    let index = poets.findIndex((poet) => poet.id === poet.id);
-    if (index == -1) {
-      throw new Error("Poet not found");
-    }
-    poets[index] = poet;
-
-    console.log("🔥 Poets AFTER", poets);
-    // TODO - Dont's save classes, save objects. Fuck you!
-    await this.save();
-  }
+  async save() {}
 }

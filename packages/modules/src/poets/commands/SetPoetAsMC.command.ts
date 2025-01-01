@@ -1,7 +1,7 @@
 import { Command } from "../../../../core/src/Command/Command";
-export type SetPoetAsMCCommandInput = {
+export interface SetPoetAsMCCommandInput {
   aggregateId: string;
-};
+}
 
 export class SetPoetAsMCCommand extends Command<SetPoetAsMCCommandInput> {
   validate(input: SetPoetAsMCCommandInput): void | Promise<void> {

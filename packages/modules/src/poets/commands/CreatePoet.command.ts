@@ -1,8 +1,8 @@
 import { Command } from "../../../../core/src/Command/Command";
-export type CreatePoetCommandInput = {
+export interface CreatePoetCommandInput {
   name: string;
   email: string;
-};
+}
 
 export class CreatePoetCommand extends Command<CreatePoetCommandInput> {
   validate(input: CreatePoetCommandInput): void {

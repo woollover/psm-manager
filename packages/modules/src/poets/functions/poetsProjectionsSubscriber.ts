@@ -1,12 +1,14 @@
 import { Handler } from "aws-lambda";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
-import { PoetMaterializedViewRepository } from "../repository/PoetMaterializedViewRepository";
+import { PoetsListMaterializedViewRepo } from "../repository/PoetMaterializedViewRepository";
 import { PoetProjector } from "../read/projectors/PoetProjector";
 import { PoetsEventFactory } from "../events/PoetsEventFactory";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import { PoetsListProjector } from "../read/projectors/PoetsList.projector";
 import { EventStore } from "../../../../core/src/EventStore";
+import { MaterializedViewRepository } from "../../../../core/src/Repos/MaterializedViewRepo";
+import { PoetsListMaterializedView } from "../read/materialized-view/PoetList.materialized-view";
 
 const client = new DynamoDBClient({
   region: process.env.EVENT_STORE_TABLE_REGION,
@@ -27,7 +29,7 @@ const documentClient = DynamoDBDocument.from(client, {
 export const handler: Handler = async (_event) => {
   // make this responding to an event :D
 
-  const poetsMaterializedViewRepo = new PoetMaterializedViewRepository({
+  const poetsMaterializedViewRepo = new PoetsListMaterializedViewRepo({
     tablename: process.env.MATERIALIZED_VIEW_TABLE_NAME || "",
     client: documentClient,
   });
@@ -41,6 +43,11 @@ export const handler: Handler = async (_event) => {
   // instantiate the poets projector
   const poetsProjector = new PoetsListProjector({ eventStore: eventStore });
 
+  // get the materialized View from Repo
+
+  // if null, recreate it
+
+  // recreate poets projection
   await poetsProjector.recreateProjection({ originEventType: "PoetCreated" });
 
   for (const event of _event.Records) {
@@ -48,25 +55,19 @@ export const handler: Handler = async (_event) => {
 
     console.log("📥 Message", event);
     const eventType = event.messageAttributes.eventType.stringValue;
-    const aggregateId = event.messageAttributes.aggregateId.stringValue;
-    // console.log("📥 Event Type", eventType);
-    // console.log("📥 Aggregate Id", aggregateId);
-    // get the event body object
 
+    // get the event body object
     const eventData = JSON.parse(event.body);
-    // console.log("📥 Event Data", eventData);
     const unmarshalledEventData = unmarshall(eventData, {
       wrapNumbers: false,
     });
-
-    // console.log("📥 Unmarshalled Event Data", unmarshalledEventData);
 
     const eventInstance = PoetsEventFactory.createEvent(eventType, {
       ...unmarshalledEventData,
       payload: unmarshalledEventData.payload,
     });
     // console.log("📥 Event Object", eventObject);
-    await poetsProjector.project(eventInstance);
+    poetsProjector.project(eventInstance);
 
     await poetsMaterializedViewRepo.save();
   }

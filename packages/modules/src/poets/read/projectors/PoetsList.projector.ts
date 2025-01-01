@@ -1,37 +1,30 @@
+import { PoetsListPoet } from "src/poets/repository/PoetMaterializedViewRepository";
 import { PSMEvent } from "../../../../../core/src/Event/Event";
 import { EventStore } from "../../../../../core/src/EventStore/EventStore";
-import {
-  PoetsListMaterializedView,
-  PoetsListPoet,
-} from "../materialized-view/PoetList.materialized-view";
-
-export type PoetsListReadModel = {
-  poets: PoetsListPoet[];
-  poetsCount: number;
-  mcs: PoetsListPoet[];
-  mcsCount: number;
-  totalCount: number;
-};
+import { PoetsListMaterializedView } from "../materialized-view/PoetList.materialized-view";
 
 export class PoetsListProjector {
   #events: PSMEvent[] = [];
   #eventStore: EventStore;
-  #materializedView: PoetsListMaterializedView = new PoetsListMaterializedView({
-    poets: [],
-  });
-  #readModel: PoetsListReadModel = {
-    poets: [],
-    poetsCount: 0,
-    mcs: [],
-    mcsCount: 0,
-    totalCount: 0,
-  };
+  #materializedView: PoetsListMaterializedView;
 
-  constructor({ eventStore }: { eventStore: EventStore }) {
+  constructor({
+    eventStore,
+    materializedView,
+  }: {
+    eventStore: EventStore;
+    materializedView?: PoetsListMaterializedView;
+  }) {
     this.#eventStore = eventStore;
+    this.#materializedView =
+      materializedView ?? new PoetsListMaterializedView({ poets: [] });
   }
 
-  project(event: PSMEvent) {
+  get materializedView() {
+    return this.#materializedView;
+  }
+
+  async project(event: PSMEvent) {
     switch (event.getEventType) {
       case "PoetCreated":
         this.#materializedView.createPoet(event);
@@ -57,6 +50,7 @@ export class PoetsListProjector {
   }
 
   async recreateProjection({ originEventType }: { originEventType: string }) {
+    this.#materializedView = new PoetsListMaterializedView({ poets: [] });
     const events = await this.#eventStore.getEventsByType(originEventType);
     const baseEvents = events.filter((e) => e.getEventType === originEventType);
     this.#events = [];
@@ -83,19 +77,5 @@ export class PoetsListProjector {
     for (const event of this.#events) {
       this.project(event);
     }
-
-    // produce the read Model
-    this.#readModel = {
-      poets: this.#materializedView.poets,
-      poetsCount: this.#materializedView.poets.length,
-      mcs: this.#materializedView.MCs,
-      mcsCount: this.#materializedView.MCs.length,
-      totalCount:
-        this.#materializedView.poets.length + this.#materializedView.MCs.length,
-    };
-  }
-
-  get readModel() {
-    return this.#readModel;
   }
 }

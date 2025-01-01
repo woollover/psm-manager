@@ -50,12 +50,12 @@ describe("PoetsListProjector", () => {
       ),
     });
     await projector.recreateProjection({ originEventType: "PoetCreated" });
-    const readModel = projector.readModel;
-    expect(readModel.poets.length).toBe(1);
-    expect(readModel.mcs.length).toBe(1);
-    expect(readModel.poetsCount).toBe(1);
-    expect(readModel.mcsCount).toBe(1);
-    expect(readModel.totalCount).toBe(2);
-    console.log(readModel);
+    const materializedView = projector["materializedView"];
+    expect(materializedView.poets.length).toBe(1);
+    expect(materializedView.MCs.length).toBe(1);
+    expect(materializedView.poetsCount).toBe(1);
+    expect(materializedView.MCsCount).toBe(1);
+    expect(materializedView.totalCount).toBe(2);
+    console.log(materializedView);
   });
 });

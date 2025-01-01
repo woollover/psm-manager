@@ -1,3 +1,4 @@
+import { EventStoreTable } from "../tables/eventStore";
 import { MaterializedViewsTable } from "../tables/materializedViewsTable";
 import { deadLetterQueue } from "./deadLetterQueue";
 
@@ -14,6 +15,6 @@ poetsProjectionsQueue.subscribe({
   environment: {
     MATERIALIZED_VIEW_TABLE_NAME: MaterializedViewsTable.name,
   },
-  link: [MaterializedViewsTable],
+  link: [MaterializedViewsTable, EventStoreTable],
   name: "poets-projections-subscriber",
 });

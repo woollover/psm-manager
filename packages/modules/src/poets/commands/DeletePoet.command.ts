@@ -1,7 +1,7 @@
 import { Command } from "../../../../core/src/Command/Command";
-export type DeletePoetCommandInput = {
+export interface DeletePoetCommandInput {
   aggregateId: string;
-};
+}
 
 export class DeletePoetCommand extends Command<DeletePoetCommandInput> {
   validate(input: DeletePoetCommandInput): void | Promise<void> {

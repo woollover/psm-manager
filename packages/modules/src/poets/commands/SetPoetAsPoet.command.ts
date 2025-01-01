@@ -1,7 +1,7 @@
 import { Command } from "../../../../core/src/Command/Command";
-export type SetPoetAsPoetCommandInput = {
+export interface SetPoetAsPoetCommandInput {
   aggregateId: string;
-};
+}
 
 export class SetPoetAsPoetCommand extends Command<SetPoetAsPoetCommandInput> {
   validate(input: SetPoetAsPoetCommandInput): void | Promise<void> {
