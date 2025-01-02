@@ -1,7 +1,8 @@
 import { PSMEvent } from "../../../../core/src/Event/Event";
 
 export interface PoetCreatedEventPayload {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
 }
 

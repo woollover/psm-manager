@@ -7,7 +7,8 @@ export const EVENTS_FIXTURE = [
     globalOffset: 1,
     payload: {
       email: "mail@mail.com",
-      name: "Dario Woollover",
+      firstName: "Dario",
+      lastName: "Woollover",
     },
     pivotKey: "event",
     timestamp: 1735166029,
@@ -54,7 +55,8 @@ export const EVENTS_FIXTURE = [
     globalOffset: 5,
     payload: {
       email: "mail@mail.com",
-      name: "Bano Autieri",
+      firstName: "Bano",
+      lastName: "Autieri",
     },
     pivotKey: "event",
     timestamp: 1735166137,

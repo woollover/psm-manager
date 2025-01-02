@@ -19,7 +19,8 @@ import { PoetSetAsPoetEvent } from "../events/PoetSetAsPoet.event";
 import { ReactivatePoetCommand } from "../commands/ReactivatePoet.command";
 
 export class Poet extends AggregateRoot<string> {
-  private name: string = "";
+  private firstName: string = "";
+  private lastName: string = "";
   private email: string = "";
   private instagram_handle: string | null = null;
   private is_deleted: boolean = false;
@@ -34,17 +35,19 @@ export class Poet extends AggregateRoot<string> {
     switch (event.getEventType) {
       case "PoetCreated":
         // TODO this logic can be a method in the future
-        console.log("🚀 Mutating PoetCreatedEvent");
-        console.log("🚀 Mutating PoetCreatedEvent payload:", payload);
-        this.name = payload.name;
+        this.firstName = payload.firstName;
+        this.lastName = payload.lastName;
         this.email = payload.email;
         break;
 
       case "PoetEdited":
         console.log("🚀 Mutating PoetEditedEvent");
         console.log("🚀 Mutating PoetEditedEvent payload:", payload);
-        if (payload.name) {
-          this.name = payload.name;
+        if (payload.firstName) {
+          this.firstName = payload.firstName;
+        }
+        if (payload.lastName) {
+          this.lastName = payload.lastName;
         }
         if (payload.email) {
           this.email = payload.email;
@@ -205,21 +208,30 @@ export class Poet extends AggregateRoot<string> {
   }
 
   // getters
-  get getName(): string {
-    return this.name;
+  get getFirstName(): string {
+    return this.firstName;
   }
+
+  get getLastName(): string {
+    return this.lastName;
+  }
+
   get getaggregateId(): string {
     return this.id;
   }
+
   get getEmail(): string {
     return this.email;
   }
+
   get getInstagramHandle(): string | null {
     return this.instagram_handle;
   }
+
   get getIsDeleted(): boolean {
     return this.is_deleted;
   }
+
   get getIsMc(): boolean {
     return this.is_mc;
   }

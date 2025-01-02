@@ -38,7 +38,8 @@ export class PoetsEventFactory {
       case "PoetCreated":
         return new PoetCreatedEvent({
           payload: {
-            name: payload.name,
+            firstName: payload.firstName,
+            lastName: payload.lastName,
             email: payload.email,
           },
           ...baseEventData,
@@ -47,7 +48,8 @@ export class PoetsEventFactory {
       case "PoetEdited":
         return new PoetEditedEvent({
           payload: {
-            name: payload.name,
+            firstName: payload.firstName,
+            lastName: payload.lastName,
             email: payload.email,
             instagram_handle: payload.instagram_handle,
           },
