@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 
-export class PSMEvent {
-  protected payload: Record<string, any>;
+export class PSMEvent<PayloadType> {
+  protected payload: PayloadType;
   protected eventId: string;
   protected aggregateId: string;
   protected globalOffset: number;
@@ -25,7 +25,7 @@ export class PSMEvent {
     aggregateOffset?: number | undefined;
     globalOffset?: number | undefined;
     eventType: string;
-    payload: Record<string, any>;
+    payload: PayloadType;
     timestamp?: number | undefined;
     eventId?: string | undefined;
     // fix The timestamp data when pulling events from the event store
@@ -45,7 +45,7 @@ export class PSMEvent {
     return this.eventId;
   }
 
-  get getPayload(): any {
+  get getPayload(): PayloadType {
     return this.payload;
   }
   get getAggregateOffset(): number {

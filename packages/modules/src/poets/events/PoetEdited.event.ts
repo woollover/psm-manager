@@ -5,9 +5,10 @@ export interface PoetEditedEventPayload {
   lastName?: string | undefined;
   email?: string | undefined;
   instagram_handle?: string | undefined;
+  birthDate?: string | undefined;
 }
 
-export class PoetEditedEvent extends PSMEvent {
+export class PoetEditedEvent extends PSMEvent<PoetEditedEventPayload> {
   constructor({
     payload,
     timestamp,

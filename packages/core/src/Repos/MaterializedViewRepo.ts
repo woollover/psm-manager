@@ -1,7 +1,8 @@
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 /**
- * The repository takes the materialized view class as Generic Param
- *
+ * The repository takes the materialized view interface as type arg
+ * This is initialized with a viewKey that is the pk of the DynamoDB table
+ * It takes the materialized view from a projector and saves it
  *
  */
 
@@ -32,7 +33,11 @@ export class MaterializedViewRepository<MVType> {
     return this.#materializedView;
   }
 
-  async load(): Promise<MVType> {
+  set materializedView(mv: MVType) {
+    this.#materializedView = mv;
+  }
+
+  async load(): Promise<MVType | null> {
     if (this.#materializedView) {
       return this.#materializedView;
     }
@@ -40,7 +45,7 @@ export class MaterializedViewRepository<MVType> {
       TableName: this.#tablename,
       Key: { viewKey: this.#viewKey },
     });
-    this.#materializedView = result.Item?.materializedView as MVType;
+    this.#materializedView = (result.Item?.materializedView as MVType) || null;
     if (!this.#materializedView) {
       this.#materializedView = this.#defaultValue;
     }

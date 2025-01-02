@@ -2,13 +2,10 @@ import { Handler } from "aws-lambda";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { PoetsListMaterializedViewRepo } from "../repository/PoetMaterializedViewRepository";
-import { PoetProjector } from "../read/projectors/PoetProjector";
 import { PoetsEventFactory } from "../events/PoetsEventFactory";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import { PoetsListProjector } from "../read/projectors/PoetsList.projector";
 import { EventStore } from "../../../../core/src/EventStore";
-import { MaterializedViewRepository } from "../../../../core/src/Repos/MaterializedViewRepo";
-import { PoetsListMaterializedView } from "../read/materialized-view/PoetList.materialized-view";
 
 const client = new DynamoDBClient({
   region: process.env.EVENT_STORE_TABLE_REGION,
@@ -44,6 +41,7 @@ export const handler: Handler = async (_event) => {
   const poetsProjector = new PoetsListProjector({ eventStore: eventStore });
 
   // get the materialized View from Repo
+  const materializedView = await poetsMaterializedViewRepo.load();
 
   // if null, recreate it
 

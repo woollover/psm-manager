@@ -41,6 +41,8 @@ export class PoetsEventFactory {
             firstName: payload.firstName,
             lastName: payload.lastName,
             email: payload.email,
+            birthDate: payload.birthDate,
+            instagramHandle: payload.instagramHandle,
           },
           ...baseEventData,
         });

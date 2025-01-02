@@ -4,9 +4,11 @@ export interface PoetCreatedEventPayload {
   firstName: string;
   lastName: string;
   email: string;
+  instagramHandle: string;
+  birthDate: string;
 }
 
-export class PoetCreatedEvent extends PSMEvent {
+export class PoetCreatedEvent extends PSMEvent<PoetCreatedEventPayload> {
   constructor({
     payload,
     timestamp,

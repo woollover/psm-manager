@@ -4,11 +4,12 @@ import { PoetSetAsMCEvent } from "src/poets/events/PoetSetAsMC.event";
 import { PoetSetAsPoetEvent } from "src/poets/events/PoetSetAsPoet.event";
 import { PoetDeletedEvent } from "src/poets/events/PoetDeleted.event";
 import { PoetReactivatedEvent } from "src/poets/events/PoetReactivated";
-import { PoetsListPoet } from "src/poets/repository/PoetMaterializedViewRepository";
+import { PoetsListPoet } from "./types";
+
 /**
- * this projection is an enriched version of the poets list, and it's used to display the poets list in the UI
+ * this materialized view is a enriched version of the list of poets
  * It can be queried by the poets list materialized view
- * It's a read model, and it's not meant to be used for any other purpose
+ * It's a read model, and it's not meant to be used for any other purpose than querying
  * It's a single source of truth for the poets list
  * It must receive the poets list from a loaded repository
  * The repository implements the PoetsListMaterializedView
@@ -26,11 +27,12 @@ export class PoetsListMaterializedView {
   createPoet(event: PoetCreatedEvent) {
     const poet: PoetsListPoet = {
       id: event.getAggregateId,
-      name: event.getPayload.name,
-      birthDate: event.getPayload.birthDate,
-      isMC: event.getPayload.isMC || false,
+      firstName: event.getPayload.firstName,
+      lastName: event.getPayload.lastName,
+      isMC: false,
       isPoet: true,
-      instagramHandle: event.getPayload.instagramHandle || "",
+      instagramHandle: event.getPayload.instagramHandle,
+      birthDate: event.getPayload.birthDate,
     };
     this.#data.push(poet);
     console.log("🚀 ~ PoetsListMaterializedView ~ createPoet ~ poet:", poet);
@@ -109,7 +111,10 @@ export class PoetsListMaterializedView {
   }
 
   searchPoetByName(searchKey: string) {
-    return this.#data.filter((poet) => poet.name.includes(searchKey));
+    return this.#data.filter((poet) => {
+      const searchField = poet.lastName + poet.firstName + poet.instagramHandle;
+      return searchField.includes(searchKey);
+    });
   }
 
   searchPoetByInstagramHandle(searchKey: string) {

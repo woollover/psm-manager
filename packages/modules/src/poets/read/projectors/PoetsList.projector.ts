@@ -1,10 +1,18 @@
-import { PoetsListPoet } from "src/poets/repository/PoetMaterializedViewRepository";
 import { PSMEvent } from "../../../../../core/src/Event/Event";
 import { EventStore } from "../../../../../core/src/EventStore/EventStore";
 import { PoetsListMaterializedView } from "../materialized-view/PoetList.materialized-view";
+import {
+  PoetDeletedEvent,
+  PoetEvent,
+  PoetCreatedEvent,
+  PoetEditedEvent,
+  PoetReactivatedEvent,
+  PoetSetAsMCEvent,
+  PoetSetAsPoetEvent,
+} from "src/poets/events";
 
 export class PoetsListProjector {
-  #events: PSMEvent[] = [];
+  #events: PSMEvent<unknown>[] = [];
   #eventStore: EventStore;
   #materializedView: PoetsListMaterializedView;
 
@@ -24,25 +32,25 @@ export class PoetsListProjector {
     return this.#materializedView;
   }
 
-  async project(event: PSMEvent) {
+  async project(event: PoetEvent) {
     switch (event.getEventType) {
       case "PoetCreated":
-        this.#materializedView.createPoet(event);
+        this.#materializedView.createPoet(event as PoetCreatedEvent);
         break;
       case "PoetEdited":
-        this.#materializedView.updatePoet(event);
+        this.#materializedView.updatePoet(event as PoetEditedEvent);
         break;
       case "PoetSetAsMC":
-        this.#materializedView.setPoetAsMC(event);
+        this.#materializedView.setPoetAsMC(event as PoetSetAsMCEvent);
         break;
       case "PoetSetAsPoet":
-        this.#materializedView.setPoetAsPoet(event);
+        this.#materializedView.setPoetAsPoet(event as PoetSetAsPoetEvent);
         break;
       case "PoetDeleted":
-        this.#materializedView.deletePoet(event);
+        this.#materializedView.deletePoet(event as PoetDeletedEvent);
         break;
       case "PoetReactivated":
-        this.#materializedView.reactivatePoet(event);
+        this.#materializedView.reactivatePoet(event as PoetReactivatedEvent);
         break;
       default:
         throw new Error("Event type not supported");
@@ -75,7 +83,7 @@ export class PoetsListProjector {
 
     // for each event we apply the projection
     for (const event of this.#events) {
-      this.project(event);
+      this.project(event as PoetEvent);
     }
   }
 }

@@ -4,7 +4,7 @@ export interface PoetDeletedEventPayload {
   aggregateId: string;
 }
 
-export class PoetDeletedEvent extends PSMEvent {
+export class PoetDeletedEvent extends PSMEvent<PoetDeletedEventPayload> {
   constructor({
     payload,
     timestamp,

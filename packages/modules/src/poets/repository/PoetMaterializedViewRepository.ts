@@ -1,18 +1,6 @@
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { MaterializedViewRepository } from "../../../../core/src/Repos/MaterializedViewRepo";
-
-export interface PoetsListPoet {
-  id: string;
-  name: string;
-  birthDate: string;
-  isMC: boolean;
-  isPoet: boolean;
-  instagramHandle: string;
-}
-
-export interface PoetsListMaterializedViewDBShape {
-  poets: PoetsListPoet[];
-}
+import { PoetsListMaterializedViewDBShape } from "../read/materialized-view/types";
 
 export class PoetsListMaterializedViewRepo extends MaterializedViewRepository<PoetsListMaterializedViewDBShape> {
   constructor({
