@@ -1,8 +1,10 @@
 import { Command } from "../../../../core/src/Command/Command";
+
 export interface EditPoetCommandInput {
   aggregateId: string;
   firstName?: string;
   lastName?: string;
+  birthDate?: string; // YYYY-MM-DD format
   email?: string;
   instagram_handle?: string;
 }
@@ -19,7 +21,8 @@ export class EditPoetCommand extends Command<EditPoetCommandInput> {
       !input.firstName &&
       !input.lastName &&
       !input.email &&
-      !input.instagram_handle
+      !input.instagram_handle &&
+      !input.birthDate
     ) {
       this.append_error({
         field: "firstName",

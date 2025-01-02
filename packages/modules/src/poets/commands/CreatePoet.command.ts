@@ -3,6 +3,7 @@ import { Command } from "../../../../core/src/Command/Command";
 export interface CreatePoetCommandInput {
   firstName: string;
   lastName: string;
+  birthDate: string; // a "YYYY-MM-DD" format
   email: string;
 }
 
@@ -26,6 +27,13 @@ export class CreatePoetCommand extends Command<CreatePoetCommandInput> {
       this.append_error({
         field: "email",
         cue: "Email is required",
+      });
+    }
+
+    if (!input.birthDate) {
+      this.append_error({
+        field: "birthDate",
+        cue: "Birth Date is required",
       });
     }
   }
