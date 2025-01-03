@@ -118,12 +118,8 @@ export class Poet extends AggregateRoot<string> {
     switch (command.constructor) {
       case CreatePoetCommand: {
         const createCommand = command as CreatePoetCommand;
-        try {
-          createCommand.validateOrThrow(createCommand.payload);
-        } catch (error) {
-          console.log("🚀 Command payload:", createCommand.payload);
-          throw error;
-        }
+        await createCommand.validateOrThrow(createCommand.payload);
+        console.log("🚀 Command payload:", createCommand.payload);
         const payload = createCommand.payload;
         this.apply(
           new PoetCreatedEvent({

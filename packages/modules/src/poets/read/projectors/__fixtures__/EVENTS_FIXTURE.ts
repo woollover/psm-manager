@@ -20,7 +20,7 @@ export const EVENTS_FIXTURE = [
     globalOffset: 2,
     payload: {
       aggregateId: "poet-4c20baff-50c6-4a9f-8c0c-2f449ba2fc86",
-      instagram_handle: "dariowollover",
+      instagramHandle: "dariowollover",
     },
     pivotKey: "event",
     timestamp: 1735166078,
@@ -82,7 +82,7 @@ export const EVENTS_FIXTURE = [
     payload: {
       aggregateId: "poet-7f4e149c-af85-48b1-8a58-50a7b4ff1b24",
       email: "bano@woollover.it",
-      instagram_handle: "bano.autieri",
+      instagramHandle: "bano.autieri",
     },
     pivotKey: "event",
     timestamp: 1735166212,

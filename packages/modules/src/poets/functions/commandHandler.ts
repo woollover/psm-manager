@@ -37,9 +37,8 @@ const eventStore = new EventStore(
 export const handler: Handler = async (_event) => {
   const body = JSON.parse(_event.body!);
   console.log("📥 Body received:", body);
-  const aggregateId = body.payload.aggregateId || `poet-${randomUUID()}`; // TO REFACTOR
 
-  let result = {};
+  const aggregateId = body.payload.aggregateId || `poet-${randomUUID()}`; // TO REFACTOR
 
   // pull up the aggregate
   // insert backticks around aggregateId
@@ -60,52 +59,28 @@ export const handler: Handler = async (_event) => {
       // apply the command
       case "create-poet":
         const createCommand = new CreatePoetCommand(body.payload);
-        try {
-          await poet.applyCommand(createCommand);
-        } catch (error) {
-          console.log("🚀 Command errors:", createCommand.errors);
-          throw error;
-        }
-        console.log("🚀 after applyCommand:", result);
-
+        await poet.applyCommand(createCommand);
         break;
+
       case "edit-poet":
         console.log("🚀 Editing poet");
         const editCommand = new EditPoetCommand(body.payload);
-        try {
-          await poet.applyCommand(editCommand);
-        } catch (error) {
-          console.log("🚀 Command errors:", editCommand.errors);
-          throw error;
-        }
+        await poet.applyCommand(editCommand);
         break;
 
       case "set-poet-as-mc":
         const setAsMCCommand = new SetPoetAsMCCommand(body.payload);
-        try {
-          await poet.applyCommand(setAsMCCommand);
-        } catch (error) {
-          console.log("🚀 Command errors:", setAsMCCommand.errors);
-          throw error;
-        }
+        await poet.applyCommand(setAsMCCommand);
         break;
+
       case "set-poet-as-poet":
         const setAsPoetCommand = new SetPoetAsPoetCommand(body.payload);
-        try {
-          await poet.applyCommand(setAsPoetCommand);
-        } catch (error) {
-          console.log("🚀 Command errors:", setAsPoetCommand.errors);
-          throw error;
-        }
+        await poet.applyCommand(setAsPoetCommand);
         break;
+
       case "delete-poet":
         const deleteCommand = new DeletePoetCommand(body.payload);
-        try {
-          await poet.applyCommand(deleteCommand);
-        } catch (error) {
-          console.log("🚀 Command errors:", deleteCommand.errors);
-          throw error;
-        }
+        await poet.applyCommand(deleteCommand);
         break;
 
       default:
@@ -123,16 +98,25 @@ export const handler: Handler = async (_event) => {
     if (error instanceof InvalidCommandError) {
       return {
         statusCode: 403,
-        body: { message: "Invalid command", errors: error.errors },
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: "Invalid command",
+          errors: error.errors,
+        }),
       };
     }
     return {
       statusCode: 500,
-      body: { message: "unknown error", error },
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: "unknown error", error }),
     };
   }
 
-  const response: APIGatewayProxyResultV2 = {
+  let response: APIGatewayProxyResultV2 = {
     headers: {
       "Content-Type": "application/json",
     },
