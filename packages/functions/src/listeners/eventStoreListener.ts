@@ -13,6 +13,11 @@ export const handler: Handler = async (_event) => {
   // instantiate the materializedViewRepo
 
   for (const event of _event.Records) {
+    // temporary guard case to not going in the queue
+    if (event.eventName == "REMOVE") {
+      continue;
+    }
+
     console.log("📥 Event body:", event.dynamodb);
     //console.log("📥 Event type:", event.eventSource);
     //console.log("📥 Event type:", event);

@@ -40,24 +40,33 @@ export class PoetsListMaterializedView {
 
   updatePoet(event: PoetEditedEvent) {
     this.#data = this.#data.map((p) =>
-      p.id === event.getAggregateId ? { ...p, ...event.getPayload } : p
+      p.id === event.getAggregateId
+        ? {
+            ...p,
+            ...Object.fromEntries(
+              Object.entries(event.getPayload).filter(
+                ([_, value]) => value !== undefined
+              )
+            ),
+          }
+        : p
     );
   }
 
   setPoetAsMC(event: PoetSetAsMCEvent) {
     this.#data = this.#data.map((p) =>
-      p.id === event.getAggregateId ? { ...p, isMC: true } : p
+      p.id == event.getAggregateId ? { ...p, isMC: true } : p
     );
   }
 
   setPoetAsPoet(event: PoetSetAsPoetEvent) {
     this.#data = this.#data.map((p) =>
-      p.id === event.getAggregateId ? { ...p, isPoet: true, isMC: false } : p
+      p.id == event.getAggregateId ? { ...p, isPoet: true, isMC: false } : p
     );
   }
 
   deletePoet(event: PoetDeletedEvent) {
-    const poet = this.#data.find((p) => p.id === event.getAggregateId);
+    const poet = this.#data.find((p) => p.id == event.getAggregateId);
     if (poet) {
       this.#deletedPoets.push(poet);
       this.#data = this.#data.filter((p) => p.id !== event.getAggregateId);
@@ -67,11 +76,11 @@ export class PoetsListMaterializedView {
   }
 
   reactivatePoet(event: PoetReactivatedEvent) {
-    const poet = this.#deletedPoets.find((p) => p.id === event.getAggregateId);
+    const poet = this.#deletedPoets.find((p) => p.id == event.getAggregateId);
     if (poet) {
       this.#data.push(poet);
       this.#deletedPoets = this.#deletedPoets.filter(
-        (p) => p.id !== event.getAggregateId
+        (p) => p.id != event.getAggregateId
       );
     } else {
       throw new Error("Poet not found");

@@ -26,9 +26,9 @@ export class PoetsEventFactory {
       globalOffset: eventInput.globalOffset || 0,
     };
 
-    console.log("📥 Base Event Data", baseEventData);
-    console.log("📥 Event Type", eventType);
-    console.log("📥 Event Input", eventInput);
+    // console.log("📥 Base Event Data", baseEventData);
+    // console.log("📥 Event Type", eventType);
+    // console.log("📥 Event Input", eventInput);
     const payload =
       typeof eventInput.payload === "string"
         ? JSON.parse(eventInput.payload)

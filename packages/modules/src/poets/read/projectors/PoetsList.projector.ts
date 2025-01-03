@@ -13,7 +13,7 @@ import {
 import { PoetsListMaterializedViewDBShape } from "../materialized-view/types";
 
 export class PoetsListProjector {
-  #events: PSMEvent<unknown>[] = [];
+  #events: PSMEvent<unknown, any>[] = [];
   #eventStore: EventStore;
   #materializedView: PoetsListMaterializedView;
   #materializedViewData: PoetsListMaterializedViewDBShape | null;

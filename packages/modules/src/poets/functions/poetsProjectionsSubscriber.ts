@@ -54,6 +54,7 @@ export const handler: Handler = async (_event) => {
   // if null, recreate it
   if (materializedView == null) {
     // recreate poets projection
+    console.log("No materialized view found, recreating it");
     await poetsProjector.recreateProjection({ originEventType: "PoetCreated" });
   }
 
