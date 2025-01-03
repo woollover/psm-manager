@@ -33,7 +33,7 @@ export class PoetsEventFactory {
       typeof eventInput.payload === "string"
         ? JSON.parse(eventInput.payload)
         : eventInput.payload;
-    console.log("📥 Payload", payload);
+
     switch (eventType) {
       case "PoetCreated":
         return new PoetCreatedEvent({
@@ -53,7 +53,7 @@ export class PoetsEventFactory {
             firstName: payload.firstName,
             lastName: payload.lastName,
             email: payload.email,
-            instagram_handle: payload.instagram_handle,
+            instagramHandle: payload.instagramHandle,
           },
           ...baseEventData,
         });

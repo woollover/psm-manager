@@ -1,6 +1,5 @@
 import { AggregateRoot } from "../../../../core/src/AggregateRoot";
 import { CreatePoetCommand } from "../commands/CreatePoet.command";
-
 import {
   PoetCreatedEvent,
   PoetDeletedEvent,
@@ -21,84 +20,92 @@ import { ReactivatePoetCommand } from "../commands/ReactivatePoet.command";
 export class Poet extends AggregateRoot<string> {
   private firstName: string = "";
   private lastName: string = "";
+  private birthDate: string = "";
   private email: string = "";
-  private instagram_handle: string | null = null;
-  private is_deleted: boolean = false;
-  private is_mc: boolean = false;
+  private instagramHandle: string | null = null;
+  private isDeleted: boolean = false;
+  private isMc: boolean = false;
   constructor(public readonly id: string) {
     super(id);
   }
 
   // apply events to this very aggregate (BUSINESS LOGIC)
   protected mutate(event: PoetEvent): void {
-    const payload = event.getPayload;
-    switch (event.getEventType) {
+    switch (event.eventType) {
       case "PoetCreated":
         // TODO this logic can be a method in the future
-        this.firstName = payload.firstName;
-        this.lastName = payload.lastName;
-        this.email = payload.email;
+        this.firstName = event.getPayload.firstName;
+        this.lastName = event.getPayload.lastName;
+        this.email = event.getPayload.email;
+        this.instagramHandle = event.getPayload.instagramHandle;
+        this.birthDate = event.getPayload.birthDate;
         break;
 
       case "PoetEdited":
         console.log("🚀 Mutating PoetEditedEvent");
-        console.log("🚀 Mutating PoetEditedEvent payload:", payload);
-        if (payload.firstName) {
-          this.firstName = payload.firstName;
+        console.log("🚀 Mutating PoetEditedEvent payload:", event.getPayload);
+        if (event.getPayload.firstName) {
+          this.firstName = event.getPayload.firstName;
         }
-        if (payload.lastName) {
-          this.lastName = payload.lastName;
+        if (event.getPayload.lastName) {
+          this.lastName = event.getPayload.lastName;
         }
-        if (payload.email) {
-          this.email = payload.email;
+        if (event.getPayload.email) {
+          this.email = event.getPayload.email;
         }
-        if (payload.instagram_handle) {
-          this.instagram_handle = payload.instagram_handle;
+        if (event.getPayload.instagramHandle) {
+          this.instagramHandle = event.getPayload.instagramHandle;
         }
         break;
       case "PoetSetAsMC":
-        if (this.is_deleted) {
+        if (this.isDeleted) {
           throw new InvalidCommandError("poet is deleted, cannot set as MC", [
             { field: "aggregateId", cue: "this poet is deleted" },
           ]);
         }
 
-        if (this.is_mc == true) {
+        if (this.isMc == true) {
           throw new InvalidCommandError("poet is already a MC", [
             { field: "aggregateId", cue: "this poet is already a MC" },
           ]);
         }
         console.log("🚀 Mutating PoetSetAsMCEvent");
-        console.log("🚀 Mutating PoetSetAsMCEvent payload:", payload);
-        this.is_mc = true;
+        console.log("🚀 Mutating PoetSetAsMCEvent payload:", event.getPayload);
+        this.isMc = true;
         break;
 
       case "PoetSetAsPoet":
-        if (this.is_deleted) {
+        if (this.isDeleted) {
           throw new InvalidCommandError("poet is deleted, cannot set as Poet", [
             { field: "aggregateId", cue: "this poet is deleted" },
           ]);
         }
-        if (this.is_mc == false) {
+        if (this.isMc == false) {
           throw new InvalidCommandError("poet is already a Poet", [
             { field: "aggregateId", cue: "this poet is not set as MC" },
           ]);
         }
         console.log("🚀 Mutating PoetSetAsPoetEvent");
-        console.log("🚀 Mutating PoetSetAsPoetEvent payload:", payload);
-        this.is_mc = false;
+        console.log(
+          "🚀 Mutating PoetSetAsPoetEvent payload:",
+          event.getPayload
+        );
+        this.isMc = false;
         break;
 
       case "PoetDeleted":
         console.log("🚀 Mutating PoetDeletedEvent");
-        console.log("🚀 Mutating PoetDeletedEvent payload:", payload);
-        this.is_deleted = true;
+        console.log("🚀 Mutating PoetDeletedEvent payload:", event.getPayload);
+        this.isDeleted = true;
         break;
 
       case "PoetReactivated":
         console.log("🚀 Mutating PoetReactivatedEvent");
-        console.log("🚀 Mutating PoetReactivatedEvent payload:", payload);
-        this.is_deleted = false;
+        console.log(
+          "🚀 Mutating PoetReactivatedEvent payload:",
+          event.getPayload
+        );
+        this.isDeleted = false;
         break;
       default:
         console.log("🚀 Default case, problem in mutate switch");
@@ -165,7 +172,7 @@ export class Poet extends AggregateRoot<string> {
       case EditPoetCommand: {
         const editCommand = command as EditPoetCommand;
         await editCommand.validateOrThrow(editCommand.payload);
-        if (this.is_deleted) throw new Error("Poet is deleted");
+        if (this.isDeleted) throw new Error("Poet is deleted");
         this.apply(
           new PoetEditedEvent({
             aggregateId: this.id,
@@ -177,7 +184,7 @@ export class Poet extends AggregateRoot<string> {
       }
       case DeletePoetCommand: {
         const deleteCommand = command as DeletePoetCommand;
-        if (this.is_deleted) throw new Error("Poet is deleted");
+        if (this.isDeleted) throw new Error("Poet is deleted");
         await deleteCommand.validateOrThrow(deleteCommand.payload);
         this.apply(
           new PoetDeletedEvent({
@@ -191,7 +198,7 @@ export class Poet extends AggregateRoot<string> {
       case ReactivatePoetCommand: {
         const reactivateCommand = command as ReactivatePoetCommand;
         await reactivateCommand.validateOrThrow(reactivateCommand.payload);
-        if (!this.is_deleted) throw new Error("Poet is not deleted");
+        if (!this.isDeleted) throw new Error("Poet is not deleted");
         this.apply(
           new PoetReactivatedEvent({
             aggregateId: this.id,
@@ -225,14 +232,14 @@ export class Poet extends AggregateRoot<string> {
   }
 
   get getInstagramHandle(): string | null {
-    return this.instagram_handle;
+    return this.instagramHandle;
   }
 
   get getIsDeleted(): boolean {
-    return this.is_deleted;
+    return this.isDeleted;
   }
 
   get getIsMc(): boolean {
-    return this.is_mc;
+    return this.isMc;
   }
 }

@@ -3,6 +3,8 @@
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "strict": true,
+    "strictNullChecks": true,
     "baseUrl": ".",
     "paths": {
       "@psm/*": ["../packages/*"],

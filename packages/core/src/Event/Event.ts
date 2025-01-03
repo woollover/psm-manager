@@ -1,13 +1,13 @@
 import { randomUUID } from "crypto";
 
-export class PSMEvent<PayloadType> {
+export class PSMEvent<PayloadType, EventType extends string> {
   protected payload: PayloadType;
   protected eventId: string;
   protected aggregateId: string;
   protected globalOffset: number;
   protected aggregateOffset: number;
   protected timestamp: number;
-  protected eventType: string;
+  readonly eventType: EventType;
   protected version: number = 1;
   protected pivotKey: string = "event";
 
@@ -24,7 +24,7 @@ export class PSMEvent<PayloadType> {
     aggregateId: string;
     aggregateOffset?: number | undefined;
     globalOffset?: number | undefined;
-    eventType: string;
+    eventType: EventType;
     payload: PayloadType;
     timestamp?: number | undefined;
     eventId?: string | undefined;

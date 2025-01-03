@@ -4,7 +4,10 @@ export interface PoetSetAsMCEventPayload {
   aggregateId: string;
 }
 
-export class PoetSetAsMCEvent extends PSMEvent<PoetSetAsMCEventPayload> {
+export class PoetSetAsMCEvent extends PSMEvent<
+  PoetSetAsMCEventPayload,
+  "PoetSetAsMC"
+> {
   constructor({
     payload,
     timestamp,

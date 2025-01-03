@@ -10,22 +10,26 @@ import {
   PoetSetAsMCEvent,
   PoetSetAsPoetEvent,
 } from "src/poets/events";
+import { PoetsListMaterializedViewDBShape } from "../materialized-view/types";
 
 export class PoetsListProjector {
   #events: PSMEvent<unknown>[] = [];
   #eventStore: EventStore;
   #materializedView: PoetsListMaterializedView;
+  #materializedViewData: PoetsListMaterializedViewDBShape | null;
 
   constructor({
     eventStore,
-    materializedView,
+    materializedViewData,
   }: {
     eventStore: EventStore;
-    materializedView?: PoetsListMaterializedView;
+    materializedViewData: PoetsListMaterializedViewDBShape | null;
   }) {
     this.#eventStore = eventStore;
-    this.#materializedView =
-      materializedView ?? new PoetsListMaterializedView({ poets: [] });
+    this.#materializedView = new PoetsListMaterializedView(
+      materializedViewData
+    );
+    this.#materializedViewData = materializedViewData;
   }
 
   get materializedView() {

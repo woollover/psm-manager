@@ -6,7 +6,7 @@ export interface EditPoetCommandInput {
   lastName?: string;
   birthDate?: string; // YYYY-MM-DD format
   email?: string;
-  instagram_handle?: string;
+  instagramHandle?: string;
 }
 
 export class EditPoetCommand extends Command<EditPoetCommandInput> {
@@ -21,7 +21,7 @@ export class EditPoetCommand extends Command<EditPoetCommandInput> {
       !input.firstName &&
       !input.lastName &&
       !input.email &&
-      !input.instagram_handle &&
+      !input.instagramHandle &&
       !input.birthDate
     ) {
       this.append_error({
@@ -38,7 +38,7 @@ export class EditPoetCommand extends Command<EditPoetCommandInput> {
         cue: "at least one field is required",
       });
       this.append_error({
-        field: "instagram_handle",
+        field: "instagramHandle",
         cue: "at least one field is required",
       });
     }

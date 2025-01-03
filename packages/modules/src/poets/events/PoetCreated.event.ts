@@ -8,7 +8,10 @@ export interface PoetCreatedEventPayload {
   birthDate: string;
 }
 
-export class PoetCreatedEvent extends PSMEvent<PoetCreatedEventPayload> {
+export class PoetCreatedEvent extends PSMEvent<
+  PoetCreatedEventPayload,
+  "PoetCreated"
+> {
   constructor({
     payload,
     timestamp,

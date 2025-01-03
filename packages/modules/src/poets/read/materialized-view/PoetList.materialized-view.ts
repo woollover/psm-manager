@@ -4,7 +4,7 @@ import { PoetSetAsMCEvent } from "src/poets/events/PoetSetAsMC.event";
 import { PoetSetAsPoetEvent } from "src/poets/events/PoetSetAsPoet.event";
 import { PoetDeletedEvent } from "src/poets/events/PoetDeleted.event";
 import { PoetReactivatedEvent } from "src/poets/events/PoetReactivated";
-import { PoetsListPoet } from "./types";
+import { PoetsListMaterializedViewDBShape, PoetsListPoet } from "./types";
 
 /**
  * this materialized view is a enriched version of the list of poets
@@ -20,8 +20,8 @@ export class PoetsListMaterializedView {
   #data: PoetsListPoet[] = [];
   #deletedPoets: PoetsListPoet[] = [];
 
-  constructor({ poets }: { poets: PoetsListPoet[] }) {
-    this.#data = poets ?? [];
+  constructor(materializedView: PoetsListMaterializedViewDBShape | null) {
+    this.#data = materializedView ? materializedView.poets : [];
   }
 
   createPoet(event: PoetCreatedEvent) {
@@ -78,8 +78,8 @@ export class PoetsListMaterializedView {
     }
   }
 
-  get data() {
-    return this.#data;
+  get viewToSave(): PoetsListMaterializedViewDBShape {
+    return { poets: this.#data };
   }
 
   get MCs() {

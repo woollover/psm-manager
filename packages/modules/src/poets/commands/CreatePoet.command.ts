@@ -5,6 +5,7 @@ export interface CreatePoetCommandInput {
   lastName: string;
   birthDate: string; // a "YYYY-MM-DD" format
   email: string;
+  instagramHandle: string;
 }
 
 export class CreatePoetCommand extends Command<CreatePoetCommandInput> {

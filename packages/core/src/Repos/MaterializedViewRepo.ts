@@ -6,38 +6,30 @@ import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
  *
  */
 
-export class MaterializedViewRepository<MVType> {
+export class MaterializedViewRepository<MVInterface> {
   #tablename: string;
   #client: DynamoDBDocument;
-  #materializedView: MVType | null = null;
+  #materializedView: MVInterface | null = null;
   #viewKey: string;
-  #defaultValue: MVType;
   constructor({
     tablename,
     client,
     viewKey,
-    defaultValue,
   }: {
     tablename: string;
     client: DynamoDBDocument;
     viewKey: string;
-    defaultValue: MVType;
   }) {
     this.#tablename = tablename;
     this.#client = client;
     this.#viewKey = viewKey;
-    this.#defaultValue = defaultValue;
   }
 
-  get materializedView(): MVType | null {
+  public get materializedView(): MVInterface | null {
     return this.#materializedView;
   }
 
-  set materializedView(mv: MVType) {
-    this.#materializedView = mv;
-  }
-
-  async load(): Promise<MVType | null> {
+  async load(): Promise<MVInterface | null> {
     if (this.#materializedView) {
       return this.#materializedView;
     }
@@ -45,24 +37,20 @@ export class MaterializedViewRepository<MVType> {
       TableName: this.#tablename,
       Key: { viewKey: this.#viewKey },
     });
-    this.#materializedView = (result.Item?.materializedView as MVType) || null;
-    if (!this.#materializedView) {
-      this.#materializedView = this.#defaultValue;
-    }
+    this.#materializedView =
+      (result.Item?.materializedView as MVInterface) || null;
 
     console.log("🔥 Materialized View", this.#materializedView);
     return this.#materializedView;
   }
 
-  async save() {
-    if (!this.#materializedView) {
-      throw new Error("Materialized view not loaded");
-    }
+  async save(mv: MVInterface) {
+    this.#materializedView = mv;
     await this.#client.put({
       TableName: this.#tablename,
       Item: {
         viewKey: this.#viewKey,
-        materializedView: this.#materializedView,
+        materializedView: mv,
       },
     });
   }
