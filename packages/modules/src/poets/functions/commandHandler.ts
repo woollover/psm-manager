@@ -89,7 +89,6 @@ export const handler: Handler = async (_event) => {
     }
     // persist uncommitted events
     await eventStore.saveEvents(poet.getUncommittedEvents());
-
     // clear uncommitted events in the aggregate
     poet.clearUncommittedEvents();
 

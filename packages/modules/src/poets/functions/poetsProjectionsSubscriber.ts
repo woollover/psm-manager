@@ -27,6 +27,8 @@ const documentClient = DynamoDBDocument.from(client, {
 export const handler: Handler = async (_event) => {
   // make this responding to an event :D
 
+  console.log("envs:", process.env);
+
   const poetsMaterializedViewRepo =
     new MaterializedViewRepository<PoetsListMaterializedViewDBShape>({
       tablename: process.env.MATERIALIZED_VIEW_TABLE_NAME || "",
@@ -36,7 +38,7 @@ export const handler: Handler = async (_event) => {
 
   // intantiate the EventStore
   const eventStore = new EventStore(
-    process.env.EVENT_STORE_TABLE!,
+    process.env.EVENT_STORE_TABLE_NAME!,
     documentClient
   );
 

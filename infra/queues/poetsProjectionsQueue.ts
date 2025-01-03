@@ -14,6 +14,7 @@ poetsProjectionsQueue.subscribe({
     "packages/modules/src/poets/functions/poetsProjectionsSubscriber.handler",
   environment: {
     MATERIALIZED_VIEW_TABLE_NAME: MaterializedViewsTable.name,
+    EVENT_STORE_TABLE_NAME: EventStoreTable.name,
   },
   link: [MaterializedViewsTable, EventStoreTable],
   name: "poets-projections-subscriber",

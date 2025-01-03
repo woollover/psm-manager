@@ -18,7 +18,7 @@ export abstract class Command<I> {
   }
 
   async validateOrThrow(input: I): Promise<void> {
-    console.log("Validating input:", JSON.stringify(input, null, 2));
+    console.log("Command - Validating input:", JSON.stringify(input, null, 2));
     await this.validate(input);
 
     if (this.#errors.length > 0) {
@@ -29,7 +29,7 @@ export abstract class Command<I> {
       throw new InvalidCommandError("Command validation failed", this.#errors);
     }
 
-    console.log("Validation successful, setting payload");
+    console.log("Command - Validation successful, setting payload");
     this.#payload = input;
   }
 
