@@ -6,7 +6,10 @@ import {
 import { EventStore } from "../../../../core/src/EventStore";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { PoetMaterializedViewRepository } from "../repository/PoetMaterializedViewRepository";
+import { PoetsListMaterializedView } from "../read/materialized-view/PoetList.materialized-view";
+import { MaterializedViewRepository } from "../../../../core/src/Repos/MaterializedViewRepo";
+import { PoetListReadModel } from "../read/read-models/PoetsList.read-model";
+import { PoetsListMaterializedViewDBShape } from "../read/materialized-view/types";
 
 //rule of thumb: stateless instnces OUTSIDE the handler, Stateful instances inside the handler
 
@@ -26,10 +29,6 @@ const documentClient = DynamoDBDocument.from(client, {
   },
 });
 
-const eventStore = new EventStore(
-  process.env.EVENT_STORE_TABLE_NAME || "eu-central-1",
-  documentClient
-);
 // instantiate the eventStore, it's stateless so we can do it outside the handler
 
 export const handler: Handler = async (_event: APIGatewayProxyEventV2) => {
@@ -37,23 +36,35 @@ export const handler: Handler = async (_event: APIGatewayProxyEventV2) => {
   console.log("🚀 Poet ID:", aggregateId);
 
   // instnatiate the materialized view repo
-  const poetsMaterializedViewRepository = new PoetMaterializedViewRepository({
-    client: documentClient,
-    tablename: process.env.MATERIALIZED_VIEWS_TABLE_NAME || "",
-  });
+  const poetsMaterializedViewRepository =
+    new MaterializedViewRepository<PoetsListMaterializedViewDBShape>({
+      client: documentClient,
+      tablename: process.env.MATERIALIZED_VIEWS_TABLE_NAME || "",
+      viewKey: "poets-list-materialized-view",
+    });
   // load the materialized view
 
-  await poetsMaterializedViewRepository.load();
+  const mv = await poetsMaterializedViewRepository.load();
+  if (mv == null) {
+    return {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      statusCode: 404,
+      body: JSON.stringify({ error: "materialized view not found" }),
+    };
+  }
 
   // insantiate the Read Model
-  const poetsReadModel = {};
+  const poetsReadModel = new PoetListReadModel({ materializedViewData: mv });
+  const data = poetsReadModel.data;
   // serve the read model
   const response: APIGatewayProxyResultV2 = {
     headers: {
       "Content-Type": "application/json",
     },
     statusCode: 200,
-    body: JSON.stringify({ data: poetsReadModel }),
+    body: JSON.stringify({ data }),
   };
 
   return response;

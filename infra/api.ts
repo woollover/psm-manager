@@ -15,11 +15,10 @@ eventStoreApi.route("GET /events", {
 });
 
 eventStoreApi.route("GET /poets/list", {
-  link: [EventStoreTable, MaterializedViewsTable],
+  link: [MaterializedViewsTable],
   handler: "packages/modules/src/poets/functions/queryHandler.handler",
   name: "get-poets-list",
   environment: {
-    EVENT_STORE_TABLE_NAME: EventStoreTable.name,
     MATERIALIZED_VIEWS_TABLE_NAME: MaterializedViewsTable.name,
   },
 });
