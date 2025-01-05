@@ -2,13 +2,12 @@
   "extends": "@tsconfig/node20/tsconfig.json",
   "compilerOptions": {
     "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "node",
     "strict": true,
     "strictNullChecks": true,
     "baseUrl": ".",
     "paths": {
-      "@psm/*": ["../packages/*"],
-      "@psm/core/*": ["../packages/core/src/*"]
+      "@psm/core/*": ["../core/src/*"]
     },
     "types": ["node"]
   },

@@ -5,10 +5,20 @@ import { SetPoetAsMCCommand } from "./SetPoetAsMC.command";
 import { ReactivatePoetCommand } from "./ReactivatePoet.command";
 import { SetPoetAsPoetCommand } from "./SetPoetAsPoet.command";
 
-export type PoetCommands =
+type PoetCommands =
   | CreatePoetCommand
   | EditPoetCommand
   | DeletePoetCommand
   | SetPoetAsMCCommand
   | SetPoetAsPoetCommand
   | ReactivatePoetCommand;
+
+export {
+  PoetCommands,
+  CreatePoetCommand,
+  EditPoetCommand,
+  DeletePoetCommand,
+  SetPoetAsMCCommand,
+  SetPoetAsPoetCommand,
+  ReactivatePoetCommand,
+};

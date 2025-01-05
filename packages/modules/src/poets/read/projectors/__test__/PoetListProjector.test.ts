@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vitest } from "vitest";
 import { PoetsListProjector } from "../PoetsList.projector";
 import { EVENTS_FIXTURE } from "../__fixtures__/EVENTS_FIXTURE";
-import { EventStore } from "../../../../../../core/src/EventStore/EventStore";
+import { EventStore } from "@psm/core/EventStore/EventStore";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 
 const mockDynamoClientOnEventStore = {
@@ -38,6 +38,7 @@ describe("PoetsListProjector", () => {
         "null",
         mockDynamoClientOnEventStore as DynamoDBDocument
       ),
+      materializedViewData: { poets: [] },
     });
     expect(projector).toBeInstanceOf(PoetsListProjector);
   });
@@ -48,6 +49,7 @@ describe("PoetsListProjector", () => {
         "null",
         mockDynamoClientOnEventStore as DynamoDBDocument
       ),
+      materializedViewData: { poets: [] },
     });
     await projector.recreateProjection({ originEventType: "PoetCreated" });
     const materializedView = projector["materializedView"];

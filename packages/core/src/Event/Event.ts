@@ -1,5 +1,13 @@
 import { randomUUID } from "crypto";
 
+export interface EventInput {
+  payload: Record<string, any>;
+  timestamp?: number;
+  aggregateId?: string;
+  aggregateOffset?: number;
+  globalOffset?: number;
+}
+
 export class PSMEvent<PayloadType, EventType extends string> {
   protected payload: PayloadType;
   protected eventId: string;

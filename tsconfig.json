@@ -1,1 +1,12 @@
-{}
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "module": "ESNext",
+    "strict": true,
+    "strictNullChecks": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": ["node_modules/*"]
+    }
+  }
+}

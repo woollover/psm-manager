@@ -1,5 +1,5 @@
 import { Handler } from "aws-lambda";
-import { EventStore } from "../../../../core/src/EventStore";
+import { EventStore } from "@psm/core/EventStore";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 

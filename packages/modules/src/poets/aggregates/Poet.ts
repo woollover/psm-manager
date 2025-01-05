@@ -1,4 +1,4 @@
-import { AggregateRoot } from "../../../../core/src/AggregateRoot";
+import { AggregateRoot } from "@psm/core/AggregateRoot";
 import { CreatePoetCommand } from "../commands/CreatePoet.command";
 import {
   PoetCreatedEvent,
@@ -12,10 +12,11 @@ import { EditPoetCommand } from "../commands/EditPoet.command";
 import { DeletePoetCommand } from "../commands/DeletePoet.command";
 import { SetPoetAsMCCommand } from "../commands/SetPoetAsMC.command";
 import { PoetCommands } from "../commands";
-import { InvalidCommandError } from "../../../../core/src/Errors/InvalidCommandError";
+import { InvalidCommandError } from "@psm/core/Errors/InvalidCommandError";
 import { SetPoetAsPoetCommand } from "../commands/SetPoetAsPoet.command";
 import { PoetSetAsPoetEvent } from "../events/PoetSetAsPoet.event";
 import { ReactivatePoetCommand } from "../commands/ReactivatePoet.command";
+import { PoetsEventFactory } from "../events/PoetsEventFactory";
 
 export class Poet extends AggregateRoot<string> {
   private firstName: string = "";
@@ -122,12 +123,9 @@ export class Poet extends AggregateRoot<string> {
         console.log("🚀 Command payload:", createCommand.payload);
         const payload = createCommand.payload;
         this.apply(
-          new PoetCreatedEvent({
+          PoetsEventFactory.createEvent("PoetCreated", {
             aggregateId: this.id,
-            payload: {
-              ...payload,
-            },
-            timestamp: new Date().getTime(),
+            payload,
           })
         );
         return this;

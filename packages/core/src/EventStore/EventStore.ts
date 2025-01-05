@@ -141,7 +141,7 @@ export class EventStore {
     );
   }
 
-  async getNextAggregateOffset(aggregateId: string): Promise<number> {
+  private async getNextAggregateOffset(aggregateId: string): Promise<number> {
     console.log("🚀 Getting next aggregate offset", { aggregateId });
     const command = new QueryCommand({
       TableName: this.tableName,

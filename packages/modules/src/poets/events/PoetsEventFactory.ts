@@ -8,14 +8,7 @@ import {
   PoetSetAsPoetEvent,
 } from ".";
 import { PoetCreatedEvent } from "./PoetCreated.event";
-
-interface EventInput {
-  payload: Record<string, any>;
-  timestamp?: number;
-  aggregateId?: string;
-  aggregateOffset?: number;
-  globalOffset?: number;
-}
+import { EventInput } from "@psm/core/Event/Event";
 
 export class PoetsEventFactory {
   static createEvent(eventType: PoetEventType, eventInput: EventInput) {

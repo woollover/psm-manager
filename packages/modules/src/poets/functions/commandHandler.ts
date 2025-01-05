@@ -1,11 +1,11 @@
 import { APIGatewayProxyResultV2, Handler } from "aws-lambda";
-import { EventStore } from "../../../../core/src/EventStore";
+import { EventStore } from "@psm/core/EventStore";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { randomUUID } from "crypto";
 import { Poet } from "../aggregates/Poet";
 import { CreatePoetCommand } from "../commands/CreatePoet.command";
-import { InvalidCommandError } from "../../../../core/src/Errors/InvalidCommandError";
+import { InvalidCommandError } from "@psm/core/Errors/InvalidCommandError";
 import { EditPoetCommand } from "../commands/EditPoet.command";
 import { SetPoetAsMCCommand } from "../commands/SetPoetAsMC.command";
 import { SetPoetAsPoetCommand } from "../commands/SetPoetAsPoet.command";

@@ -1,6 +1,7 @@
 {
   "name": "psm",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "dev:infra": "sst dev",
     "test": "vitest",
@@ -11,7 +12,10 @@
     "@tsconfig/node20": "^20.1.4",
     "@types/node": "^20.17.10",
     "@vitest/coverage-v8": "^2.1.8",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.2",
+    "vite": "^6.0.7",
+    "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^2.1.8"
   },
   "dependencies": {

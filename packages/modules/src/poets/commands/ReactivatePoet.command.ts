@@ -1,4 +1,4 @@
-import { Command } from "../../../../core/src/Command/Command";
+import { Command } from "@psm/core/Command/Command";
 export interface ReactivatePoetCommandInput {
   aggregateId: string;
 }

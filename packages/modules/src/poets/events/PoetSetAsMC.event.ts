@@ -1,4 +1,4 @@
-import { PSMEvent } from "../../../../core/src/Event/Event";
+import { PSMEvent } from "@psm/core/Event/Event";
 
 export interface PoetSetAsMCEventPayload {
   aggregateId: string;
