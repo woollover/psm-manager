@@ -1,9 +1,6 @@
-import { CountryId } from "@psm/common/constants/countries";
 import { PSMEvent } from "@psm/core/Event/Event";
 
-export interface SlamDeletedPayload {
-  aggregateId: string;
-}
+export interface SlamDeletedPayload {}
 
 export class SlamDeletedEvent extends PSMEvent<
   SlamDeletedPayload,

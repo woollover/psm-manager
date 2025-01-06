@@ -3,16 +3,21 @@ import {
   InvalidCommandError,
 } from "../Errors/InvalidCommandError";
 
-export abstract class Command<I> {
+export abstract class Command<I, CommandName extends string> {
+  #commandName: CommandName;
   readonly #errors: CommandValidationError<I>[] = [];
   #payload: I;
 
-  constructor(input: I) {
+  constructor(commandName: CommandName, input: I) {
     this.#payload = input;
+    this.#commandName = commandName;
   }
 
   abstract validate(input: I): void | Promise<void>;
 
+  get commandName(): CommandName {
+    return this.#commandName;
+  }
   get errors() {
     return this.#errors;
   }

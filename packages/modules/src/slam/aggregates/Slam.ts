@@ -1,9 +1,14 @@
 import { AggregateRoot } from "@psm/core/AggregateRoot";
-import { CreateSlamCommand, SlamCommands } from "../commands";
+import {
+  CreateSlamCommand,
+  DeleteSlamCommand,
+  SlamCommands,
+} from "../commands";
 import { InvalidCommandError } from "@psm/core/Errors/InvalidCommandError";
 import { CountryId } from "@psm/common/constants/countries";
 import { SlamEventFactory } from "../events/SlamEventsFactory";
 import { SlamEvent, SlamEventPayload } from "../events";
+import { CreateSlamCommandInput } from "../commands/CreateSlam.command";
 
 export class Slam extends AggregateRoot<string> {
   private county: string | null = null;
@@ -37,11 +42,12 @@ export class Slam extends AggregateRoot<string> {
   }
 
   public async applyCommand(command: SlamCommands): Promise<Slam> {
-    switch (command.constructor) {
-      case CreateSlamCommand:
+    switch (command.commandName) {
+      case "CreateSlamCommand":
         console.log("Applying CreateSlam Command");
         const createcommand = command as CreateSlamCommand;
         await createcommand.validateOrThrow(createcommand.payload);
+
         // eventually do other validations over command
         const payload: SlamEventPayload<"SlamCreated"> = {
           regionalId: command.payload.regionalId,
@@ -62,7 +68,8 @@ export class Slam extends AggregateRoot<string> {
           })
         );
         return this;
-
+      case "DeleteSlamCommand":
+        return this;
       default:
         throw new InvalidCommandError("Command does not exists", []);
     }

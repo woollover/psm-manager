@@ -10,7 +10,10 @@ export interface CreateSlamCommandInput {
   year: number; // validate is not in the past
   monthIndex: number; // 0-jan >> 11-dec
 }
-export class CreateSlamCommand extends Command<CreateSlamCommandInput> {
+export class CreateSlamCommand extends Command<
+  CreateSlamCommandInput,
+  "CreateSlamCommand"
+> {
   validate(input: CreateSlamCommandInput): void | Promise<void> {
     this.validateDate(input)
       .validateCity(input)
