@@ -9,7 +9,7 @@ export interface EventInput {
 }
 
 export class PSMEvent<PayloadType, EventType extends string> {
-  protected payload: PayloadType;
+  public readonly payload: PayloadType;
   protected eventId: string;
   protected aggregateId: string;
   protected globalOffset: number;
@@ -46,7 +46,7 @@ export class PSMEvent<PayloadType, EventType extends string> {
     this.version = version || 1;
     this.timestamp = timestamp || new Date().getTime();
     this.eventType = eventType;
-    this.payload = payload;
+    this.payload = payload as PayloadType;
   }
 
   get getEventId(): string {

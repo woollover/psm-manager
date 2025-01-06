@@ -1,17 +1,13 @@
 import { CountryId } from "@psm/common/constants/countries";
 import { PSMEvent } from "@psm/core/Event/Event";
 
-export interface SlamCreatedPayload {
-  regionalId: string;
-  countryId: CountryId;
-  city: string;
-  venue: string;
-  timestamp: number;
+export interface SlamDeletedPayload {
+  aggregateId: string;
 }
 
-export class SlamCreatedEvent extends PSMEvent<
-  SlamCreatedPayload,
-  "SlamCreated"
+export class SlamDeletedEvent extends PSMEvent<
+  SlamDeletedPayload,
+  "SlamDeleted"
 > {
   constructor({
     payload,
@@ -20,7 +16,7 @@ export class SlamCreatedEvent extends PSMEvent<
     aggregateOffset,
     globalOffset,
   }: {
-    payload: SlamCreatedPayload;
+    payload: SlamDeletedPayload;
     timestamp: number;
     aggregateId: string;
     aggregateOffset?: number | undefined;
@@ -28,7 +24,7 @@ export class SlamCreatedEvent extends PSMEvent<
   }) {
     super({
       aggregateId: aggregateId,
-      eventType: "SlamCreated",
+      eventType: "SlamDeleted",
       payload: payload,
       timestamp,
       aggregateOffset,

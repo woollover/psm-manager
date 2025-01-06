@@ -1,5 +1,4 @@
-import { PoetEventType } from "src/poets/events";
-import { SlamEventType } from ".";
+import { SlamEventPayload, SlamEventType } from ".";
 import { EventInput } from "@psm/core/Event/Event";
 import { randomUUID } from "crypto";
 import { SlamCreatedEvent } from "./SlamCreated.event";
@@ -13,25 +12,27 @@ export class SlamEventFactory {
       globalOffset: eventInput.globalOffset || 0,
     };
 
-    const payload =
+    let payloadBody =
       typeof eventInput.payload === "string"
         ? JSON.parse(eventInput.payload)
         : eventInput.payload;
 
     switch (eventType) {
       case "SlamCreated":
+        const payload = payloadBody as SlamEventPayload<"SlamCreated">;
         return new SlamCreatedEvent({
           ...baseEventData,
           payload: {
             regionalId: payload.regionalId,
-            nation: "",
-            city: "",
-            venue: "",
-            day: 0,
-            year: 0,
-            monthIndex: 0,
+            countryId: payload.countryId,
+            city: payload.city,
+            venue: payload.venue,
+            timestamp: payload.timestamp,
           },
         });
+
+      default:
+        throw new Error(`Event not found: ${eventType}`);
     }
   }
 }

@@ -4,6 +4,9 @@ import { PSMEvent } from "@psm/core/Event/Event";
 import { CreateSlamCommand, SlamCommands } from "../commands";
 import { InvalidCommandError } from "@psm/core/Errors/InvalidCommandError";
 import { CountryId } from "@psm/common/constants/countries";
+import { SlamCreatedEvent } from "../events/SlamCreated.event";
+import { SlamEventFactory } from "../events/SlamEventsFactory";
+import { SlamEvent } from "../events";
 
 export class Slam extends AggregateRoot<string> {
   private county: string | null = null;
@@ -25,9 +28,10 @@ export class Slam extends AggregateRoot<string> {
     super(id);
   }
 
-  protected mutate(event: PSMEvent<unknown, any>): void {
-    switch (event.getEventType) {
-      case "":
+  protected mutate(event: SlamEvent): void {
+    switch (event.eventType) {
+      case "SlamCreated":
+        this.countryId = event.getPayload.countryId;
         break;
 
       default:
@@ -41,19 +45,14 @@ export class Slam extends AggregateRoot<string> {
         console.log("Applying CreateSlam Command");
         const createcommand = command as CreateSlamCommand;
         await createcommand.validateOrThrow(createcommand.payload);
-        // eventually other validations over command
+        // eventually do other validations over command
 
         // apply the command
-        this.applyCommand(
-          new SlamCreatedEvent({
-            aggregateID: this.id,
-            payload: {
-              ...createcommand.payload,
-            },
-            timestamp: new Date().getTime(),
+        this.apply(
+          SlamEventFactory.createEvent("SlamCreated", {
+            payload: createcommand.payload,
           })
         );
-
         return this;
 
       default:
