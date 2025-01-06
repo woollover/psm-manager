@@ -1,10 +1,12 @@
-import { SlamEventPayload, SlamEventType } from ".";
+import { SlamEventPayload, SlamEventPayloadUnion, SlamEventType } from ".";
 import { EventInput } from "@psm/core/Event/Event";
 import { randomUUID } from "crypto";
 import { SlamCreatedEvent } from "./SlamCreated.event";
 
+type SlamEventInput = EventInput & { payload: SlamEventPayloadUnion };
+
 export class SlamEventFactory {
-  static createEvent(eventType: SlamEventType, eventInput: EventInput) {
+  static createEvent(eventType: SlamEventType, eventInput: SlamEventInput) {
     const baseEventData = {
       timestamp: eventInput.timestamp || new Date().getTime(),
       aggregateId: eventInput.aggregateId ?? "evt-" + randomUUID(),

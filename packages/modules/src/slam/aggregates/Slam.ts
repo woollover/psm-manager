@@ -1,12 +1,9 @@
-import { UpdateContinuousBackupsCommand } from "@aws-sdk/client-dynamodb";
 import { AggregateRoot } from "@psm/core/AggregateRoot";
-import { PSMEvent } from "@psm/core/Event/Event";
 import { CreateSlamCommand, SlamCommands } from "../commands";
 import { InvalidCommandError } from "@psm/core/Errors/InvalidCommandError";
 import { CountryId } from "@psm/common/constants/countries";
-import { SlamCreatedEvent } from "../events/SlamCreated.event";
 import { SlamEventFactory } from "../events/SlamEventsFactory";
-import { SlamEvent } from "../events";
+import { SlamEvent, SlamEventPayload } from "../events";
 
 export class Slam extends AggregateRoot<string> {
   private county: string | null = null;
@@ -46,11 +43,22 @@ export class Slam extends AggregateRoot<string> {
         const createcommand = command as CreateSlamCommand;
         await createcommand.validateOrThrow(createcommand.payload);
         // eventually do other validations over command
-
+        const payload: SlamEventPayload<"SlamCreated"> = {
+          regionalId: command.payload.regionalId,
+          countryId: command.payload.countryId,
+          city: command.payload.city,
+          venue: command.payload.venue,
+          timestamp: new Date(
+            command.payload.year,
+            command.payload.monthIndex,
+            command.payload.day
+          ).getTime(),
+        };
         // apply the command
         this.apply(
           SlamEventFactory.createEvent("SlamCreated", {
-            payload: createcommand.payload,
+            aggregateId: this.id,
+            payload,
           })
         );
         return this;

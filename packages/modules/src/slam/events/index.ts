@@ -27,3 +27,7 @@ export type SlamEventType = keyof SlamEventPayloadMap;
 
 // dynamic type of payloads derived from the map.
 export type SlamEventPayload<E extends SlamEventType> = SlamEventPayloadMap[E];
+
+// dynamic union of payloads (it's very helpful in the EventInput discriminated union)
+export type SlamEventPayloadUnion =
+  SlamEventPayloadMap[keyof SlamEventPayloadMap];
