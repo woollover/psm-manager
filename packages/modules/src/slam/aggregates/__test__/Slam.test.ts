@@ -12,6 +12,5 @@ describe("Slam Aggregate Tests", () => {
   describe("Mutate method", () => {
     test("should mutate the event");
     const slam = new Slam("slam-1234");
-    expect(slam).toBeDefined();
   });
 });

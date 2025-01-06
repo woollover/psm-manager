@@ -9,7 +9,10 @@ export interface EditPoetCommandInput {
   instagramHandle?: string;
 }
 
-export class EditPoetCommand extends Command<EditPoetCommandInput> {
+export class EditPoetCommand extends Command<
+  EditPoetCommandInput,
+  "EditPoetCommand"
+> {
   validate(input: EditPoetCommandInput): void | Promise<void> {
     if (!input.aggregateId) {
       this.append_error({

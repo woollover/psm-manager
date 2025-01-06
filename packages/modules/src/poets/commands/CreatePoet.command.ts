@@ -8,7 +8,10 @@ export interface CreatePoetCommandInput {
   instagramHandle: string;
 }
 
-export class CreatePoetCommand extends Command<CreatePoetCommandInput> {
+export class CreatePoetCommand extends Command<
+  CreatePoetCommandInput,
+  "CreatePoetCommand"
+> {
   validate(input: CreatePoetCommandInput): void {
     if (!input.firstName) {
       this.append_error({

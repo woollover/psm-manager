@@ -45,9 +45,7 @@ export class Slam extends AggregateRoot<string> {
     switch (command.commandName) {
       case "CreateSlamCommand":
         console.log("Applying CreateSlam Command");
-        const createcommand = command as CreateSlamCommand;
-        await createcommand.validateOrThrow(createcommand.payload);
-
+        command.validateOrThrow(command.payload);
         // eventually do other validations over command
         const payload: SlamEventPayload<"SlamCreated"> = {
           regionalId: command.payload.regionalId,

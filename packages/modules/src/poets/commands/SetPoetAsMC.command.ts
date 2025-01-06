@@ -3,7 +3,10 @@ export interface SetPoetAsMCCommandInput {
   aggregateId: string;
 }
 
-export class SetPoetAsMCCommand extends Command<SetPoetAsMCCommandInput> {
+export class SetPoetAsMCCommand extends Command<
+  SetPoetAsMCCommandInput,
+  "SetPooetAsMCCommand"
+> {
   validate(input: SetPoetAsMCCommandInput): void | Promise<void> {
     if (!input.aggregateId) {
       this.append_error({

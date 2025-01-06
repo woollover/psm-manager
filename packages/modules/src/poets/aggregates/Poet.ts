@@ -116,87 +116,81 @@ export class Poet extends AggregateRoot<string> {
 
   public async applyCommand(command: PoetCommands): Promise<Poet> {
     // Business invariants validation
-    switch (command.constructor) {
-      case CreatePoetCommand: {
-        const createCommand = command as CreatePoetCommand;
-        await createCommand.validateOrThrow(createCommand.payload);
-        console.log("🚀 Command payload:", createCommand.payload);
-        const payload = createCommand.payload;
+    switch (command.commandName) {
+      case "CreatePoetCommand": {
+        await command.validateOrThrow(command.payload);
         this.apply(
           PoetsEventFactory.createEvent("PoetCreated", {
             aggregateId: this.id,
-            payload,
-          })
-        );
-        return this;
-      }
-      case SetPoetAsMCCommand: {
-        const setCommand = command as SetPoetAsMCCommand;
-        await setCommand.validateOrThrow(setCommand.payload);
-        if (this.getIsMc == true) {
-          throw new Error("Poet is already set as MC");
-          // reject the command
-        }
-        this.apply(
-          new PoetSetAsMCEvent({
-            aggregateId: this.id,
-            payload: setCommand.payload,
-            timestamp: new Date().getTime(),
+            payload: command.payload,
           })
         );
         return this;
       }
 
-      case SetPoetAsPoetCommand: {
-        const setCommand = command as SetPoetAsPoetCommand;
-        await setCommand.validateOrThrow(setCommand.payload);
-        if (this.getIsMc == false) {
-          throw new Error("Poet is already set as Poet");
+      case "SetPooetAsMCCommand": {
+        await command.validateOrThrow(command.payload);
+        if (this.getIsMc == true) {
+          throw new Error("Poet is already set as MC");
           // reject the command
         }
         this.apply(
-          new PoetSetAsPoetEvent({
+          PoetsEventFactory.createEvent("PoetSetAsMC", {
             aggregateId: this.id,
-            payload: setCommand.payload,
-            timestamp: new Date().getTime(),
+            payload: command.payload,
           })
         );
         return this;
       }
-      case EditPoetCommand: {
-        const editCommand = command as EditPoetCommand;
-        await editCommand.validateOrThrow(editCommand.payload);
+
+      case "SetPoetAsPoetCommand": {
+        await command.validateOrThrow(command.payload);
+        if (this.getIsMc == false) {
+          // reject the command
+          throw new Error("Poet is already set as Poet");
+        }
+
+        this.apply(
+          PoetsEventFactory.createEvent("PoetSetAsPoet", {
+            aggregateId: this.id,
+            payload: command.payload,
+          })
+        );
+        return this;
+      }
+      case "EditPoetCommand": {
+        await command.validateOrThrow(command.payload);
+
         if (this.isDeleted) throw new Error("Poet is deleted");
+
         this.apply(
           new PoetEditedEvent({
             aggregateId: this.id,
-            payload: editCommand.payload,
+            payload: command.payload,
             timestamp: new Date().getTime(),
           })
         );
         return this;
       }
-      case DeletePoetCommand: {
-        const deleteCommand = command as DeletePoetCommand;
+      case "DeletePoetCommand": {
         if (this.isDeleted) throw new Error("Poet is deleted");
-        await deleteCommand.validateOrThrow(deleteCommand.payload);
+        await command.validateOrThrow(command.payload);
         this.apply(
           new PoetDeletedEvent({
             aggregateId: this.id,
-            payload: deleteCommand.payload,
+            payload: command.payload,
             timestamp: new Date().getTime(),
           })
         );
         return this;
       }
-      case ReactivatePoetCommand: {
-        const reactivateCommand = command as ReactivatePoetCommand;
-        await reactivateCommand.validateOrThrow(reactivateCommand.payload);
+      case "ReactivatePoetCommand": {
+        await command.validateOrThrow(command.payload);
         if (!this.isDeleted) throw new Error("Poet is not deleted");
         this.apply(
           new PoetReactivatedEvent({
             aggregateId: this.id,
-            payload: reactivateCommand.payload,
+            payload: command.payload,
             timestamp: new Date().getTime(),
           })
         );

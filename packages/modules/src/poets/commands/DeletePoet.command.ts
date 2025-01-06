@@ -3,7 +3,10 @@ export interface DeletePoetCommandInput {
   aggregateId: string;
 }
 
-export class DeletePoetCommand extends Command<DeletePoetCommandInput> {
+export class DeletePoetCommand extends Command<
+  DeletePoetCommandInput,
+  "DeletePoetCommand"
+> {
   validate(input: DeletePoetCommandInput): void | Promise<void> {
     if (!input.aggregateId) {
       this.append_error({
