@@ -7,7 +7,8 @@
     "strictNullChecks": true,
     "baseUrl": ".",
     "paths": {
-      "@psm/core/*": ["../core/src/*"]
+      "@psm/core/*": ["../core/src/*"],
+      "@psm/common/*": ["../common/src/*"]
     },
     "types": ["node"]
   },

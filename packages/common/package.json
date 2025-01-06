@@ -1,0 +1,35 @@
+{
+  "name": "@psm/common",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "outDir": "dist",
+  "rootDir": "./src",
+  "baseUrl": ".",
+  "paths": {
+    "@psm/common/*": [
+      "./src/*"
+    ]
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vitest": "^2.0.3"
+  }
+}

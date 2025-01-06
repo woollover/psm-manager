@@ -3,10 +3,11 @@ import { AggregateRoot } from "@psm/core/AggregateRoot";
 import { PSMEvent } from "@psm/core/Event/Event";
 import { CreateSlamCommand, SlamCommands } from "../commands";
 import { InvalidCommandError } from "@psm/core/Errors/InvalidCommandError";
+import { CountryId } from "@psm/common/constants/countries";
 
 export class Slam extends AggregateRoot<string> {
-  private regionalID: string | null = null;
-  private nation: string | null = null;
+  private county: string | null = null;
+  private countryId: CountryId | null = null;
   private city: string | null = null;
   private venue: string | null = null;
   private day: number | null = null; // validate if is a correct day max 31 min 1 according to monthIndex

@@ -17,7 +17,8 @@
   "dependencies": {
     "@aws-sdk/lib-dynamodb": "^3.712.0",
     "@aws-sdk/util-dynamodb": "^3.716.0",
-    "@psm/core": "workspace:*"
+    "@psm/core": "workspace:*",
+    "@psm/common": "workspace:*"
   },
   "devDependencies": {}
 }

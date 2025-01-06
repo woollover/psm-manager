@@ -2,7 +2,7 @@ import { Command } from "@psm/core/Command/Command";
 
 export interface CreateSlamCommandInput {
   regionalId: string;
-  nation: string;
+  country: string;
   city: string;
   venue: string;
   day: number; // validatei is a correct day max 31 min 1
