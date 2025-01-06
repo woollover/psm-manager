@@ -3,10 +3,8 @@ import {
   APIGatewayProxyResultV2,
   Handler,
 } from "aws-lambda";
-import { EventStore } from "@psm/core/EventStore";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { PoetsListMaterializedView } from "../read/materialized-view/PoetList.materialized-view";
 import { MaterializedViewRepository } from "@psm/core/Repos/MaterializedViewRepo";
 import { PoetListReadModel } from "../read/read-models/PoetsList.read-model";
 import { PoetsListMaterializedViewDBShape } from "../read/materialized-view/types";

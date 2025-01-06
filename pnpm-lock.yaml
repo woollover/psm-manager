@@ -95,6 +95,10 @@ importers:
       '@psm/core':
         specifier: workspace:*
         version: link:../core
+    devDependencies:
+      '@types/aws-lambda':
+        specifier: ^8.10.137
+        version: 8.10.146
 
 packages:
 

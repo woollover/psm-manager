@@ -18,7 +18,7 @@ export const SlamEventList = [
 export type SlamEvent = SlamCreatedEvent | SlamDeletedEvent;
 
 // typemap of the according payload
-export type SlamEventPayloadMap = {
+type SlamEventPayloadMap = {
   [E in SlamEvent as E["eventType"]]: E["getPayload"];
 };
 

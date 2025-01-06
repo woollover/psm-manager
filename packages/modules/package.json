@@ -20,5 +20,7 @@
     "@psm/core": "workspace:*",
     "@psm/common": "workspace:*"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.137"
+  }
 }

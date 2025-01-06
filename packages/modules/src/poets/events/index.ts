@@ -14,8 +14,7 @@ export const PoetEventsList = [
   "PoetReactivated",
 ] as const;
 
-export type PoetEventType = (typeof PoetEventsList)[number];
-
+// union of all event classes in the domain
 type PoetEvent =
   | PoetCreatedEvent
   | PoetDeletedEvent
@@ -24,6 +23,17 @@ type PoetEvent =
   | PoetSetAsPoetEvent
   | PoetReactivatedEvent;
 
+// typemap of the according payload
+type PoetEventPayloadMap = {
+  [E in PoetEvent as E["eventType"]]: E["getPayload"];
+};
+
+// list of active event type names
+type PoetEventType = keyof PoetEventPayloadMap;
+
+// dynamic type of payloads derived from the map.
+type PoetEventPayload<E extends PoetEventType> = PoetEventPayloadMap[E];
+
 export {
   PoetCreatedEvent,
   PoetDeletedEvent,
@@ -31,5 +41,7 @@ export {
   PoetSetAsMCEvent,
   PoetSetAsPoetEvent,
   PoetReactivatedEvent,
+  PoetEventType,
+  PoetEventPayload,
   PoetEvent,
 };
