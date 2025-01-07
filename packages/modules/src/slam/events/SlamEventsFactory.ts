@@ -2,6 +2,7 @@ import { SlamEventPayload, SlamEventPayloadUnion, SlamEventType } from ".";
 import { EventInput } from "@psm/core/Event/Event";
 import { randomUUID } from "crypto";
 import { SlamCreatedEvent } from "./SlamCreated.event";
+import { SlamDeletedEvent } from "./SlamDeleted.event";
 
 type SlamEventInput = EventInput & { payload: SlamEventPayloadUnion };
 
@@ -25,12 +26,21 @@ export class SlamEventFactory {
         return new SlamCreatedEvent({
           ...baseEventData,
           payload: {
+            name: payload.name,
             regionalId: payload.regionalId,
             countryId: payload.countryId,
             city: payload.city,
             venue: payload.venue,
             timestamp: payload.timestamp,
           },
+        });
+
+      case "SlamDeleted":
+        const slamDeletedPayload =
+          payloadBody as SlamEventPayload<"SlamDeleted">;
+        return new SlamDeletedEvent({
+          ...baseEventData,
+          payload: slamDeletedPayload,
         });
 
       default:

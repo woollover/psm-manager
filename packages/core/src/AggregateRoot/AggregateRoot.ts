@@ -18,7 +18,7 @@ export abstract class AggregateRoot<TId> {
   protected abstract mutate(event: PSMEvent<unknown, any>): void;
 
   // Retrieve uncommitted events
-  public getUncommittedEvents(): PSMEvent<unknown, any>[] {
+  public get uncommittedEvents(): PSMEvent<unknown, any>[] {
     return [...this._uncommittedEvents]; // it's a new array bcs the uncommittedEvents is readonly and immutable
   }
 

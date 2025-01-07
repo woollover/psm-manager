@@ -11,11 +11,12 @@ describe("CreateSlamCommand", () => {
       countryId: "AF",
       city: "",
       venue: "",
+      name: "",
       day: 0,
       year: 0,
       monthIndex: 0,
     };
-    const command = new CreateSlamCommand(input);
+    const command = new CreateSlamCommand("CreateSlamCommand", input);
     expect(command).toBeDefined();
   });
 
@@ -23,6 +24,7 @@ describe("CreateSlamCommand", () => {
     test("invalid countryID", () => {
       const input: CreateSlamCommandInput = {
         regionalId: "ABCD",
+        name: "ABCD",
         // @ts-expect-error
         countryId: "HG",
         city: "ABCD",
@@ -31,7 +33,7 @@ describe("CreateSlamCommand", () => {
         year: 2025,
         monthIndex: 6,
       };
-      const command = new CreateSlamCommand(input);
+      const command = new CreateSlamCommand("CreateSlamCommand", input);
       expect(command).toBeDefined();
       command.validate(input);
       expect(command.errors).toHaveLength(1);
@@ -39,6 +41,7 @@ describe("CreateSlamCommand", () => {
     test("invalid Venue name", () => {
       const input: CreateSlamCommandInput = {
         regionalId: "ABCD",
+        name: "ABCD",
         countryId: "IT",
         city: "ABCD",
         venue: "A",
@@ -46,13 +49,14 @@ describe("CreateSlamCommand", () => {
         year: 2025,
         monthIndex: 6,
       };
-      const command = new CreateSlamCommand(input);
+      const command = new CreateSlamCommand("CreateSlamCommand", input);
       expect(command).toBeDefined();
       command.validate(input);
       expect(command.errors).toHaveLength(1);
     });
     test("invalid date input", () => {
       const input: CreateSlamCommandInput = {
+        name: "ABCD",
         regionalId: "ABCD",
         countryId: "IT",
         city: "ABCD",
@@ -61,7 +65,7 @@ describe("CreateSlamCommand", () => {
         year: 2025,
         monthIndex: 1,
       };
-      const command = new CreateSlamCommand(input);
+      const command = new CreateSlamCommand("CreateSlamCommand", input);
       expect(command).toBeDefined();
       command.validate(input);
       expect(command.errors).toHaveLength(2);

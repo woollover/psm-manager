@@ -6,6 +6,7 @@ export interface CreateSlamCommandInput {
   countryId: CountryId;
   city: string;
   venue: string;
+  name: string;
   day: number; // validate if is a correct day max 31 min 1
   year: number; // validate is not in the past
   monthIndex: number; // 0-jan >> 11-dec
@@ -16,6 +17,7 @@ export class CreateSlamCommand extends Command<
 > {
   validate(input: CreateSlamCommandInput): void | Promise<void> {
     this.validateDate(input)
+      .validateName(input)
       .validateCity(input)
       .validateVenue(input)
       .validateRegionalId(input)
@@ -67,6 +69,16 @@ export class CreateSlamCommand extends Command<
     }
 
     return this; // Valid date
+  }
+
+  private validateName(input: CreateSlamCommandInput): CreateSlamCommand {
+    if (input.name == "" || input.name.length < 3) {
+      this.append_error({
+        field: "name",
+        cue: "Slam name lenght cannot be under 3 chars",
+      });
+    }
+    return this;
   }
 
   private validateCity(input: CreateSlamCommandInput): CreateSlamCommand {

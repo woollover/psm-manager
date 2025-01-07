@@ -7,6 +7,7 @@ export interface SlamCreatedPayload {
   city: string;
   venue: string;
   timestamp: number;
+  name: string;
 }
 
 export class SlamCreatedEvent extends PSMEvent<

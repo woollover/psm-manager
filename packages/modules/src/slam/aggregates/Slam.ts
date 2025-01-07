@@ -1,30 +1,24 @@
 import { AggregateRoot } from "@psm/core/AggregateRoot";
-import {
-  CreateSlamCommand,
-  DeleteSlamCommand,
-  SlamCommands,
-} from "../commands";
+import { SlamCommands } from "../commands";
 import { InvalidCommandError } from "@psm/core/Errors/InvalidCommandError";
 import { CountryId } from "@psm/common/constants/countries";
 import { SlamEventFactory } from "../events/SlamEventsFactory";
 import { SlamEvent, SlamEventPayload } from "../events";
-import { CreateSlamCommandInput } from "../commands/CreateSlam.command";
 
 export class Slam extends AggregateRoot<string> {
-  private county: string | null = null;
-  private countryId: CountryId | null = null;
-  private city: string | null = null;
-  private venue: string | null = null;
-  private day: number | null = null; // validate if is a correct day max 31 min 1 according to monthIndex
-  private year: number | null = null; // validate is not in the past
-  private monthIndex: number | null = null; // 0-jan >> 11-dec
-  private name: string | null = null;
-  private mcs: Array<string> = [];
+  private regionalId: string | null = null; // county name
+  private countryId: CountryId | null = null; // Country ID
+  private city: string | null = null; // city Name
+  private venue: string | null = null; // Venue Name
+  private timestamp: number | null = null; // Date of the Slam
+  private name: string | null = null; // Title of the Slam
+  private mcs: Array<string> = []; // Poet IDs and MCs
   private candidates: Array<string> = [];
   private callOpen: boolean = false;
   private poets: Array<string> = [];
   private started: boolean = false;
   private ended: boolean = false;
+  private deleted: boolean = false;
 
   constructor(public readonly id: string) {
     super(id);
@@ -34,10 +28,18 @@ export class Slam extends AggregateRoot<string> {
     switch (event.eventType) {
       case "SlamCreated":
         this.countryId = event.getPayload.countryId;
+        this.regionalId = event.getPayload.regionalId;
+        this.city = event.getPayload.city;
+        this.venue = event.getPayload.venue;
+        this.timestamp = event.getPayload.timestamp;
+        this.name = event.getPayload.name;
         break;
-
+      case "SlamDeleted":
+        this.deleted = true;
+        break;
       default:
-        throw new Error(`event not valid ${event.getEventType}`);
+        //@ts-expect-error
+        throw new Error(`event not valid ${event.eventType}`);
     }
   }
 
@@ -47,7 +49,8 @@ export class Slam extends AggregateRoot<string> {
         console.log("Applying CreateSlam Command");
         command.validateOrThrow(command.payload);
         // eventually do other validations over command
-        const payload: SlamEventPayload<"SlamCreated"> = {
+        const slamCreatedPayload: SlamEventPayload<"SlamCreated"> = {
+          name: command.payload.name,
           regionalId: command.payload.regionalId,
           countryId: command.payload.countryId,
           city: command.payload.city,
@@ -62,14 +65,41 @@ export class Slam extends AggregateRoot<string> {
         this.apply(
           SlamEventFactory.createEvent("SlamCreated", {
             aggregateId: this.id,
-            payload,
+            payload: slamCreatedPayload,
           })
         );
         return this;
       case "DeleteSlamCommand":
+        console.log("Applying DeleteSlam Command");
+        command.validateOrThrow(command.payload);
+        const slamDeletedPayload: SlamEventPayload<"SlamDeleted"> = {};
+        this.apply(
+          SlamEventFactory.createEvent("SlamDeleted", {
+            aggregateId: this.id,
+            payload: slamDeletedPayload,
+          })
+        );
         return this;
       default:
         throw new InvalidCommandError("Command does not exists", []);
     }
+  }
+
+  // getters
+
+  get getName() {
+    return this.name;
+  }
+
+  get getCity() {
+    return this.city;
+  }
+
+  get getTimestamp() {
+    return this.timestamp;
+  }
+
+  get isDeleted() {
+    return this.deleted;
   }
 }
