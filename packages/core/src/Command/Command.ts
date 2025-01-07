@@ -1,7 +1,7 @@
 import {
   CommandValidationError,
   InvalidCommandError,
-} from "../Errors/InvalidCommandError";
+} from "../Errors/InvalidCommand.error";
 
 export abstract class Command<I, CommandName extends string> {
   #commandName: CommandName;

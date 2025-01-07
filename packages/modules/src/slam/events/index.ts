@@ -1,3 +1,4 @@
+import { MCAssignedEvent } from "./MCAssigned.event";
 import { SlamCreatedEvent } from "./SlamCreated.event";
 import { SlamDeletedEvent } from "./SlamDeleted.event";
 import { SlamEditedEvent } from "./SlamEdited.event";
@@ -16,7 +17,11 @@ export const SlamEventList = [
 ] as const;
 
 // union of all event classes in the domain
-export type SlamEvent = SlamCreatedEvent | SlamDeletedEvent | SlamEditedEvent;
+export type SlamEvent =
+  | SlamCreatedEvent
+  | SlamDeletedEvent
+  | SlamEditedEvent
+  | MCAssignedEvent;
 
 // typemap of the according payload
 type SlamEventPayloadMap = {

@@ -4,6 +4,7 @@ import { randomUUID } from "crypto";
 import { SlamCreatedEvent } from "./SlamCreated.event";
 import { SlamDeletedEvent } from "./SlamDeleted.event";
 import { SlamEditedEvent } from "./SlamEdited.event";
+import { MCAssignedEvent } from "./MCAssigned.event";
 
 type SlamEventInput = EventInput & { payload: SlamEventPayloadUnion };
 
@@ -50,7 +51,12 @@ export class SlamEventFactory {
           ...baseEventData,
           payload: slamEditedPayload,
         });
-
+      case "MCAssigned":
+        const mcAssignedPayload = payloadBody as SlamEventPayload<"MCAssigned">;
+        return new MCAssignedEvent({
+          ...baseEventData,
+          payload: mcAssignedPayload,
+        });
       default:
         throw new Error(`Event not found: ${eventType}`);
     }

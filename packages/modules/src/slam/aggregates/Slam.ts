@@ -1,10 +1,10 @@
 import { AggregateRoot } from "@psm/core/AggregateRoot";
 import { SlamCommands } from "../commands";
-import { InvalidCommandError } from "@psm/core/Errors/InvalidCommandError";
+import { InvalidCommandError } from "@psm/core/Errors/InvalidCommand.error";
+import { InvariantValidationError } from "@psm/core/Errors/InvariantValidation.error";
 import { CountryId } from "@psm/common/constants/countries";
 import { SlamEventFactory } from "../events/SlamEventsFactory";
 import { SlamEvent, SlamEventPayload } from "../events";
-import { SlamEditedEvent } from "../events/SlamEdited.event";
 
 export class Slam extends AggregateRoot<string> {
   private regionalId: string | null = null; // county name
@@ -54,13 +54,24 @@ export class Slam extends AggregateRoot<string> {
           : this.timestamp;
         this.name = event.getPayload.name ? event.getPayload.name : this.name;
         break;
+
+      case "MCAssigned":
+        this.ensureSlamIsNotDeleted()
+          .ensureSlamHasNotAlreadyAnMC()
+          .ensureMcIsNotAssigned(event.getPayload.mcId)
+          .ensureSlamIsNotStarted()
+          .ensureSlamIsNotEnded()
+          .ensureSlamHasNotAlreadyAnMC();
+
+        this.mcs.push(event.getPayload.mcId);
+        break;
       default:
         //@ts-expect-error
         throw new Error(`event not valid ${event.eventType}`);
     }
   }
 
-  public async applyCommand(command: SlamCommands): Promise<Slam> {
+  public applyCommand(command: SlamCommands): void {
     switch (command.commandName) {
       case "CreateSlamCommand":
         console.log("Applying CreateSlam Command");
@@ -85,7 +96,7 @@ export class Slam extends AggregateRoot<string> {
             payload: slamCreatedPayload,
           })
         );
-        return this;
+        break;
       case "DeleteSlamCommand":
         console.log("Applying DeleteSlam Command");
         command.validateOrThrow(command.payload);
@@ -96,7 +107,7 @@ export class Slam extends AggregateRoot<string> {
             payload: slamDeletedPayload,
           })
         );
-        return this;
+        break;
       case "EditSlamCommand":
         console.log("Applying EditSlam Command");
         const slamEditedPayload: SlamEventPayload<"SlamEdited"> = {
@@ -115,19 +126,72 @@ export class Slam extends AggregateRoot<string> {
               command.payload.day
             ).getTime(),
         };
+
         this.apply(
           SlamEventFactory.createEvent("SlamEdited", {
             aggregateId: this.id,
             payload: slamEditedPayload,
           })
         );
-        return this;
+        break;
+
+      case "AssignMCCommand":
+        console.log("Applying AssignMC Command");
+        const mcAssignedPayload: SlamEventPayload<"MCAssigned"> = {
+          mcId: command.payload.mcId,
+          slamId: command.payload.slamId,
+        };
+
+        this.apply(
+          SlamEventFactory.createEvent("MCAssigned", {
+            payload: mcAssignedPayload,
+            aggregateId: this.id,
+          })
+        );
+        break;
+
       default:
         throw new InvalidCommandError("Command does not exists", []);
     }
   }
 
-  // getters
+  // validators
+
+  private ensureSlamIsNotDeleted(): Slam {
+    if (this.deleted) {
+      throw new InvariantValidationError("Slam is deleted");
+    }
+    return this;
+  }
+  private ensureSlamIsNotStarted(): Slam {
+    if (this.started) {
+      throw new InvariantValidationError("Slam is already started");
+    }
+    return this;
+  }
+
+  private ensureSlamIsNotEnded(): Slam {
+    if (this.ended) {
+      throw new InvariantValidationError("Slam is already ended");
+    }
+    return this;
+  }
+
+  private ensureMcIsNotAssigned(mcId: string): Slam {
+    if (this.mcs.includes(mcId)) {
+      throw new InvariantValidationError("MC is already assigned");
+    }
+    return this;
+  }
+
+  private ensureSlamHasNotAlreadyAnMC(): Slam {
+    if (this.mcs.length > 0) {
+      throw new InvariantValidationError("Slam already has an MC");
+    }
+    return this;
+  }
+
+  // #region getters
 
   get getName() {
     return this.name;
@@ -141,6 +205,9 @@ export class Slam extends AggregateRoot<string> {
     return this.timestamp;
   }
 
+  get getMcs() {
+    return this.mcs;
+  }
   get isDeleted() {
     return this.deleted;
   }
