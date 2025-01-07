@@ -1,12 +1,12 @@
 import { PSMEvent } from "@psm/core/Event/Event";
 
-export interface MCAssignedEventPayload {
+export interface MCUnassignedEventPayload {
   mcId: string;
 }
 
-export class MCAssignedEvent extends PSMEvent<
-  MCAssignedEventPayload,
-  "MCAssigned"
+export class MCUnassignedEvent extends PSMEvent<
+  MCUnassignedEventPayload,
+  "MCUnassigned"
 > {
   constructor({
     payload,
@@ -15,7 +15,7 @@ export class MCAssignedEvent extends PSMEvent<
     aggregateOffset,
     globalOffset,
   }: {
-    payload: MCAssignedEventPayload;
+    payload: MCUnassignedEventPayload;
     timestamp: number;
     aggregateId: string;
     aggregateOffset?: number | undefined;
@@ -23,7 +23,7 @@ export class MCAssignedEvent extends PSMEvent<
   }) {
     super({
       aggregateId: aggregateId,
-      eventType: "MCAssigned",
+      eventType: "MCUnassigned",
       payload: payload,
       timestamp,
       aggregateOffset,

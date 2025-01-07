@@ -1,4 +1,5 @@
 import { MCAssignedEvent } from "./MCAssigned.event";
+import { MCUnassignedEvent } from "./MCUnassigned.event";
 import { SlamCreatedEvent } from "./SlamCreated.event";
 import { SlamDeletedEvent } from "./SlamDeleted.event";
 import { SlamEditedEvent } from "./SlamEdited.event";
@@ -21,7 +22,8 @@ export type SlamEvent =
   | SlamCreatedEvent
   | SlamDeletedEvent
   | SlamEditedEvent
-  | MCAssignedEvent;
+  | MCAssignedEvent
+  | MCUnassignedEvent;
 
 // typemap of the according payload
 type SlamEventPayloadMap = {

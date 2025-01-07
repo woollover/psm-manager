@@ -4,8 +4,8 @@ import {
   AssignMCCommand,
   CreateSlamCommand,
   DeleteSlamCommand,
+  UnassignMCCommand,
 } from "src/slam/commands";
-import { before } from "node:test";
 import { InvariantValidationError } from "@psm/core/Errors/InvariantValidation.error";
 
 describe("Slam Aggregate Tests", () => {
@@ -22,7 +22,6 @@ describe("Slam Aggregate Tests", () => {
     });
 
     afterEach(() => {
-      // Reset mocks, state, etc.
       vitest.clearAllMocks();
     });
 
@@ -47,15 +46,15 @@ describe("Slam Aggregate Tests", () => {
       console.log(slam.uncommittedEvents);
       expect(slam.uncommittedEvents.length).toBe(1);
     });
+
     test("should assign the MC correctly", () => {
-      console.log("Assigning MC");
       slam.applyCommand(
         new AssignMCCommand("AssignMCCommand", {
           slamId: "slam-1234",
-          mcId: "mc-1234",
+          mcId: "poet-1234",
         })
       );
-      expect(slam.getMcs).toEqual(["mc-1234"]);
+      expect(slam.getMcs).toEqual(["poet-1234"]);
       expect(slam.uncommittedEvents.length).toBe(2);
     });
 
@@ -64,10 +63,32 @@ describe("Slam Aggregate Tests", () => {
         slam.applyCommand(
           new AssignMCCommand("AssignMCCommand", {
             slamId: "slam-1234",
-            mcId: "mc-1234",
+            mcId: "poet-1234",
           })
         );
       }).toThrowError(new InvariantValidationError("Slam already has an MC"));
+    });
+
+    test("but if I remove the MC correctly", () => {
+      slam.applyCommand(
+        new UnassignMCCommand("UnassignMCCommand", {
+          slamId: "slam-1234",
+          mcId: "poet-1234",
+        })
+      );
+      expect(slam.getMcs).toEqual([]);
+      expect(slam.uncommittedEvents.length).toBe(3);
+    });
+
+    test("I can now add an MC again", () => {
+      slam.applyCommand(
+        new AssignMCCommand("AssignMCCommand", {
+          slamId: "slam-1234",
+          mcId: "poet-1234",
+        })
+      );
+      expect(slam.getMcs).toEqual(["poet-1234"]);
+      expect(slam.uncommittedEvents.length).toBe(4);
     });
 
     // lets' delete the slam:
@@ -77,7 +98,7 @@ describe("Slam Aggregate Tests", () => {
       );
       expect(slam.isDeleted).toBeTruthy();
       // check if the uncommitted events are correctly updated
-      expect(slam.uncommittedEvents.length).toBe(3);
+      expect(slam.uncommittedEvents.length).toBe(5);
     });
 
     test("if I try to modify any property of a deleted slam, should throw an error", () => {
@@ -85,7 +106,7 @@ describe("Slam Aggregate Tests", () => {
         slam.applyCommand(
           new AssignMCCommand("AssignMCCommand", {
             slamId: "slam-1234",
-            mcId: "mc-1234",
+            mcId: "poet-1234",
           })
         );
       }).toThrowError(new InvariantValidationError("Slam is deleted"));

@@ -5,6 +5,7 @@ import { SlamCreatedEvent } from "./SlamCreated.event";
 import { SlamDeletedEvent } from "./SlamDeleted.event";
 import { SlamEditedEvent } from "./SlamEdited.event";
 import { MCAssignedEvent } from "./MCAssigned.event";
+import { MCUnassignedEvent } from "./MCUnassigned.event";
 
 type SlamEventInput = EventInput & { payload: SlamEventPayloadUnion };
 
@@ -57,6 +58,15 @@ export class SlamEventFactory {
           ...baseEventData,
           payload: mcAssignedPayload,
         });
+
+      case "MCUnassigned":
+        const mcUnassignedPayload =
+          payloadBody as SlamEventPayload<"MCUnassigned">;
+        return new MCUnassignedEvent({
+          ...baseEventData,
+          payload: mcUnassignedPayload,
+        });
+
       default:
         throw new Error(`Event not found: ${eventType}`);
     }

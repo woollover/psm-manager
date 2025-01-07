@@ -65,6 +65,15 @@ export class Slam extends AggregateRoot<string> {
 
         this.mcs.push(event.getPayload.mcId);
         break;
+
+        case "MCUnassigned":
+          this.ensureSlamIsNotDeleted()
+            .ensureSlamIsNotStarted()
+            .ensureSlamIsNotEnded()
+            .ensureSlamHasThisMCAssinged(event.getPayload.mcId);
+          this.mcs = this.mcs.filter((mc) => mc !== event.getPayload.mcId);
+          break;
+
       default:
         //@ts-expect-error
         throw new Error(`event not valid ${event.eventType}`);
@@ -139,7 +148,6 @@ export class Slam extends AggregateRoot<string> {
         console.log("Applying AssignMC Command");
         const mcAssignedPayload: SlamEventPayload<"MCAssigned"> = {
           mcId: command.payload.mcId,
-          slamId: command.payload.slamId,
         };
 
         this.apply(
@@ -150,12 +158,31 @@ export class Slam extends AggregateRoot<string> {
         );
         break;
 
+      case "UnassignMCCommand":
+        console.log("Applying UnassignMC Command");
+        const mcUnassignedPayload: SlamEventPayload<"MCUnassigned"> = {
+          mcId: command.payload.mcId,
+        };
+        this.apply(
+          SlamEventFactory.createEvent("MCUnassigned", {
+            payload: mcUnassignedPayload,
+            aggregateId: this.id,
+          })
+        );
+        break;
       default:
         throw new InvalidCommandError("Command does not exists", []);
     }
   }
 
-  // validators
+  // #region  validators
+
+  private ensureSlamHasThisMCAssinged(mcId: string): Slam {
+    if (!this.mcs.includes(mcId)) {
+      throw new InvariantValidationError("MC is not assigned to this slam");
+    }
+    return this;
+  }
 
   private ensureSlamIsNotDeleted(): Slam {
     if (this.deleted) {
