@@ -4,6 +4,7 @@ import { InvalidCommandError } from "@psm/core/Errors/InvalidCommandError";
 import { CountryId } from "@psm/common/constants/countries";
 import { SlamEventFactory } from "../events/SlamEventsFactory";
 import { SlamEvent, SlamEventPayload } from "../events";
+import { SlamEditedEvent } from "../events/SlamEdited.event";
 
 export class Slam extends AggregateRoot<string> {
   private regionalId: string | null = null; // county name
@@ -36,6 +37,22 @@ export class Slam extends AggregateRoot<string> {
         break;
       case "SlamDeleted":
         this.deleted = true;
+        break;
+      case "SlamEdited":
+        this.countryId = event.getPayload.countryId
+          ? event.getPayload.countryId
+          : this.countryId;
+        this.regionalId = event.getPayload.regionalId
+          ? event.getPayload.regionalId
+          : this.regionalId;
+        this.city = event.getPayload.city ? event.getPayload.city : this.city;
+        this.venue = event.getPayload.venue
+          ? event.getPayload.venue
+          : this.venue;
+        this.timestamp = event.getPayload.timestamp
+          ? event.getPayload.timestamp
+          : this.timestamp;
+        this.name = event.getPayload.name ? event.getPayload.name : this.name;
         break;
       default:
         //@ts-expect-error
@@ -77,6 +94,31 @@ export class Slam extends AggregateRoot<string> {
           SlamEventFactory.createEvent("SlamDeleted", {
             aggregateId: this.id,
             payload: slamDeletedPayload,
+          })
+        );
+        return this;
+      case "EditSlamCommand":
+        console.log("Applying EditSlam Command");
+        const slamEditedPayload: SlamEventPayload<"SlamEdited"> = {
+          name: command.payload.name,
+          regionalId: command.payload.regionalId,
+          countryId: command.payload.countryId,
+          city: command.payload.city,
+          venue: command.payload.venue,
+          timestamp:
+            command.payload.year &&
+            command.payload.monthIndex &&
+            command.payload.day &&
+            new Date(
+              command.payload.year,
+              command.payload.monthIndex,
+              command.payload.day
+            ).getTime(),
+        };
+        this.apply(
+          SlamEventFactory.createEvent("SlamEdited", {
+            aggregateId: this.id,
+            payload: slamEditedPayload,
           })
         );
         return this;

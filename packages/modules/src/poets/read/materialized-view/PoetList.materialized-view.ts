@@ -3,7 +3,7 @@ import { PoetEditedEvent } from "src/poets/events/PoetEdited.event";
 import { PoetSetAsMCEvent } from "src/poets/events/PoetSetAsMC.event";
 import { PoetSetAsPoetEvent } from "src/poets/events/PoetSetAsPoet.event";
 import { PoetDeletedEvent } from "src/poets/events/PoetDeleted.event";
-import { PoetReactivatedEvent } from "src/poets/events/PoetReactivated";
+import { PoetReactivatedEvent } from "src/poets/events/PoetReactivated.event";
 import { PoetsListMaterializedViewDBShape, PoetsListPoet } from "./types";
 
 /**

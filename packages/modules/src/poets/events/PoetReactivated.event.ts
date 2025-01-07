@@ -29,6 +29,5 @@ export class PoetReactivatedEvent extends PSMEvent<
       timestamp: timestamp,
       globalOffset: globalOffset,
     });
-    this.payload = payload;
   }
 }

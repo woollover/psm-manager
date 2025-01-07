@@ -2,7 +2,7 @@ import { PoetCreatedEvent } from "./PoetCreated.event";
 import { PoetEditedEvent } from "./PoetEdited.event";
 import { PoetDeletedEvent } from "./PoetDeleted.event";
 import { PoetSetAsMCEvent } from "./PoetSetAsMC.event";
-import { PoetReactivatedEvent } from "./PoetReactivated";
+import { PoetReactivatedEvent } from "./PoetReactivated.event";
 import { PoetSetAsPoetEvent } from "./PoetSetAsPoet.event";
 
 export const PoetEventsList = [

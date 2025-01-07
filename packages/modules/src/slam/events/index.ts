@@ -1,5 +1,6 @@
 import { SlamCreatedEvent } from "./SlamCreated.event";
 import { SlamDeletedEvent } from "./SlamDeleted.event";
+import { SlamEditedEvent } from "./SlamEdited.event";
 
 export const SlamEventList = [
   "SlamCreated",
@@ -15,7 +16,7 @@ export const SlamEventList = [
 ] as const;
 
 // union of all event classes in the domain
-export type SlamEvent = SlamCreatedEvent | SlamDeletedEvent;
+export type SlamEvent = SlamCreatedEvent | SlamDeletedEvent | SlamEditedEvent;
 
 // typemap of the according payload
 type SlamEventPayloadMap = {

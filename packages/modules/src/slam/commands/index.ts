@@ -1,7 +1,8 @@
 import { CreateSlamCommand } from "./CreateSlam.command";
 import { DeleteSlamCommand } from "./DeleteSlam.command";
+import { EditSlamCommand } from "./EditSlam.command";
 
-type SlamCommands = CreateSlamCommand | DeleteSlamCommand;
+type SlamCommands = CreateSlamCommand | DeleteSlamCommand | EditSlamCommand;
 
 type SlamCommandInputMap = {
   [C in SlamCommands as C["commandName"]]: C["payload"];
