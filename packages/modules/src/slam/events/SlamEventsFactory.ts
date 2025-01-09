@@ -6,6 +6,9 @@ import { SlamDeletedEvent } from "./SlamDeleted.event";
 import { SlamEditedEvent } from "./SlamEdited.event";
 import { MCAssignedEvent } from "./MCAssigned.event";
 import { MCUnassignedEvent } from "./MCUnassigned.event";
+import { CallOpenedEvent } from "./CallOpened.event";
+import { PoetCandidatedEvent } from "./PoetCandidated.event";
+import { CallClosedEvent } from "./CallClosed.event";
 
 type SlamEventInput = EventInput & { payload: SlamEventPayloadUnion };
 
@@ -65,6 +68,27 @@ export class SlamEventFactory {
         return new MCUnassignedEvent({
           ...baseEventData,
           payload: mcUnassignedPayload,
+        });
+      case "CallOpened":
+        const callOpenedPayload = payloadBody as SlamEventPayload<"CallOpened">;
+        return new CallOpenedEvent({
+          ...baseEventData,
+          payload: callOpenedPayload,
+        });
+
+      case "CallClosed":
+        const callClosedPayload = payloadBody as SlamEventPayload<"CallClosed">;
+        return new CallClosedEvent({
+          ...baseEventData,
+          payload: callClosedPayload,
+        });
+
+      case "PoetCandidated":
+        const poetCandidatedPayload =
+          payloadBody as SlamEventPayload<"PoetCandidated">;
+        return new PoetCandidatedEvent({
+          ...baseEventData,
+          payload: poetCandidatedPayload,
         });
 
       default:

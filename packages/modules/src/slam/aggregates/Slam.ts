@@ -66,13 +66,34 @@ export class Slam extends AggregateRoot<string> {
         this.mcs.push(event.getPayload.mcId);
         break;
 
-        case "MCUnassigned":
-          this.ensureSlamIsNotDeleted()
-            .ensureSlamIsNotStarted()
-            .ensureSlamIsNotEnded()
-            .ensureSlamHasThisMCAssinged(event.getPayload.mcId);
-          this.mcs = this.mcs.filter((mc) => mc !== event.getPayload.mcId);
-          break;
+      case "MCUnassigned":
+        this.ensureSlamIsNotDeleted()
+          .ensureSlamIsNotStarted()
+          .ensureSlamIsNotEnded()
+          .ensureSlamHasThisMCAssinged(event.getPayload.mcId);
+        this.mcs = this.mcs.filter((mc) => mc !== event.getPayload.mcId);
+        break;
+      case "PoetCandidated":
+        this.ensureSlamIsNotDeleted()
+          .ensureSalmAcceptCandidates()
+          .ensurePoetIsNotAlreadyCandidate(event.getPayload.poetId);
+
+        this.candidates.push(event.getPayload.poetId);
+        break;
+
+      case "CallOpened":
+        this.ensureSlamIsNotDeleted()
+          .ensureSlamIsNotStarted()
+          .ensureSlamIsNotEnded();
+        this.callOpen = true;
+        break;
+        
+      case "CallClosed": 
+        this.ensureSlamIsNotDeleted()
+          .ensureSlamIsNotStarted()
+          .ensureSlamIsNotEnded().ensureSLamCallIsOpen()
+        this.callOpen = false;
+        break;
 
       default:
         //@ts-expect-error
@@ -106,6 +127,7 @@ export class Slam extends AggregateRoot<string> {
           })
         );
         break;
+
       case "DeleteSlamCommand":
         console.log("Applying DeleteSlam Command");
         command.validateOrThrow(command.payload);
@@ -117,6 +139,7 @@ export class Slam extends AggregateRoot<string> {
           })
         );
         break;
+
       case "EditSlamCommand":
         console.log("Applying EditSlam Command");
         const slamEditedPayload: SlamEventPayload<"SlamEdited"> = {
@@ -170,12 +193,68 @@ export class Slam extends AggregateRoot<string> {
           })
         );
         break;
+
+      case "CandidatePoetCommand":
+        console.log("Applying CandidatePoet Command");
+        const candidatePoetPayload: SlamEventPayload<"PoetCandidated"> = {
+          poetId: command.payload.poetId,
+        };
+        this.apply(
+          SlamEventFactory.createEvent("PoetCandidated", {
+            payload: candidatePoetPayload,
+            aggregateId: this.id,
+          })
+        );
+        break;
+
+      case "OpenCallCommand":
+        console.log("Applying OpenCall Command");
+        const callOpenedPayload: SlamEventPayload<"CallOpened"> = {};
+        this.apply(
+          SlamEventFactory.createEvent("CallOpened", {
+            payload: callOpenedPayload,
+            aggregateId: this.id,
+          })
+        );
+        break;
+
+      case "CloseCallCommand":
+        console.log("Applying CloseCall Command");
+        const callClosedPayload: SlamEventPayload<"CallClosed"> = {};
+        this.apply(
+          SlamEventFactory.createEvent("CallClosed", {
+            payload: callClosedPayload,
+            aggregateId: this.id,
+          })
+        );
+        break;
       default:
         throw new InvalidCommandError("Command does not exists", []);
     }
   }
 
   // #region  validators
+
+  private ensureSalmAcceptCandidates(): Slam {
+    if (!this.callOpen) {
+      throw new InvariantValidationError("Slam call is closed");
+    }
+    return this;
+  }
+
+  private ensureSLamCallIsOpen(): Slam {
+    if (!this.callOpen) {
+      throw new InvariantValidationError("Slam call is closed");
+    }
+    return this;
+  }
+
+  private ensurePoetIsNotAlreadyCandidate(poetId: string): Slam {
+    if (this.candidates.includes(poetId)) {
+      throw new InvariantValidationError("Poet is already candidated");
+    }
+    return this;
+  }
 
   private ensureSlamHasThisMCAssinged(mcId: string): Slam {
     if (!this.mcs.includes(mcId)) {
@@ -234,6 +313,14 @@ export class Slam extends AggregateRoot<string> {
 
   get getMcs() {
     return this.mcs;
+  }
+
+  get getCandidates() {
+    return this.candidates;
+  }
+
+  get isOpen() {
+    return this.callOpen;
   }
   get isDeleted() {
     return this.deleted;
