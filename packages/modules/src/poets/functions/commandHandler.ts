@@ -5,11 +5,13 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { randomUUID } from "crypto";
 import { Poet } from "../aggregates/Poet";
 import { CreatePoetCommand } from "../commands/CreatePoet.command";
-import { InvalidCommandError } from "@psm/core/Errors/InvalidCommandError";
 import { EditPoetCommand } from "../commands/EditPoet.command";
 import { SetPoetAsMCCommand } from "../commands/SetPoetAsMC.command";
 import { SetPoetAsPoetCommand } from "../commands/SetPoetAsPoet.command";
 import { DeletePoetCommand } from "../commands/DeletePoet.command";
+import { Command } from "@psm/core/Command/Command";
+import { PoetCommandFactory } from "../commands/PoetCommand.factory";
+import { InvalidCommandError } from "@psm/core/Errors/InvalidCommand.error";
 //rule of thumb: stateless instnces OUTSIDE the handler, Stateful instances inside the handler
 
 const client = new DynamoDBClient({
@@ -54,41 +56,17 @@ export const handler: Handler = async (_event) => {
     poet.loadFromHistory(aggregateEvents);
 
     console.log("🔍 Hydrated Poet:", poet);
+    // refactor this with a factory and naming the command in the body  with the same name as the command
 
-    switch (body.command) {
-      // apply the command
-      case "create-poet":
-        const createCommand = new CreatePoetCommand(body.payload);
-        await poet.applyCommand(createCommand);
-        break;
+    const commandClass = PoetCommandFactory.createCommand(
+      body.command,
+      body.payload
+    );
 
-      case "edit-poet":
-        console.log("🚀 Editing poet");
-        const editCommand = new EditPoetCommand(body.payload);
-        await poet.applyCommand(editCommand);
-        break;
+    await poet.applyCommand(commandClass);
 
-      case "set-poet-as-mc":
-        const setAsMCCommand = new SetPoetAsMCCommand(body.payload);
-        await poet.applyCommand(setAsMCCommand);
-        break;
-
-      case "set-poet-as-poet":
-        const setAsPoetCommand = new SetPoetAsPoetCommand(body.payload);
-        await poet.applyCommand(setAsPoetCommand);
-        break;
-
-      case "delete-poet":
-        const deleteCommand = new DeletePoetCommand(body.payload);
-        await poet.applyCommand(deleteCommand);
-        break;
-
-      default:
-        console.warn(`🚨 I don't know this command ${body.command}`);
-        throw new Error(`I don't know this command ${body.command}`);
-    }
     // persist uncommitted events
-    await eventStore.saveEvents(poet.getUncommittedEvents());
+    await eventStore.saveEvents(poet.uncommittedEvents);
     // clear uncommitted events in the aggregate
     poet.clearUncommittedEvents();
 

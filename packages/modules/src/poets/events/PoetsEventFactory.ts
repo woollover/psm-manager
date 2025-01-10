@@ -8,24 +8,24 @@ import {
   PoetSetAsPoetEvent,
 } from ".";
 import { PoetCreatedEvent } from "./PoetCreated.event";
-import { EventInput } from "@psm/core/Event/Event";
+import { EventData } from "@psm/core/Event/Event";
 
 export class PoetsEventFactory {
-  static createEvent(eventType: PoetEventType, eventInput: EventInput) {
+  static createEvent(eventType: PoetEventType, eventData: EventData) {
     const baseEventData = {
-      timestamp: eventInput.timestamp || new Date().getTime(),
-      aggregateId: eventInput.aggregateId ?? "evt-" + randomUUID(),
-      aggregateOffset: eventInput.aggregateOffset || 0,
-      globalOffset: eventInput.globalOffset || 0,
+      timestamp: eventData.timestamp || new Date().getTime(),
+      aggregateId: eventData.aggregateId ?? "evt-" + randomUUID(),
+      aggregateOffset: eventData.aggregateOffset || 0,
+      globalOffset: eventData.globalOffset || 0,
     };
 
     // console.log("📥 Base Event Data", baseEventData);
     // console.log("📥 Event Type", eventType);
     // console.log("📥 Event Input", eventInput);
     const payload =
-      typeof eventInput.payload === "string"
-        ? JSON.parse(eventInput.payload)
-        : eventInput.payload;
+      typeof eventData.payload === "string"
+        ? JSON.parse(eventData.payload)
+        : eventData.payload;
 
     switch (eventType) {
       case "PoetCreated":

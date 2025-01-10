@@ -1,5 +1,5 @@
 import { SlamEventPayload, SlamEventPayloadUnion, SlamEventType } from ".";
-import { EventInput } from "@psm/core/Event/Event";
+import { EventData } from "@psm/core/Event/Event";
 import { randomUUID } from "crypto";
 import { SlamCreatedEvent } from "./SlamCreated.event";
 import { SlamDeletedEvent } from "./SlamDeleted.event";
@@ -12,21 +12,21 @@ import { CallClosedEvent } from "./CallClosed.event";
 import { PoetAcceptedEvent } from "./PoetAccepted.event";
 import { PoetRejectedEvent } from "./PoetRejected.event";
 
-type SlamEventInput = EventInput & { payload: SlamEventPayloadUnion };
+type SlamEventData = EventData & { payload: SlamEventPayloadUnion };
 
 export class SlamEventFactory {
-  static createEvent(eventType: SlamEventType, eventInput: SlamEventInput) {
+  static createEvent(eventType: SlamEventType, eventData: SlamEventData) {
     const baseEventData = {
-      timestamp: eventInput.timestamp || new Date().getTime(),
-      aggregateId: eventInput.aggregateId ?? "evt-" + randomUUID(),
-      aggregateOffset: eventInput.aggregateOffset || 0,
-      globalOffset: eventInput.globalOffset || 0,
+      timestamp: eventData.timestamp || new Date().getTime(),
+      aggregateId: eventData.aggregateId ?? "evt-" + randomUUID(),
+      aggregateOffset: eventData.aggregateOffset || 0,
+      globalOffset: eventData.globalOffset || 0,
     };
 
     let payloadBody =
-      typeof eventInput.payload === "string"
-        ? JSON.parse(eventInput.payload)
-        : eventInput.payload;
+      typeof eventData.payload === "string"
+        ? JSON.parse(eventData.payload)
+        : eventData.payload;
 
     switch (eventType) {
       case "SlamCreated":

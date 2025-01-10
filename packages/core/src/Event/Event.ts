@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 
-export interface EventInput {
+export interface EventData {
   payload: Record<string, any>;
   timestamp?: number;
   aggregateId?: string;

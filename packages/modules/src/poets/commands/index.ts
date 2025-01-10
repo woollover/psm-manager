@@ -13,6 +13,20 @@ type PoetCommands =
   | SetPoetAsPoetCommand
   | ReactivatePoetCommand;
 
+  // typemap of the according payload
+  type PoetCommandInputMap = {
+    [E in PoetCommands as E["commandName"]]: E["payload"];
+  };
+
+  // list of active event type names
+  type PoetCommandType = keyof PoetCommandInputMap;
+
+
+  type PoetCommandPayload<E extends PoetCommandType> = PoetCommandInputMap[E];
+
+  type PoetCommandInput<E extends PoetCommandType> = PoetCommandInputMap[E];
+  
+
 export {
   PoetCommands,
   CreatePoetCommand,
@@ -21,4 +35,7 @@ export {
   SetPoetAsMCCommand,
   SetPoetAsPoetCommand,
   ReactivatePoetCommand,
+  PoetCommandType,
+  PoetCommandPayload,
+  PoetCommandInput,
 };
