@@ -73,6 +73,7 @@ export class Slam extends AggregateRoot<string> {
           .ensureSlamHasThisMCAssinged(event.getPayload.mcId);
         this.mcs = this.mcs.filter((mc) => mc !== event.getPayload.mcId);
         break;
+
       case "PoetCandidated":
         this.ensureSlamIsNotDeleted()
           .ensureSalmAcceptCandidates()
@@ -87,14 +88,39 @@ export class Slam extends AggregateRoot<string> {
           .ensureSlamIsNotEnded();
         this.callOpen = true;
         break;
-        
-      case "CallClosed": 
+
+      case "CallClosed":
         this.ensureSlamIsNotDeleted()
           .ensureSlamIsNotStarted()
-          .ensureSlamIsNotEnded().ensureSLamCallIsOpen()
+          .ensureSlamIsNotEnded()
+          .ensureSlamCallIsOpen();
         this.callOpen = false;
         break;
 
+      case "PoetAccepted":
+        this.ensureSlamIsNotDeleted()
+          .ensureSlamIsNotStarted()
+          .ensureSlamIsNotEnded()
+          .ensureSlamCallIsOpen()
+          .ensurePoetIsCandidate(event.getPayload.poetId);
+
+        this.poets.push(event.getPayload.poetId);
+
+        break;
+
+      case "PoetRejected":
+        this.ensureSlamIsNotDeleted()
+          .ensureSlamIsNotStarted()
+          .ensureSlamIsNotEnded()
+          .ensureSlamCallIsOpen()
+          .ensurePoetIsCandidate(event.getPayload.poetId);
+        if (this.poets.includes(event.getPayload.poetId)) {
+          this.poets = this.poets.filter(
+            (poet) => poet !== event.getPayload.poetId
+          );
+        }
+
+        break;
       default:
         //@ts-expect-error
         throw new Error(`event not valid ${event.eventType}`);
@@ -228,6 +254,35 @@ export class Slam extends AggregateRoot<string> {
           })
         );
         break;
+      
+      case "AcceptPoetCommand": 
+        console.log("Applying AcceptPoet Command");
+        const acceptPoetPayload: SlamEventPayload<"PoetAccepted"> = {
+          poetId: command.payload.poetId,
+        };
+        this.apply(
+          SlamEventFactory.createEvent("PoetAccepted", {
+            payload: acceptPoetPayload,
+            aggregateId: this.id,
+          })
+        );
+        break;
+      case "RejectPoetCommand":
+        console.log("Applying RejectPoet Command");
+        const rejectPoetPayload: SlamEventPayload<"PoetRejected"> = {
+          poetId: command.payload.poetId,
+          reason: command.payload.reason,
+        };
+        this.apply(
+          SlamEventFactory.createEvent("PoetRejected", {
+            payload: rejectPoetPayload,
+            aggregateId: this.id,
+          })
+        );
+        break;
+      
+      
+      
       default:
         throw new InvalidCommandError("Command does not exists", []);
     }
@@ -242,9 +297,15 @@ export class Slam extends AggregateRoot<string> {
     return this;
   }
 
-  private ensureSLamCallIsOpen(): Slam {
+  private ensureSlamCallIsOpen(): Slam {
     if (!this.callOpen) {
       throw new InvariantValidationError("Slam call is closed");
+    }
+    return this;
+  }
+  private ensurePoetIsCandidate(poetId: string): Slam {
+    if (!this.candidates.includes(poetId)) {
+      throw new InvariantValidationError("Poet is not a candidate");
     }
     return this;
   }

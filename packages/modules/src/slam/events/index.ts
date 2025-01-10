@@ -2,7 +2,9 @@ import { CallClosedEvent } from "./CallClosed.event";
 import { CallOpenedEvent } from "./CallOpened.event";
 import { MCAssignedEvent } from "./MCAssigned.event";
 import { MCUnassignedEvent } from "./MCUnassigned.event";
+import { PoetAcceptedEvent } from "./PoetAccepted.event";
 import { PoetCandidatedEvent } from "./PoetCandidated.event";
+import { PoetRejectedEvent } from "./PoetRejected.event";
 import { SlamCreatedEvent } from "./SlamCreated.event";
 import { SlamDeletedEvent } from "./SlamDeleted.event";
 import { SlamEditedEvent } from "./SlamEdited.event";
@@ -14,11 +16,11 @@ export const SlamEventList = [
   "MCAssigned",
   "MCRemoved",
   "PoetCandidated",
+  "SlamCallOpened",
+  "SlamCallClosed",
   "PoetAccepted",
   "PoetRejected",
   "PoetRemoved",
-  "SlamCallOpened",
-  "SlamCallClosed",
   "SlamStarted",
   "SlamEnded",
 ] as const;
@@ -32,6 +34,8 @@ export type SlamEvent =
   | MCUnassignedEvent
   | CallOpenedEvent
   | CallClosedEvent
+  | PoetAcceptedEvent
+  | PoetRejectedEvent
   | PoetCandidatedEvent;
 
 // typemap of the according payload
