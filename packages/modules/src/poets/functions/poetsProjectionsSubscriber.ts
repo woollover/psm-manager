@@ -1,7 +1,7 @@
 import { Handler } from "aws-lambda";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
-import { PoetsEventFactory } from "../events/PoetsEventFactory";
+import { PoetsEventFactory } from "../events/PoetsEvent.factory";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import { PoetsListProjector } from "../read/projectors/PoetsList.projector";
 import { EventStore } from "@psm/core/EventStore";

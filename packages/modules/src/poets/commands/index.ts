@@ -22,20 +22,16 @@ type PoetCommands =
   type PoetCommandType = keyof PoetCommandInputMap;
 
 
-  type PoetCommandPayload<E extends PoetCommandType> = PoetCommandInputMap[E];
-
   type PoetCommandInput<E extends PoetCommandType> = PoetCommandInputMap[E];
-  
 
-export {
-  PoetCommands,
-  CreatePoetCommand,
-  EditPoetCommand,
-  DeletePoetCommand,
-  SetPoetAsMCCommand,
-  SetPoetAsPoetCommand,
-  ReactivatePoetCommand,
-  PoetCommandType,
-  PoetCommandPayload,
-  PoetCommandInput,
-};
+  export {
+    PoetCommands,
+    CreatePoetCommand,
+    EditPoetCommand,
+    DeletePoetCommand,
+    SetPoetAsMCCommand,
+    SetPoetAsPoetCommand,
+    ReactivatePoetCommand,
+    PoetCommandType,
+    PoetCommandInput,
+  };

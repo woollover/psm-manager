@@ -1,13 +1,12 @@
 import { APIGatewayProxyResultV2, Handler } from "aws-lambda";
 import { EventStore } from "@psm/core/EventStore";
 import { randomUUID } from "crypto";
-import { Poet } from "../aggregates/Poet";
-import { PoetCommandFactory } from "../commands/PoetCommand.factory";
 import { InvalidCommandError } from "@psm/core/Errors/InvalidCommand.error";
 import { documentClient } from "@psm/core/DynamoDBInstance/DynamoDBInstance";
+import { Slam } from "../aggregates/Slam";
+import { SlamCommandFactory } from "../commands/SlamCommand.factory";
 
 //rule of thumb: stateless instnces OUTSIDE the handler, Stateful instances inside the handler
-
 
 const eventStore = new EventStore(
   process.env.EVENT_STORE_TABLE_NAME || "eu-central-1",
@@ -19,35 +18,35 @@ export const handler: Handler = async (_event) => {
   const body = JSON.parse(_event.body!);
   console.log("📥 Body received:", body);
 
-  const aggregateId = body.payload.aggregateId || `poet-${randomUUID()}`; // TO REFACTOR
+  const aggregateId = body.payload.aggregateId || `slam-${randomUUID()}`; // TO REFACTOR
 
   // pull up the aggregate
-  // insert backticks around aggregateId
 
   console.log("📥 Aggregate ID:", aggregateId);
   // load from history from event store and rehydrate the aggregate
   const aggregateEvents = await eventStore.getEvents(aggregateId);
+
   console.log("📥 Aggregate events:", aggregateEvents);
   // create the aggregate class
-  const poet = new Poet(aggregateId);
+  const slam = new Slam(aggregateId);
 
   try {
-    poet.loadFromHistory(aggregateEvents);
+    slam.loadFromHistory(aggregateEvents);
 
-    console.log("🔍 Hydrated Poet:", poet);
+    console.log("🔍 Hydrated Poet:", slam);
     // refactor this with a factory and naming the command in the body  with the same name as the command
 
-    const commandClass = PoetCommandFactory.createCommand(
+    const commandClass = SlamCommandFactory.createCommand(
       body.command,
       body.payload
     );
 
-    await poet.applyCommand(commandClass);
+    slam.applyCommand(commandClass);
 
     // persist uncommitted events
-    await eventStore.saveEvents(poet.uncommittedEvents);
+    await eventStore.saveEvents(slam.uncommittedEvents);
     // clear uncommitted events in the aggregate
-    poet.clearUncommittedEvents();
+    slam.clearUncommittedEvents();
 
     // return the result
   } catch (error) {
@@ -79,7 +78,7 @@ export const handler: Handler = async (_event) => {
     statusCode: 200,
     body: JSON.stringify({
       message: "Command processed successfully",
-      poet,
+      slam: slam,
       aggregateID: aggregateId,
     }),
   };

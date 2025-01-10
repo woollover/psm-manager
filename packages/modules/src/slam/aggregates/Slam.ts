@@ -3,7 +3,7 @@ import { SlamCommands } from "../commands";
 import { InvalidCommandError } from "@psm/core/Errors/InvalidCommand.error";
 import { InvariantValidationError } from "@psm/core/Errors/InvariantValidation.error";
 import { CountryId } from "@psm/common/constants/countries";
-import { SlamEventFactory } from "../events/SlamEventsFactory";
+import { SlamEventFactory } from "../events/SlamEvents.factory";
 import { SlamEvent, SlamEventPayload } from "../events";
 
 export class Slam extends AggregateRoot<string> {

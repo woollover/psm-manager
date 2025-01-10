@@ -34,6 +34,8 @@ type SlamCommandInputMap = {
 
 type SlamCommandType = keyof SlamCommandInputMap;
 
+type SlamCommandInput<C extends SlamCommandType> = SlamCommandInputMap[C];
+
 export {
   SlamCommands,
   CreateSlamCommand,
@@ -49,4 +51,5 @@ export {
   CandidatePoetCommand,
   StartSlamCommand,
   EndSlamCommand,
+  SlamCommandInput,
 };

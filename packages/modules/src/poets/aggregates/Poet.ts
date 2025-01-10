@@ -16,7 +16,7 @@ import { InvalidCommandError } from "@psm/core/Errors/InvalidCommandError";
 import { SetPoetAsPoetCommand } from "../commands/SetPoetAsPoet.command";
 import { PoetSetAsPoetEvent } from "../events/PoetSetAsPoet.event";
 import { ReactivatePoetCommand } from "../commands/ReactivatePoet.command";
-import { PoetsEventFactory } from "../events/PoetsEventFactory";
+import { PoetsEventFactory } from "../events/PoetsEvent.factory";
 
 export class Poet extends AggregateRoot<string> {
   private firstName: string = "";
