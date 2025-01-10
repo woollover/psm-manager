@@ -120,7 +120,23 @@ export class Slam extends AggregateRoot<string> {
           );
         }
 
+      case "SlamStarted":
+        this.ensureSlamIsNotDeleted()
+          .ensureSlamIsNotEnded()
+          .ensureSlamIsNotStarted()
+          .ensureSlamCallIsClosed();
+        this.started = true;
+
         break;
+
+        case "SlamEnded":
+          // after this event, we should collect all the votes and declare the winner
+          
+          this.ensureSlamIsNotDeleted()
+            .ensureSlamIsNotEnded()
+          this.ended = true;
+          break;
+
       default:
         //@ts-expect-error
         throw new Error(`event not valid ${event.eventType}`);
@@ -254,8 +270,8 @@ export class Slam extends AggregateRoot<string> {
           })
         );
         break;
-      
-      case "AcceptPoetCommand": 
+
+      case "AcceptPoetCommand":
         console.log("Applying AcceptPoet Command");
         const acceptPoetPayload: SlamEventPayload<"PoetAccepted"> = {
           poetId: command.payload.poetId,
@@ -280,9 +296,7 @@ export class Slam extends AggregateRoot<string> {
           })
         );
         break;
-      
-      
-      
+
       default:
         throw new InvalidCommandError("Command does not exists", []);
     }
@@ -303,6 +317,7 @@ export class Slam extends AggregateRoot<string> {
     }
     return this;
   }
+
   private ensurePoetIsCandidate(poetId: string): Slam {
     if (!this.candidates.includes(poetId)) {
       throw new InvariantValidationError("Poet is not a candidate");
@@ -330,6 +345,14 @@ export class Slam extends AggregateRoot<string> {
     }
     return this;
   }
+
+  private ensureSlamCallIsClosed(): Slam {
+    if (this.callOpen) {
+      throw new InvariantValidationError("Slam call is open");
+    }
+    return this;
+  }
+
   private ensureSlamIsNotStarted(): Slam {
     if (this.started) {
       throw new InvariantValidationError("Slam is already started");

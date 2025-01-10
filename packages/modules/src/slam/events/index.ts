@@ -1,3 +1,4 @@
+import { Slam } from "../aggregates/Slam";
 import { CallClosedEvent } from "./CallClosed.event";
 import { CallOpenedEvent } from "./CallOpened.event";
 import { MCAssignedEvent } from "./MCAssigned.event";
@@ -8,6 +9,8 @@ import { PoetRejectedEvent } from "./PoetRejected.event";
 import { SlamCreatedEvent } from "./SlamCreated.event";
 import { SlamDeletedEvent } from "./SlamDeleted.event";
 import { SlamEditedEvent } from "./SlamEdited.event";
+import { SLamEndedEvent } from "./SlamEnded.event";
+import { SlamStartedEvent } from "./SlamStarted.event";
 
 export const SlamEventList = [
   "SlamCreated",
@@ -34,9 +37,11 @@ export type SlamEvent =
   | MCUnassignedEvent
   | CallOpenedEvent
   | CallClosedEvent
+  | PoetCandidatedEvent
   | PoetAcceptedEvent
   | PoetRejectedEvent
-  | PoetCandidatedEvent;
+  | SlamStartedEvent
+  | SLamEndedEvent;
 
 // typemap of the according payload
 type SlamEventPayloadMap = {

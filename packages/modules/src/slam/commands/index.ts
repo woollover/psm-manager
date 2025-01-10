@@ -8,8 +8,10 @@ import { CloseCallCommand } from "./CloseCall.command";
 import { CreateSlamCommand } from "./CreateSlam.command";
 import { DeleteSlamCommand } from "./DeleteSlam.command";
 import { EditSlamCommand } from "./EditSlam.command";
+import { EndSlamCommand } from "./EndSlam.command";
 import { OpenCallCommand } from "./OpenCall.command";
 import { RejectPoetCommand } from "./RejectPoet.command";
+import { StartSlamCommand } from "./StartSlam.command";
 import { UnassignMCCommand } from "./UnassignMC.command";
 
 type SlamCommands =
@@ -20,9 +22,11 @@ type SlamCommands =
   | UnassignMCCommand
   | OpenCallCommand
   | CloseCallCommand
+  | CandidatePoetCommand
   | AcceptPoetCommand
   | RejectPoetCommand
-  | CandidatePoetCommand;
+  | StartSlamCommand
+  | EndSlamCommand;
 
 type SlamCommandInputMap = {
   [C in SlamCommands as C["commandName"]]: C["payload"];
@@ -43,4 +47,6 @@ export {
   AcceptPoetCommand,
   RejectPoetCommand,
   CandidatePoetCommand,
+  StartSlamCommand,
+  EndSlamCommand,
 };
