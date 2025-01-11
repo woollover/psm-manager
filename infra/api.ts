@@ -26,7 +26,16 @@ eventStoreApi.route("GET /poets/list", {
 eventStoreApi.route("POST /poets/commands", {
   link: [EventStoreTable],
   handler: "packages/modules/src/poets/functions/commandHandler.handler",
-  name: "command-handler",
+  name: "poets-command-handler",
+  environment: {
+    EVENT_STORE_TABLE_NAME: EventStoreTable.name,
+  },
+});
+
+eventStoreApi.route("POST /slams/commands", {
+  link: [EventStoreTable],
+  handler: "packages/modules/src/slam/functions/commandHandler.handler",
+  name: "slams-command-handler",
   environment: {
     EVENT_STORE_TABLE_NAME: EventStoreTable.name,
   },
@@ -41,8 +50,3 @@ EventStoreTable.subscribe("event-store-listener", {
   },
   name: "event-store-listener",
 });
-// api.route("GET /poets", {
-//   link: [poetsTable],
-//   handler: "packages/functions/src/api.handler",
-//   name: "poets-getter",
-// });
