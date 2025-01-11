@@ -9,8 +9,8 @@ export abstract class AggregateRoot<TId> {
 
   // Apply an event and mutate state
   protected apply(event: PSMEvent<unknown, any>): void {
-    this._aggregateOffset++;
     this.mutate(event);
+    this._aggregateOffset++;
     this._uncommittedEvents.push(event);
   }
 
