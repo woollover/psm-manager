@@ -14,6 +14,19 @@ eventStoreApi.route("GET /events", {
   },
 });
 
+
+eventStoreApi.route("GET /snitch", {
+  link: [EventStoreTable, MaterializedViewsTable],
+  handler: "packages/modules/src/audit/eventSnitch.handler.handler",
+  name: "event-store-snitcher",
+  environment: {
+    EVENT_STORE_TABLE_NAME: EventStoreTable.name,
+    MATERIALIZED_VIEWS_TABLE_NAME: MaterializedViewsTable.name,
+  },
+});
+
+
+
 eventStoreApi.route("GET /poets/list", {
   link: [MaterializedViewsTable],
   handler: "packages/modules/src/poets/functions/queryHandler.handler",

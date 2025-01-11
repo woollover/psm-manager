@@ -8,9 +8,8 @@ import { documentClient } from "@psm/core/DynamoDBInstance/DynamoDBInstance";
 
 //rule of thumb: stateless instnces OUTSIDE the handler, Stateful instances inside the handler
 
-
 const eventStore = new EventStore(
-  process.env.EVENT_STORE_TABLE_NAME || "eu-central-1",
+  process.env.EVENT_STORE_TABLE_NAME || "",
   documentClient
 );
 // instantiate the eventStore, it's stateless so we can do it outside the handler
