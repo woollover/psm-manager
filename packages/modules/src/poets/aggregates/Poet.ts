@@ -1,22 +1,8 @@
 import { AggregateRoot } from "@psm/core/AggregateRoot";
-import { CreatePoetCommand } from "../commands/CreatePoet.command";
-import {
-  PoetCreatedEvent,
-  PoetDeletedEvent,
-  PoetEditedEvent,
-  PoetEvent,
-  PoetReactivatedEvent,
-  PoetSetAsMCEvent,
-} from "../events";
-import { EditPoetCommand } from "../commands/EditPoet.command";
-import { DeletePoetCommand } from "../commands/DeletePoet.command";
-import { SetPoetAsMCCommand } from "../commands/SetPoetAsMC.command";
+import { PoetEvent } from "../events";
 import { PoetCommands } from "../commands";
-import { InvalidCommandError } from "@psm/core/Errors/InvalidCommandError";
-import { SetPoetAsPoetCommand } from "../commands/SetPoetAsPoet.command";
-import { PoetSetAsPoetEvent } from "../events/PoetSetAsPoet.event";
-import { ReactivatePoetCommand } from "../commands/ReactivatePoet.command";
 import { PoetsEventFactory } from "../events/PoetsEvent.factory";
+import { InvalidCommandError } from "@psm/core/Errors/InvalidCommand.error";
 
 export class Poet extends AggregateRoot<string> {
   private firstName: string = "";
@@ -164,7 +150,7 @@ export class Poet extends AggregateRoot<string> {
         if (this.isDeleted) throw new Error("Poet is deleted");
 
         this.apply(
-          new PoetEditedEvent({
+          PoetsEventFactory.createEvent("PoetEdited", {
             aggregateId: this.id,
             payload: command.payload,
             timestamp: new Date().getTime(),
@@ -176,7 +162,7 @@ export class Poet extends AggregateRoot<string> {
         if (this.isDeleted) throw new Error("Poet is deleted");
         await command.validateOrThrow(command.payload);
         this.apply(
-          new PoetDeletedEvent({
+          PoetsEventFactory.createEvent("PoetDeleted", {
             aggregateId: this.id,
             payload: command.payload,
             timestamp: new Date().getTime(),
@@ -188,7 +174,7 @@ export class Poet extends AggregateRoot<string> {
         await command.validateOrThrow(command.payload);
         if (!this.isDeleted) throw new Error("Poet is not deleted");
         this.apply(
-          new PoetReactivatedEvent({
+          PoetsEventFactory.createEvent("PoetReactivated", {
             aggregateId: this.id,
             payload: command.payload,
             timestamp: new Date().getTime(),

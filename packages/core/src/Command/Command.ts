@@ -6,10 +6,10 @@ import {
 export abstract class Command<I, CommandName extends string> {
   #commandName: CommandName;
   readonly #errors: CommandValidationError<I>[] = [];
-  #payload: I;
+  public readonly payload: I;
 
   constructor(commandName: CommandName, input: I) {
-    this.#payload = input;
+    this.payload = input;
     this.#commandName = commandName;
   }
 
@@ -33,13 +33,11 @@ export abstract class Command<I, CommandName extends string> {
       );
       throw new InvalidCommandError("Command validation failed", this.#errors);
     }
-
-    console.log("Command - Validation successful, setting payload");
-    this.#payload = input;
+    console.log("Command - Validation successful");
   }
 
-  get payload(): I {
-    return this.#payload;
+  get getPayload(): I {
+    return this.payload;
   }
 
   append_error(error: CommandValidationError<I>): void {

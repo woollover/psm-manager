@@ -3,6 +3,7 @@ import {
   DeletePoetCommand,
   EditPoetCommand,
   PoetCommandInput,
+  PoetCommands,
   PoetCommandType,
   ReactivatePoetCommand,
   SetPoetAsMCCommand,
@@ -10,40 +11,44 @@ import {
 } from ".";
 
 export class PoetCommandFactory {
-  static createCommand(
-    commandName: PoetCommandType,
-    commandInput: Record<string, any>
+  static createCommand<T extends PoetCommands["commandName"]>(
+    ...args: Extract<PoetCommands, { commandName: T }> extends {
+      payload: infer P;
+    }
+      ? [commandName: T, payload: P]
+      : [commandName: T]
   ) {
+    const [commandName, payload] = args;
     switch (commandName) {
       case "CreatePoetCommand":
         return new CreatePoetCommand(
           "CreatePoetCommand",
-          commandInput as PoetCommandInput<"CreatePoetCommand">
+          payload as PoetCommandInput<"CreatePoetCommand">
         );
       case "EditPoetCommand":
         return new EditPoetCommand(
           "EditPoetCommand",
-          commandInput as PoetCommandInput<"EditPoetCommand">
+          payload as PoetCommandInput<"EditPoetCommand">
         );
       case "DeletePoetCommand":
         return new DeletePoetCommand(
           "DeletePoetCommand",
-          commandInput as PoetCommandInput<"DeletePoetCommand">
+          payload as PoetCommandInput<"DeletePoetCommand">
         );
       case "SetPooetAsMCCommand":
         return new SetPoetAsMCCommand(
           "SetPooetAsMCCommand",
-          commandInput as PoetCommandInput<"SetPooetAsMCCommand">
+          payload as PoetCommandInput<"SetPooetAsMCCommand">
         );
       case "SetPoetAsPoetCommand":
         return new SetPoetAsPoetCommand(
           "SetPoetAsPoetCommand",
-          commandInput as PoetCommandInput<"SetPoetAsPoetCommand">
+          payload as PoetCommandInput<"SetPoetAsPoetCommand">
         );
       case "ReactivatePoetCommand":
         return new ReactivatePoetCommand(
           "ReactivatePoetCommand",
-          commandInput as PoetCommandInput<"ReactivatePoetCommand">
+          payload as PoetCommandInput<"ReactivatePoetCommand">
         );
       default:
         throw new Error(`I don't know this command ${commandName}`);
