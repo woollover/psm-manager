@@ -1,4 +1,4 @@
-import { CountryId } from "@psm/common/constants/countries";
+import { CountryId } from "../../../../../shared/common/src/constants/countries";
 import { PSMEvent } from "@psm/core";
 
 export interface SlamCreatedPayload {

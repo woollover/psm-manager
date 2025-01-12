@@ -33,7 +33,7 @@
     "rootDir": "./src",
     "baseUrl": ".",
     "paths": {
-      "@psm/common/*": ["../common/src/*"]
+      "@psm/common/*": ["../../shared/common/src/*"]
     },
     "types": ["node"]
   },

@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "build": "pnpm -r --filter ./shared/... --filter ./packages/... --ignore ./packages/functions/... --ignore ./packages/modules/... run build",
     "dev:infra": "sst dev",
     "test": "vitest",
     "test:watch": "vitest watch",

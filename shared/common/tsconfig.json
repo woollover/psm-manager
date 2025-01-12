@@ -19,6 +19,7 @@
     "module": "ES2022",
     "moduleResolution": "node",
     "outDir": "dist",
+    "rootDir": "./src",
     "sourceMap": true,
 
     /* AND if you're building for a library: */
@@ -31,7 +32,5 @@
     /* If your code doesn't run in the DOM: */
     "lib": ["es2022"]
   },
-
-  "exclude": ["**/dist/*"],
-  "rootDir": "./src"
+  "exclude": ["node_modules", "dist"]
 }

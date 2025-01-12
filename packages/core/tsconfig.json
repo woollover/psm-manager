@@ -30,9 +30,8 @@
     "declarationMap": true,
 
     /* If your code doesn't run in the DOM: */
-    "lib": ["es2022"],
-
-    "baseUrl": "."
+    "lib": ["es2022"]
   },
-  "rootDir": "./src"
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

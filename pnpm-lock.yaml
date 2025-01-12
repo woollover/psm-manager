@@ -43,12 +43,6 @@ importers:
         specifier: ^2.1.8
         version: 2.1.8(@types/node@20.17.10)
 
-  packages/common:
-    devDependencies:
-      vitest:
-        specifier: ^2.0.3
-        version: 2.1.8(@types/node@20.17.10)
-
   packages/core:
     dependencies:
       '@aws-sdk/lib-dynamodb':
@@ -91,7 +85,7 @@ importers:
         version: 3.716.0(@aws-sdk/client-dynamodb@3.714.0)
       '@psm/common':
         specifier: workspace:*
-        version: link:../common
+        version: link:../../shared/common
       '@psm/core':
         specifier: workspace:*
         version: link:../core
@@ -99,6 +93,12 @@ importers:
       '@types/aws-lambda':
         specifier: ^8.10.137
         version: 8.10.146
+
+  shared/common:
+    devDependencies:
+      vitest:
+        specifier: ^2.0.3
+        version: 2.1.8(@types/node@20.17.10)
 
 packages:
 

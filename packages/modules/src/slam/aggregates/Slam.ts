@@ -1,12 +1,14 @@
-import { AggregateRoot } from "@psm/core/AggregateRoot";
 import { SlamCommands } from "../commands";
-import { InvalidCommandError } from "@psm/core/Errors/InvalidCommand.error";
-import { InvariantValidationError } from "@psm/core/Errors/InvariantValidation.error";
-import { CountryId } from "@psm/common/constants/countries";
 import { SlamEventFactory } from "../events/SlamEvents.factory";
 import { SlamEvent, SlamEventPayload } from "../events";
+import {
+  AggregateRoot,
+  InvalidCommandError,
+  InvariantValidationError,
+} from "@psm/core";
+import { CountryId } from "@psm/common";
 
-export class Slam extends AggregateRoot<string> {
+export class Slam extends AggregateRoot {
   private regionalId: string | null = null; // county name
   private countryId: CountryId | null = null; // Country ID
   private city: string | null = null; // city Name
@@ -20,10 +22,6 @@ export class Slam extends AggregateRoot<string> {
   private started: boolean = false;
   private ended: boolean = false;
   private deleted: boolean = false;
-
-  constructor(public readonly id: string) {
-    super(id);
-  }
 
   protected mutate(event: SlamEvent): void {
     switch (event.eventType) {
@@ -129,13 +127,12 @@ export class Slam extends AggregateRoot<string> {
 
         break;
 
-        case "SlamEnded":
-          // after this event, we should collect all the votes and declare the winner
-          
-          this.ensureSlamIsNotDeleted()
-            .ensureSlamIsNotEnded()
-          this.ended = true;
-          break;
+      case "SlamEnded":
+        // after this event, we should collect all the votes and declare the winner
+
+        this.ensureSlamIsNotDeleted().ensureSlamIsNotEnded();
+        this.ended = true;
+        break;
 
       default:
         //@ts-expect-error

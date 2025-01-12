@@ -1,4 +1,4 @@
-import { COUNTRY_IDS, CountryId } from "@psm/common/constants/countries";
+import { COUNTRY_IDS, CountryId } from "@psm/common";
 import { Command } from "@psm/core";
 
 export interface CreateSlamCommandInput {
