@@ -1,5 +1,5 @@
 import { documentClient } from "@psm/core/DynamoDBInstance/DynamoDBInstance";
-import { PSMEvent } from "@psm/core/Event/Event";
+import { PSMEvent } from "@psm/core";
 import { EventStore } from "@psm/core/EventStore";
 import { Handler } from "aws-lambda";
 

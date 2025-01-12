@@ -5,7 +5,7 @@ import { SetPoetAsMCCommand } from "./SetPoetAsMC.command";
 import { ReactivatePoetCommand } from "./ReactivatePoet.command";
 import { SetPoetAsPoetCommand } from "./SetPoetAsPoet.command";
 
-type PoetCommands =
+export type PoetCommands =
   | CreatePoetCommand
   | EditPoetCommand
   | DeletePoetCommand
@@ -13,25 +13,22 @@ type PoetCommands =
   | SetPoetAsPoetCommand
   | ReactivatePoetCommand;
 
-  // typemap of the according payload
-  type PoetCommandInputMap = {
-    [E in PoetCommands as E["commandName"]]: E["payload"];
-  };
+// typemap of the according payload
+export type PoetCommandInputMap = {
+  [E in PoetCommands as E["commandName"]]: E["payload"];
+};
 
-  // list of active event type names
-  type PoetCommandType = keyof PoetCommandInputMap;
+// list of active event type names
+export type PoetCommandType = keyof PoetCommandInputMap;
 
+export type PoetCommandInput<E extends PoetCommandType> =
+  PoetCommandInputMap[E];
 
-  type PoetCommandInput<E extends PoetCommandType> = PoetCommandInputMap[E];
-
-  export {
-    PoetCommands,
-    CreatePoetCommand,
-    EditPoetCommand,
-    DeletePoetCommand,
-    SetPoetAsMCCommand,
-    SetPoetAsPoetCommand,
-    ReactivatePoetCommand,
-    PoetCommandType,
-    PoetCommandInput,
-  };
+export {
+  CreatePoetCommand,
+  EditPoetCommand,
+  DeletePoetCommand,
+  SetPoetAsMCCommand,
+  SetPoetAsPoetCommand,
+  ReactivatePoetCommand,
+};

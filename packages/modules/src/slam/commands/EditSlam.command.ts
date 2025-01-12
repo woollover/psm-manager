@@ -1,5 +1,5 @@
 import { COUNTRY_IDS, CountryId } from "@psm/common/constants/countries";
-import { Command } from "@psm/core/Command/Command";
+import { Command } from "@psm/core";
 
 export interface EditSlamCommandInput {
   regionalId?: string;

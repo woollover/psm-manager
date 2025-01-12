@@ -4,23 +4,9 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
-  },
   "files": [
     "dist"
   ],
-  "outDir": "dist",
-  "rootDir": "./src",
-  "baseUrl": ".",
-  "paths": {
-    "@psm/core/*": [
-      "./src/*"
-    ]
-  },
   "scripts": {
     "build": "tsc",
     "test": "vitest run",

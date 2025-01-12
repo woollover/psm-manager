@@ -8,7 +8,7 @@ import {
   PoetSetAsPoetEvent,
 } from ".";
 import { PoetCreatedEvent } from "./PoetCreated.event";
-import { EventData } from "@psm/core/Event/Event";
+import { EventData } from "@psm/core";
 
 export class PoetsEventFactory {
   static createEvent(eventType: PoetEventType, eventData: EventData) {

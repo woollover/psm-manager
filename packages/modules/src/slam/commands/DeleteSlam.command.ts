@@ -1,4 +1,4 @@
-import { Command } from "@psm/core/Command/Command";
+import { Command } from "@psm/core";
 
 export interface DeleteSlamCommandInput {
   aggregateId: string;

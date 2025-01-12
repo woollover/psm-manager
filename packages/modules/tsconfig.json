@@ -9,7 +9,6 @@
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "isolatedModules": true,
-    "verbatimModuleSyntax": true,
 
     /* Strictness */
     "strict": true,
@@ -17,7 +16,8 @@
     "noImplicitOverride": true,
 
     /* If transpiling with TypeScript: */
-    "module": "NodeNext",
+    "module": "ES2022",
+    "moduleResolution": "node",
     "outDir": "dist",
     "sourceMap": true,
 
@@ -30,10 +30,9 @@
 
     /* If your code doesn't run in the DOM: */
     "lib": ["es2022"],
-
+    "rootDir": "./src",
     "baseUrl": ".",
     "paths": {
-      "@psm/core/*": ["../core/src/*"],
       "@psm/common/*": ["../common/src/*"]
     },
     "types": ["node"]

@@ -1,5 +1,5 @@
 import { CountryId } from "@psm/common/constants/countries";
-import { PSMEvent } from "@psm/core/Event/Event";
+import { PSMEvent } from "@psm/core";
 
 export interface SlamEditedPayload {
   regionalId?: string;

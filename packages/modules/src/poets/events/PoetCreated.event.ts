@@ -1,4 +1,4 @@
-import { PSMEvent } from "@psm/core/Event/Event";
+import { PSMEvent } from "@psm/core";
 
 export interface PoetCreatedEventPayload {
   firstName: string;
@@ -33,6 +33,5 @@ export class PoetCreatedEvent extends PSMEvent<
       aggregateOffset: aggregateOffset,
       globalOffset: globalOffset,
     });
-    this.payload = payload;
   }
 }

@@ -1,5 +1,5 @@
 import { SlamEventPayload, SlamEventPayloadUnion, SlamEventType } from ".";
-import { EventData } from "@psm/core/Event/Event";
+import { EventData } from "@psm/core";
 import { randomUUID } from "crypto";
 import { SlamCreatedEvent } from "./SlamCreated.event";
 import { SlamDeletedEvent } from "./SlamDeleted.event";

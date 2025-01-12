@@ -1,10 +1,9 @@
-import { AggregateRoot } from "@psm/core/AggregateRoot";
+import { AggregateRoot, InvalidCommandError } from "@psm/core";
 import { PoetEvent } from "../events";
 import { PoetCommands } from "../commands";
 import { PoetsEventFactory } from "../events/PoetsEvent.factory";
-import { InvalidCommandError } from "@psm/core/Errors/InvalidCommand.error";
 
-export class Poet extends AggregateRoot<string> {
+export class Poet extends AggregateRoot {
   private firstName: string = "";
   private lastName: string = "";
   private birthDate: string = "";
@@ -12,9 +11,6 @@ export class Poet extends AggregateRoot<string> {
   private instagramHandle: string | null = null;
   private isDeleted: boolean = false;
   private isMc: boolean = false;
-  constructor(public readonly id: string) {
-    super(id);
-  }
 
   // apply events to this very aggregate (BUSINESS LOGIC)
   protected mutate(event: PoetEvent): void {

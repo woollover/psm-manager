@@ -1,4 +1,4 @@
-import { PSMEvent } from "@psm/core/Event/Event";
+import { PSMEvent } from "@psm/core";
 import { EventStore } from "@psm/core/EventStore/EventStore";
 import { PoetsListMaterializedView } from "../materialized-view/PoetList.materialized-view";
 import {

@@ -1,11 +1,11 @@
 import { PSMEvent } from "../Event/Event";
 
-export abstract class AggregateRoot<TId> {
+export abstract class AggregateRoot {
   private readonly _uncommittedEvents: PSMEvent<unknown, any>[] = [];
   protected _version: number = 1;
   protected _aggregateOffset: number = 0;
 
-  constructor(public readonly id: TId) {}
+  constructor(public readonly id: string) {}
 
   // Apply an event and mutate state
   protected apply(event: PSMEvent<unknown, any>): void {

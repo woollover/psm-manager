@@ -1,4 +1,4 @@
-import { PSMEvent } from "@psm/core/Event/Event";
+import { PSMEvent } from "@psm/core";
 
 export interface MCAssignedEventPayload {
   mcId: string;
