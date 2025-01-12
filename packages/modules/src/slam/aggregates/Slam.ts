@@ -140,11 +140,12 @@ export class Slam extends AggregateRoot {
     }
   }
 
-  public applyCommand(command: SlamCommands): void {
+  async applyCommand(command: SlamCommands): Promise<void> {
     switch (command.commandName) {
       case "CreateSlamCommand":
         console.log("Applying CreateSlam Command");
-        command.validateOrThrow(command.payload);
+        await command.validateOrThrow(command.payload);
+        console.log("if I'm here, I did not throw correctly");
         // eventually do other validations over command
         const slamCreatedPayload: SlamEventPayload<"SlamCreated"> = {
           name: command.payload.name,
@@ -169,7 +170,7 @@ export class Slam extends AggregateRoot {
 
       case "DeleteSlamCommand":
         console.log("Applying DeleteSlam Command");
-        command.validateOrThrow(command.payload);
+        await command.validateOrThrow(command.payload);
         const slamDeletedPayload: SlamEventPayload<"SlamDeleted"> = {};
         this.apply(
           SlamEventFactory.createEvent("SlamDeleted", {
@@ -181,6 +182,9 @@ export class Slam extends AggregateRoot {
 
       case "EditSlamCommand":
         console.log("Applying EditSlam Command");
+
+        await command.validateOrThrow(command.payload);
+
         const slamEditedPayload: SlamEventPayload<"SlamEdited"> = {
           name: command.payload.name,
           regionalId: command.payload.regionalId,
@@ -208,6 +212,9 @@ export class Slam extends AggregateRoot {
 
       case "AssignMCCommand":
         console.log("Applying AssignMC Command");
+
+        await command.validateOrThrow(command.payload);
+
         const mcAssignedPayload: SlamEventPayload<"MCAssigned"> = {
           mcId: command.payload.mcId,
         };
@@ -222,6 +229,8 @@ export class Slam extends AggregateRoot {
 
       case "UnassignMCCommand":
         console.log("Applying UnassignMC Command");
+
+        await command.validateOrThrow(command.payload);
         const mcUnassignedPayload: SlamEventPayload<"MCUnassigned"> = {
           mcId: command.payload.mcId,
         };
@@ -235,6 +244,8 @@ export class Slam extends AggregateRoot {
 
       case "CandidatePoetCommand":
         console.log("Applying CandidatePoet Command");
+
+        await command.validateOrThrow(command.payload);
         const candidatePoetPayload: SlamEventPayload<"PoetCandidated"> = {
           poetId: command.payload.poetId,
         };
@@ -248,6 +259,7 @@ export class Slam extends AggregateRoot {
 
       case "OpenCallCommand":
         console.log("Applying OpenCall Command");
+        await command.validateOrThrow(command.payload);
         const callOpenedPayload: SlamEventPayload<"CallOpened"> = {};
         this.apply(
           SlamEventFactory.createEvent("CallOpened", {
@@ -259,6 +271,7 @@ export class Slam extends AggregateRoot {
 
       case "CloseCallCommand":
         console.log("Applying CloseCall Command");
+        await command.validateOrThrow(command.payload);
         const callClosedPayload: SlamEventPayload<"CallClosed"> = {};
         this.apply(
           SlamEventFactory.createEvent("CallClosed", {
@@ -270,6 +283,7 @@ export class Slam extends AggregateRoot {
 
       case "AcceptPoetCommand":
         console.log("Applying AcceptPoet Command");
+        await command.validateOrThrow(command.payload);
         const acceptPoetPayload: SlamEventPayload<"PoetAccepted"> = {
           poetId: command.payload.poetId,
         };
@@ -282,6 +296,7 @@ export class Slam extends AggregateRoot {
         break;
       case "RejectPoetCommand":
         console.log("Applying RejectPoet Command");
+        await command.validateOrThrow(command.payload);
         const rejectPoetPayload: SlamEventPayload<"PoetRejected"> = {
           poetId: command.payload.poetId,
           reason: command.payload.reason,

@@ -1,3 +1,4 @@
+import { Command } from "../Command/Command";
 import { PSMEvent } from "../Event/Event";
 
 export abstract class AggregateRoot {
@@ -16,6 +17,8 @@ export abstract class AggregateRoot {
 
   // Abstract method to handle event mutation
   protected abstract mutate(event: PSMEvent<unknown, any>): void;
+
+  abstract applyCommand(command: Command<unknown, string>): Promise<void>;
 
   // Retrieve uncommitted events
   public get uncommittedEvents(): PSMEvent<unknown, any>[] {

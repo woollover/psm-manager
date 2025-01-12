@@ -16,16 +16,25 @@ export class CreateSlamCommand extends Command<
   "CreateSlamCommand"
 > {
   validate(input: CreateSlamCommandInput): void | Promise<void> {
-    this.validateDate(input)
-      .validateName(input)
+    this.validateName(input)
       .validateCity(input)
       .validateVenue(input)
       .validateRegionalId(input)
-      .validateCountryId(input);
+      .validateCountryId(input)
+      .validateDate(input);
   }
 
   private validateDate(input: CreateSlamCommandInput): CreateSlamCommand {
     const { year, monthIndex, day } = input;
+    console.log("Validate Date inside", input);
+
+    if (!year || !monthIndex || !day) {
+      this.append_error({
+        field: "year",
+        cue: "insert valid year, monthIndex and month",
+      });
+      return this;
+    }
     // Create a Date object with the provided inputs
     const date = new Date(year, monthIndex, day);
 
@@ -72,7 +81,7 @@ export class CreateSlamCommand extends Command<
   }
 
   private validateName(input: CreateSlamCommandInput): CreateSlamCommand {
-    if (input.name == "" || input.name.length < 3) {
+    if (!input.name || input.name == "" || input.name.length < 3) {
       this.append_error({
         field: "name",
         cue: "Slam name lenght cannot be under 3 chars",
@@ -82,7 +91,7 @@ export class CreateSlamCommand extends Command<
   }
 
   private validateCity(input: CreateSlamCommandInput): CreateSlamCommand {
-    if (input.city == "" || input.city.length < 3) {
+    if (!input.city || input.city == "" || input.city.length < 3) {
       this.append_error({
         field: "city",
         cue: "City lenght cannot be under 3 chars",
@@ -92,7 +101,7 @@ export class CreateSlamCommand extends Command<
   }
 
   private validateVenue(input: CreateSlamCommandInput): CreateSlamCommand {
-    if (input.venue == "" || input.venue.length < 3) {
+    if (!input.venue || input.venue == "" || input.venue.length < 3) {
       this.append_error({
         field: "venue",
         cue: "Venue lenght cannot be under 3 chars",
@@ -102,7 +111,11 @@ export class CreateSlamCommand extends Command<
   }
 
   private validateRegionalId(input: CreateSlamCommandInput): CreateSlamCommand {
-    if (input.regionalId == "" || input.regionalId.length < 3) {
+    if (
+      !input.regionalId ||
+      input.regionalId == "" ||
+      input.regionalId.length < 3
+    ) {
       this.append_error({
         field: "regionalId",
         cue: "regionalId lenght cannot be under 3 chars",
@@ -112,7 +125,7 @@ export class CreateSlamCommand extends Command<
   }
 
   private validateCountryId(input: CreateSlamCommandInput): CreateSlamCommand {
-    if (!COUNTRY_IDS.includes(input.countryId)) {
+    if (!input.countryId || !COUNTRY_IDS.includes(input.countryId)) {
       this.append_error({
         field: "countryId",
         cue: `invalid countryId: ${input.countryId}`,

@@ -1,6 +1,6 @@
 {
   "name": "psm",
-  "version": "0.0.0",
+  "version": "1s.0.0",
   "type": "module",
   "scripts": {
     "build": "pnpm -r --filter ./shared/... --filter ./packages/... --ignore ./packages/functions/... --ignore ./packages/modules/... run build",

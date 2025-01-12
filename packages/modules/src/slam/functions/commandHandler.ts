@@ -1,8 +1,8 @@
 import { APIGatewayProxyResultV2, Handler } from "aws-lambda";
-import { EventStore } from "@psm/core/EventStore";
+import { EventStore } from "@psm/core";
 import { randomUUID } from "crypto";
-import { InvalidCommandError } from "@psm/core/Errors/InvalidCommand.error";
-import { documentClient } from "@psm/core/DynamoDBInstance/DynamoDBInstance";
+import { InvalidCommandError } from "@psm/core";
+import { documentClient } from "@psm/core";
 import { Slam } from "../aggregates/Slam";
 import { SlamCommandFactory } from "../commands/SlamCommand.factory";
 
@@ -41,33 +41,38 @@ export const handler: Handler = async (_event) => {
       body.payload
     );
 
-    slam.applyCommand(commandClass);
+    await slam.applyCommand(commandClass);
 
+    console.log("AFTER Apply Command!!!");
     // persist uncommitted events
     await eventStore.saveEvents(slam.uncommittedEvents);
     // clear uncommitted events in the aggregate
     slam.clearUncommittedEvents();
 
     // return the result
-  } catch (error) {
+  } catch (error: any) {
+    console.error("❌ Error occurred:", error);
     if (error instanceof InvalidCommandError) {
       return {
-        statusCode: 403,
         headers: {
           "Content-Type": "application/json",
         },
+        statusCode: 403,
         body: JSON.stringify({
-          message: "Invalid command",
-          errors: error.errors,
+          message: "Invalid Command",
+          erroredFields: error.errors,
         }),
       };
     }
     return {
-      statusCode: 500,
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ message: "unknown error", error }),
+      statusCode: 500,
+      body: JSON.stringify({
+        message: "error",
+        error,
+      }),
     };
   }
 

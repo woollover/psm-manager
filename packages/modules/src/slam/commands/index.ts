@@ -14,7 +14,7 @@ import { RejectPoetCommand } from "./RejectPoet.command";
 import { StartSlamCommand } from "./StartSlam.command";
 import { UnassignMCCommand } from "./UnassignMC.command";
 
-type SlamCommands =
+export type SlamCommands =
   | CreateSlamCommand
   | DeleteSlamCommand
   | EditSlamCommand
@@ -28,19 +28,18 @@ type SlamCommands =
   | StartSlamCommand
   | EndSlamCommand;
 
-type SlamCommandInputMap = {
+export type SlamCommandInputMap = {
   [C in SlamCommands as C["commandName"]]: C["payload"];
 };
 
-type SlamCommandType = keyof SlamCommandInputMap;
+export type SlamCommandType = keyof SlamCommandInputMap;
 
-type SlamCommandInput<C extends SlamCommandType> = SlamCommandInputMap[C];
+export type SlamCommandInput<C extends SlamCommandType> =
+  SlamCommandInputMap[C];
 
 export {
-  SlamCommands,
   CreateSlamCommand,
   DeleteSlamCommand,
-  SlamCommandType,
   EditSlamCommand,
   AssignMCCommand,
   UnassignMCCommand,
@@ -51,5 +50,4 @@ export {
   CandidatePoetCommand,
   StartSlamCommand,
   EndSlamCommand,
-  SlamCommandInput,
 };

@@ -1,6 +1,4 @@
-import { documentClient } from "@psm/core/DynamoDBInstance/DynamoDBInstance";
-import { PSMEvent } from "@psm/core";
-import { EventStore } from "@psm/core/EventStore";
+import { documentClient, EventStore } from "@psm/core";
 import { Handler } from "aws-lambda";
 
 const eventStore = new EventStore(

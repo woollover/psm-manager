@@ -1,3 +1,4 @@
+import { Command } from "@psm/core";
 import {
   AcceptPoetCommand,
   AssignMCCommand,
@@ -16,13 +17,13 @@ import {
 } from ".";
 
 export class SlamCommandFactory {
-  static createCommand = <T extends SlamCommands["commandName"]>(
+  static createCommand<T extends SlamCommands["commandName"]>(
     ...args: Extract<SlamCommands, { commandName: T }> extends {
       payload: infer P;
     }
       ? [commandName: T, payload: P]
       : [commandName: T]
-  ) => {
+  ) {
     const [commandName, payload] = args;
 
     switch (commandName) {
@@ -89,7 +90,28 @@ export class SlamCommandFactory {
         );
 
       default:
-        throw new Error(`I don't know this command ${commandName}`);
+        throw new Error(
+          `I don't know this command ${commandName}, valid commands are ${this.validCommandNames}`
+        );
     }
-  };
+  }
+
+  static validCommandNames(): Array<SlamCommands["commandName"]> {
+    const commands = [
+      AcceptPoetCommand,
+      AssignMCCommand,
+      CandidatePoetCommand,
+      CloseCallCommand,
+      CreateSlamCommand,
+      DeleteSlamCommand,
+      EditSlamCommand,
+      EndSlamCommand,
+      OpenCallCommand,
+      RejectPoetCommand,
+      StartSlamCommand,
+      UnassignMCCommand,
+    ];
+
+    return commands.map((c) => c.name as SlamCommands["commandName"]);
+  }
 }
