@@ -17,7 +17,7 @@ export const SlamEventList = [
   "SlamEdited",
   "SlamDeleted",
   "MCAssigned",
-  "MCRemoved",
+  "MCUnassigned",
   "PoetCandidated",
   "SlamCallOpened",
   "SlamCallClosed",
