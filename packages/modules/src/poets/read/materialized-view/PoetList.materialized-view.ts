@@ -16,7 +16,7 @@ import { PoetsListMaterializedViewDBShape, PoetsListPoet } from "./types";
  */
 
 export class PoetsListMaterializedView {
-  #viewKey = "poets-list-materialized-view";
+  #viewKey = "poets-list";
   #data: PoetsListPoet[] = [];
   #deletedPoets: PoetsListPoet[] = [];
 
@@ -24,6 +24,7 @@ export class PoetsListMaterializedView {
     this.#data = materializedView ? materializedView.poets : [];
   }
 
+  // TODO - Check if there coul be a better name
   createPoet(event: PoetCreatedEvent) {
     const poet: PoetsListPoet = {
       id: event.getAggregateId,

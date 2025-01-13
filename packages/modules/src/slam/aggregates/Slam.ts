@@ -13,7 +13,7 @@ export class Slam extends AggregateRoot {
   private countryId: CountryId | null = null; // Country ID
   private city: string | null = null; // city Name
   private venue: string | null = null; // Venue Name
-  private timestamp: number | null = null; // Date of the Slam
+  private dateTime: number | null = null; // Date of the Slam
   private name: string | null = null; // Title of the Slam
   private mcs: Array<string> = []; // Poet IDs and MCs
   private candidates: Array<string> = [];
@@ -30,12 +30,14 @@ export class Slam extends AggregateRoot {
         this.regionalId = event.getPayload.regionalId;
         this.city = event.getPayload.city;
         this.venue = event.getPayload.venue;
-        this.timestamp = event.getPayload.timestamp;
+        this.dateTime = event.getPayload.dateTime;
         this.name = event.getPayload.name;
         break;
+
       case "SlamDeleted":
         this.deleted = true;
         break;
+
       case "SlamEdited":
         this.countryId = event.getPayload.countryId
           ? event.getPayload.countryId
@@ -47,9 +49,9 @@ export class Slam extends AggregateRoot {
         this.venue = event.getPayload.venue
           ? event.getPayload.venue
           : this.venue;
-        this.timestamp = event.getPayload.timestamp
+        this.dateTime = event.getPayload.timestamp
           ? event.getPayload.timestamp
-          : this.timestamp;
+          : this.dateTime;
         this.name = event.getPayload.name ? event.getPayload.name : this.name;
         break;
 
@@ -153,7 +155,7 @@ export class Slam extends AggregateRoot {
           countryId: command.payload.countryId,
           city: command.payload.city,
           venue: command.payload.venue,
-          timestamp: new Date(
+          dateTime: new Date(
             command.payload.year,
             command.payload.monthIndex,
             command.payload.day
@@ -403,8 +405,8 @@ export class Slam extends AggregateRoot {
     return this.city;
   }
 
-  get getTimestamp() {
-    return this.timestamp;
+  get getDateTime() {
+    return this.dateTime;
   }
 
   get getMcs() {
