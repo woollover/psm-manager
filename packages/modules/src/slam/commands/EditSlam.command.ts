@@ -1,16 +1,24 @@
 import { COUNTRY_IDS, CountryId } from "@psm/common";
 import { Command } from "@psm/core";
 
-export interface EditSlamCommandInput {
+export interface EditSlamCommandInputBase {
   regionalId?: string;
   countryId?: CountryId;
   city?: string;
   venue?: string;
-  name?: string;
-  day?: number; // validate if is a correct day max 31 min 1
-  year?: number; // validate is not in the past
-  monthIndex?: number; // 0-jan >> 11-dec
+  name?: string
 }
+export type EditSlamCommandInput = EditSlamCommandInputBase & { 
+  day: number; // validate if is a correct day max 31 min 1
+  year: number; // validate is not in the past
+  monthIndex: number; // 0-jan >> 11-dec
+  } 
+  | EditSlamCommandInputBase & {
+    day?: undefined;
+    year?: undefined;
+    monthIndex?: undefined;
+  }
+
 
 export class EditSlamCommand extends Command<
   EditSlamCommandInput,

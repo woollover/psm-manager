@@ -1,5 +1,5 @@
 import { PSMEvent } from "@psm/core";
-import { EventStore } from "@psm/core/EventStore/EventStore";
+import { EventStore } from "@psm/core";
 import { PoetsListMaterializedView } from "../materialized-view/PoetList.materialized-view";
 import {
   PoetDeletedEvent,
@@ -16,7 +16,6 @@ export class PoetsListProjector {
   #events: PSMEvent<unknown, any>[] = [];
   #eventStore: EventStore;
   #materializedView: PoetsListMaterializedView;
-  #materializedViewData: PoetsListMaterializedViewDBShape | null;
 
   constructor({
     eventStore,
@@ -29,7 +28,6 @@ export class PoetsListProjector {
     this.#materializedView = new PoetsListMaterializedView(
       materializedViewData
     );
-    this.#materializedViewData = materializedViewData;
   }
 
   get materializedView() {
