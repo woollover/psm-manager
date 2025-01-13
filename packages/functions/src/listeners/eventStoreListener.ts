@@ -23,11 +23,11 @@ export const handler: Handler = async (_event) => {
     //console.log("📥 Event type:", event);
     const savedEvent = event.dynamodb.NewImage;
     // get the event type
-    const eventType = savedEvent.eventType.S as String;
+    const eventType = savedEvent.eventType.S as string;
     console.log("📥 Event type:", eventType);
     if (eventType.includes("Poet")) {
       // get the aggregate id
-      const aggregateId = savedEvent.aggregateId.S as String;
+      const aggregateId = savedEvent.aggregateId.S as string;
       console.log("📥 Aggregate id:", aggregateId);
       // forward the event to the poet queue / service or something
       const command = new SendMessageCommand({

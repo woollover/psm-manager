@@ -13,7 +13,7 @@ import {
 import { PoetsListMaterializedViewDBShape } from "../materialized-view/types";
 
 export class PoetsListProjector {
-  #events: PSMEvent<unknown, any>[] = [];
+  #events: PSMEvent<any, string>[] = [];
   #eventStore: EventStore;
   #materializedView: PoetsListMaterializedView;
 
@@ -59,7 +59,11 @@ export class PoetsListProjector {
     }
   }
 
-  async recreateProjection({ originEventType }: { originEventType: string }) {
+  async recreateProjection<T extends PoetEvent["eventType"]>({
+    originEventType,
+  }: {
+    originEventType: T;
+  }) {
     this.#materializedView = new PoetsListMaterializedView({ poets: [] });
     const events = await this.#eventStore.getEventsByType(originEventType);
     const baseEvents = events.filter((e) => e.getEventType === originEventType);

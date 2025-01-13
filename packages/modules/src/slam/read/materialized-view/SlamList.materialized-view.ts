@@ -15,7 +15,7 @@ import {
   SlamEditedEvent,
   SlamEditedPayload,
 } from "src/slam/events/SlamEdited.event";
-import { SLamEndedEvent } from "src/slam/events/SlamEnded.event";
+import { SlamEndedEvent } from "src/slam/events/SlamEnded.event";
 import { SlamStartedEvent } from "src/slam/events/SlamStarted.event";
 
 interface SlamsListData {
@@ -47,7 +47,7 @@ export class SlamsListMaterializedView {
   #viewKey = "slam-list";
   #data: Map<string, SlamsListData> = new Map();
 
-  constructor(materializedView: SlamsListMaterializedViewDBShape) {
+  constructor(materializedView: SlamsListMaterializedViewDBShape | null) {
     this.#data = materializedView ? materializedView.slams : new Map();
   }
 
@@ -207,7 +207,7 @@ export class SlamsListMaterializedView {
     this.#data.set(slam.id, slam);
   }
 
-  endSlam(event: SLamEndedEvent) {
+  endSlam(event: SlamEndedEvent) {
     const slam = this.#data.get(event.getAggregateId);
     if (!slam) {
       throw new NotFoundError("slam not found");

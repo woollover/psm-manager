@@ -2,7 +2,7 @@ import { PSMEvent } from "@psm/core";
 
 export interface SlamEndedPayload {}
 
-export class SLamEndedEvent extends PSMEvent<SlamEndedPayload, "SlamEnded"> {
+export class SlamEndedEvent extends PSMEvent<SlamEndedPayload, "SlamEnded"> {
   constructor({
     payload,
     timestamp,

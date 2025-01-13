@@ -14,7 +14,7 @@ export class EventStore {
     this.client = client;
   }
 
-  async saveEvents(events: PSMEvent<unknown, any>[]): Promise<void> {
+  async saveEvents(events: PSMEvent<any, string>[]): Promise<void> {
     for (const event of events) {
       await this.saveEvent(event);
       console.log("EventStore - event saved");
@@ -24,7 +24,7 @@ export class EventStore {
    * Save a new event to the store
    * @param event The event to store
    */
-  async saveEvent(event: PSMEvent<unknown, any>): Promise<void> {
+  async saveEvent(event: PSMEvent<any, string>): Promise<void> {
     const aggregateOffset = await this.getNextAggregateOffset(
       event.getAggregateId
     );
@@ -81,7 +81,7 @@ export class EventStore {
    * @param eventType
    * @returns
    */
-  async getEventsByType(eventType: string): Promise<PSMEvent<unknown, any>[]> {
+  async getEventsByType(eventType: string): Promise<PSMEvent<any, string>[]> {
     console.log("🚀 Getting events by type", { eventType });
     // eventually check if the request event Type is a mapped type in application
     const command = new QueryCommand({
@@ -113,7 +113,7 @@ export class EventStore {
    * Retrieve all events for a specific aggregate
    * @param aggregateId The ID of the aggregate
    */
-  async getEvents(aggregateId: string): Promise<PSMEvent<unknown, any>[]> {
+  async getEvents(aggregateId: string): Promise<PSMEvent<any, string>[]> {
     const command = new QueryCommand({
       TableName: this.tableName,
       KeyConditionExpression: "aggregateId = :id",
@@ -184,7 +184,7 @@ export class EventStore {
   async getEventsByGlobalOffset(
     start: number,
     end?: number
-  ): Promise<PSMEvent<unknown, any>[]> {
+  ): Promise<PSMEvent<any, string>[]> {
     console.log("🚀 Getting events by global offset", { start, end });
 
     // Since we can't do BETWEEN on globalOffset directly anymore,

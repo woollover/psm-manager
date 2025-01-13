@@ -5,3 +5,4 @@ export * from "./Errors";
 export * from "./Event/Event";
 export * from "./EventStore";
 export * from "./Repos/MaterializedViewRepo";
+export * from "./Projector";

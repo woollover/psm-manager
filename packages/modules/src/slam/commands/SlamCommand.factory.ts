@@ -1,4 +1,3 @@
-import { Command } from "@psm/core";
 import {
   AcceptPoetCommand,
   AssignMCCommand,

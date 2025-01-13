@@ -2,26 +2,26 @@ import { Command } from "../Command/Command";
 import { PSMEvent } from "../Event/Event";
 
 export abstract class AggregateRoot {
-  private readonly _uncommittedEvents: PSMEvent<unknown, any>[] = [];
+  private readonly _uncommittedEvents: PSMEvent<any, string>[] = [];
   protected _version: number = 1;
   protected _aggregateOffset: number = 0;
 
   constructor(public readonly id: string) {}
 
   // Apply an event and mutate state
-  protected apply(event: PSMEvent<unknown, any>): void {
+  protected apply(event: PSMEvent<any, string>): void {
     this.mutate(event);
     this._aggregateOffset++;
     this._uncommittedEvents.push(event);
   }
 
   // Abstract method to handle event mutation
-  protected abstract mutate(event: PSMEvent<unknown, any>): void;
+  protected abstract mutate(event: PSMEvent<any, string>): void;
 
-  abstract applyCommand(command: Command<unknown, string>): Promise<void>;
+  abstract applyCommand(command: Command<any, string>): Promise<void>;
 
   // Retrieve uncommitted events
-  public get uncommittedEvents(): PSMEvent<unknown, any>[] {
+  public get uncommittedEvents(): PSMEvent<any, string>[] {
     return [...this._uncommittedEvents]; // it's a new array bcs the uncommittedEvents is readonly and immutable
   }
 
@@ -31,7 +31,7 @@ export abstract class AggregateRoot {
   }
 
   // Rehydrate aggregate from persisted events
-  public loadFromHistory(events: PSMEvent<unknown, any>[]): void {
+  public loadFromHistory(events: PSMEvent<any, string>[]): void {
     for (const event of events) {
       this.mutate(event);
       this._aggregateOffset++;

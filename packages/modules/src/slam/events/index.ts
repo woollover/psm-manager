@@ -9,7 +9,7 @@ import { PoetRejectedEvent } from "./PoetRejected.event";
 import { SlamCreatedEvent } from "./SlamCreated.event";
 import { SlamDeletedEvent } from "./SlamDeleted.event";
 import { SlamEditedEvent } from "./SlamEdited.event";
-import { SLamEndedEvent } from "./SlamEnded.event";
+import { SlamEndedEvent } from "./SlamEnded.event";
 import { SlamStartedEvent } from "./SlamStarted.event";
 
 export const SlamEventList = [
@@ -41,7 +41,7 @@ export type SlamEvent =
   | PoetAcceptedEvent
   | PoetRejectedEvent
   | SlamStartedEvent
-  | SLamEndedEvent;
+  | SlamEndedEvent;
 
 // typemap of the according payload
 type SlamEventPayloadMap = {
