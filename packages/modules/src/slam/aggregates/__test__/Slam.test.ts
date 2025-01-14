@@ -6,7 +6,7 @@ import {
   DeleteSlamCommand,
   UnassignMCCommand,
 } from "src/slam/commands";
-import { InvariantValidationError } from "@psm/core/Errors/InvariantValidation.error";
+import { InvariantValidationError } from "@psm/core";
 
 describe("Slam Aggregate Tests", () => {
   describe("Class Instance", () => {
@@ -42,7 +42,7 @@ describe("Slam Aggregate Tests", () => {
       );
       expect(slam.getName).toEqual("ABCD");
       expect(slam.getCity).toEqual("ABCD");
-      expect(slam.getTimestamp).toEqual(1752271200000);
+      expect(slam.getDateTime).toEqual(1752271200000);
       console.log(slam.uncommittedEvents);
       expect(slam.uncommittedEvents.length).toBe(1);
     });

@@ -35,10 +35,10 @@ export class PoetCommandFactory {
           "DeletePoetCommand",
           payload as PoetCommandInput<"DeletePoetCommand">
         );
-      case "SetPooetAsMCCommand":
+      case "SetPoetAsMCCommand":
         return new SetPoetAsMCCommand(
-          "SetPooetAsMCCommand",
-          payload as PoetCommandInput<"SetPooetAsMCCommand">
+          "SetPoetAsMCCommand",
+          payload as PoetCommandInput<"SetPoetAsMCCommand">
         );
       case "SetPoetAsPoetCommand":
         return new SetPoetAsPoetCommand(

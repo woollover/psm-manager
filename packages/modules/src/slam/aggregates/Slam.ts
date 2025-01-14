@@ -49,8 +49,8 @@ export class Slam extends AggregateRoot {
         this.venue = event.getPayload.venue
           ? event.getPayload.venue
           : this.venue;
-        this.dateTime = event.getPayload.timestamp
-          ? event.getPayload.timestamp
+        this.dateTime = event.getPayload.dateTime
+          ? event.getPayload.dateTime
           : this.dateTime;
         this.name = event.getPayload.name ? event.getPayload.name : this.name;
         break;
@@ -193,7 +193,7 @@ export class Slam extends AggregateRoot {
           countryId: command.payload.countryId,
           city: command.payload.city,
           venue: command.payload.venue,
-          timestamp:
+          dateTime:
             command.payload.year &&
             command.payload.monthIndex &&
             command.payload.day &&

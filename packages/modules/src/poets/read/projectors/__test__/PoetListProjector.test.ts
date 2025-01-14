@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vitest } from "vitest";
 import { PoetsListProjector } from "../PoetsList.projector";
 import { EVENTS_FIXTURE } from "../__fixtures__/EVENTS_FIXTURE";
-import { EventStore } from "@psm/core/EventStore/EventStore";
+import { EventStore } from "@psm/core";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 
 const mockDynamoClientOnEventStore = {

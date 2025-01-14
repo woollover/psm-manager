@@ -1,10 +1,15 @@
 {
-  "name": "infra",
+  "name": "@psm/infra",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "sst dev",
+    "sst": "sst dev"
+  },
+  "dependencies": {
+    "sst": "*"
   },
   "keywords": [],
   "author": "",

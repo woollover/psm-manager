@@ -5,7 +5,7 @@ export interface SetPoetAsMCCommandInput {
 
 export class SetPoetAsMCCommand extends Command<
   SetPoetAsMCCommandInput,
-  "SetPooetAsMCCommand"
+  "SetPoetAsMCCommand"
 > {
   validate(input: SetPoetAsMCCommandInput): void | Promise<void> {
     if (!input.aggregateId) {

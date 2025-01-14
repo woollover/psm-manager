@@ -3,31 +3,38 @@
   "version": "1s.0.0",
   "type": "module",
   "scripts": {
-    "build": "pnpm -r --filter ./shared/... --filter ./packages/... --ignore ./packages/functions/... --ignore ./packages/modules/... run build",
     "dev:infra": "sst dev",
     "test": "vitest",
     "test:watch": "vitest watch",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "build": "turbo build",
+    "dev": "turbo run dev",
+    "dev:fullstack": "turbo fullstack",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
     "@types/node": "^20.17.10",
     "@vitest/coverage-v8": "^2.1.8",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.2",
     "vite": "^6.0.7",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^2.1.8"
+    "vitest": "^2.1.8",
+    "prettier": "^3.2.5",
+    "turbo": "^2.3.3",
+    "typescript": "5.5.4"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.714.0",
     "node": "^23.4.0",
     "sst": "^3.4.21"
   },
-  "description": "A template to create a monorepo SST ❍ Ion project.",
-  "main": "index.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@9.15.0"
+  "packageManager": "pnpm@9.0.0"
 }

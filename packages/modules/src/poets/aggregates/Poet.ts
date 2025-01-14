@@ -96,88 +96,94 @@ export class Poet extends AggregateRoot {
     }
   }
 
-  public async applyCommand(command: PoetCommands): Promise<Poet> {
+  public async applyCommand(command: PoetCommands): Promise<void> {
     // Business invariants validation
     switch (command.commandName) {
-      case "CreatePoetCommand": {
-        await command.validateOrThrow(command.payload);
-        this.apply(
-          PoetsEventFactory.createEvent("PoetCreated", {
-            aggregateId: this.id,
-            payload: command.payload,
-          })
-        );
-        return this;
-      }
-
-      case "SetPooetAsMCCommand": {
-        await command.validateOrThrow(command.payload);
-        if (this.getIsMc == true) {
-          throw new Error("Poet is already set as MC");
-          // reject the command
+      case "CreatePoetCommand":
+        {
+          await command.validateOrThrow(command.payload);
+          this.apply(
+            PoetsEventFactory.createEvent("PoetCreated", {
+              aggregateId: this.id,
+              payload: command.payload,
+            })
+          );
         }
-        this.apply(
-          PoetsEventFactory.createEvent("PoetSetAsMC", {
-            aggregateId: this.id,
-            payload: command.payload,
-          })
-        );
-        return this;
-      }
+        break;
 
-      case "SetPoetAsPoetCommand": {
-        await command.validateOrThrow(command.payload);
-        if (this.getIsMc == false) {
-          // reject the command
-          throw new Error("Poet is already set as Poet");
+      case "SetPoetAsMCCommand":
+        {
+          await command.validateOrThrow(command.payload);
+          if (this.getIsMc == true) {
+            throw new Error("Poet is already set as MC");
+            // reject the command
+          }
+          this.apply(
+            PoetsEventFactory.createEvent("PoetSetAsMC", {
+              aggregateId: this.id,
+              payload: command.payload,
+            })
+          );
         }
+        break;
 
-        this.apply(
-          PoetsEventFactory.createEvent("PoetSetAsPoet", {
-            aggregateId: this.id,
-            payload: command.payload,
-          })
-        );
-        return this;
-      }
-      case "EditPoetCommand": {
-        await command.validateOrThrow(command.payload);
+      case "SetPoetAsPoetCommand":
+        {
+          await command.validateOrThrow(command.payload);
+          if (this.getIsMc == false) {
+            // reject the command
+            throw new Error("Poet is already set as Poet");
+          }
 
-        if (this.isDeleted) throw new Error("Poet is deleted");
+          this.apply(
+            PoetsEventFactory.createEvent("PoetSetAsPoet", {
+              aggregateId: this.id,
+              payload: command.payload,
+            })
+          );
+        }
+        break;
+      case "EditPoetCommand":
+        {
+          await command.validateOrThrow(command.payload);
 
-        this.apply(
-          PoetsEventFactory.createEvent("PoetEdited", {
-            aggregateId: this.id,
-            payload: command.payload,
-            timestamp: new Date().getTime(),
-          })
-        );
-        return this;
-      }
-      case "DeletePoetCommand": {
-        if (this.isDeleted) throw new Error("Poet is deleted");
-        await command.validateOrThrow(command.payload);
-        this.apply(
-          PoetsEventFactory.createEvent("PoetDeleted", {
-            aggregateId: this.id,
-            payload: command.payload,
-            timestamp: new Date().getTime(),
-          })
-        );
-        return this;
-      }
-      case "ReactivatePoetCommand": {
-        await command.validateOrThrow(command.payload);
-        if (!this.isDeleted) throw new Error("Poet is not deleted");
-        this.apply(
-          PoetsEventFactory.createEvent("PoetReactivated", {
-            aggregateId: this.id,
-            payload: command.payload,
-            timestamp: new Date().getTime(),
-          })
-        );
-        return this;
-      }
+          if (this.isDeleted) throw new Error("Poet is deleted");
+
+          this.apply(
+            PoetsEventFactory.createEvent("PoetEdited", {
+              aggregateId: this.id,
+              payload: command.payload,
+              timestamp: new Date().getTime(),
+            })
+          );
+        }
+        break;
+      case "DeletePoetCommand":
+        {
+          if (this.isDeleted) throw new Error("Poet is deleted");
+          await command.validateOrThrow(command.payload);
+          this.apply(
+            PoetsEventFactory.createEvent("PoetDeleted", {
+              aggregateId: this.id,
+              payload: command.payload,
+              timestamp: new Date().getTime(),
+            })
+          );
+        }
+        break;
+      case "ReactivatePoetCommand":
+        {
+          await command.validateOrThrow(command.payload);
+          if (!this.isDeleted) throw new Error("Poet is not deleted");
+          this.apply(
+            PoetsEventFactory.createEvent("PoetReactivated", {
+              aggregateId: this.id,
+              payload: command.payload,
+              timestamp: new Date().getTime(),
+            })
+          );
+        }
+        break;
       default:
         console.log("🚀 Default case, problem in command Switch");
         throw new Error("Invalid command");

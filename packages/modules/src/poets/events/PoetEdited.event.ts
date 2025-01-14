@@ -33,6 +33,5 @@ export class PoetEditedEvent extends PSMEvent<
       aggregateOffset: aggregateOffset,
       globalOffset: globalOffset,
     });
-    this.payload = payload;
   }
 }

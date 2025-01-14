@@ -39,7 +39,7 @@ export class SlamEventFactory {
             countryId: payload.countryId,
             city: payload.city,
             venue: payload.venue,
-            timestamp: payload.timestamp,
+            dateTime: payload.dateTime,
           },
         });
 
