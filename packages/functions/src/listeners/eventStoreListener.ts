@@ -1,5 +1,6 @@
 import { SendMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
 import { Handler } from "aws-lambda";
+//@ts-ignore
 import { PSMAllEventNames } from "../../../modules/src/index";
 
 const poetsProjectionsQueueUrl = process.env.POETS_PROJECTIONS_QUEUE_URL;

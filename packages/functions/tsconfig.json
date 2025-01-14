@@ -38,8 +38,7 @@
       "@/psm/modules/*": ["../../../modules/*"]
     }
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"],
+  "include": ["src", "../../modules/index.ts"],
   "types": ["node"]
 }
 
