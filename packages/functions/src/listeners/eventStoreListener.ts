@@ -1,5 +1,6 @@
 import { SendMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
 import { Handler } from "aws-lambda";
+import { PSMAllEventNames } from "../../../modules/src/index";
 
 const poetsProjectionsQueueUrl = process.env.POETS_PROJECTIONS_QUEUE_URL;
 const sqs = new SQSClient({
@@ -23,30 +24,39 @@ export const handler: Handler = async (_event) => {
     //console.log("📥 Event type:", event);
     const savedEvent = event.dynamodb.NewImage;
     // get the event type
-    const eventType = savedEvent.eventType.S as string;
+    const eventType = savedEvent.eventType.S as PSMAllEventNames;
+
+    const aggregateId = savedEvent.aggregateId.S as string;
+
+    // get the aggregate id
     console.log("📥 Event type:", eventType);
-    if (eventType.includes("Poet")) {
-      // get the aggregate id
-      const aggregateId = savedEvent.aggregateId.S as string;
-      console.log("📥 Aggregate id:", aggregateId);
-      // forward the event to the poet queue / service or something
-      const command = new SendMessageCommand({
-        QueueUrl: poetsProjectionsQueueUrl,
-        MessageBody: JSON.stringify(savedEvent),
-        // add 2 message Attributes with event type and aggregate id
-        MessageAttributes: {
-          eventType: {
-            DataType: "String",
-            StringValue: eventType as string,
+
+    switch (eventType) {
+      case "PoetCreated":
+      case "PoetDeleted":
+      case "PoetEdited":
+      case "PoetSetAsMC":
+      case "PoetSetAsPoet":
+      case "PoetReactivated":
+        // forward the event to the poet queue / service or something
+        const command = new SendMessageCommand({
+          QueueUrl: poetsProjectionsQueueUrl,
+          MessageBody: JSON.stringify(savedEvent),
+          // add 2 message Attributes with event type and aggregate id
+          MessageAttributes: {
+            eventType: {
+              DataType: "String",
+              StringValue: eventType as string,
+            },
+            aggregateId: {
+              DataType: "String",
+              StringValue: aggregateId as string,
+            },
           },
-          aggregateId: {
-            DataType: "String",
-            StringValue: aggregateId as string,
-          },
-        },
-      });
-      console.log("📥 Sending message to poets projections queue", command);
-      await sqs.send(command);
+        });
+        console.log("📥 Sending message to poets projections queue", command);
+        await sqs.send(command);
+        break;
     }
   }
 

@@ -32,7 +32,11 @@
     "lib": ["es2022"],
 
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "./src",
+    "baseUrl": "src",
+    "paths": {
+      "@/psm/modules/*": ["../../../modules/*"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"],
