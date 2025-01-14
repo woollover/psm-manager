@@ -71,7 +71,11 @@ export class SlamListProjector extends Projector<
   }: {
     originEventType: T;
   }): Promise<void> {
-    this.materializedView = new SlamsListMaterializedView({ slams: new Map() });
+
+    this._materializedView = new SlamsListMaterializedView({
+      slams: new Map(),
+    });
+
     const events = await this.eventStore.getEventsByType(originEventType);
     const baseEvents = events.filter((e) => e.getEventType === originEventType);
     this.events = [];
@@ -87,14 +91,13 @@ export class SlamListProjector extends Projector<
       const events = (await this.eventStore.getEvents(
         aggregateId
       )) as SlamEvent[];
-      console.log("aggregateId", aggregateId);
-      console.log("events", events);
 
       this.events.push(...events);
     }
 
     // now that we have all the events we sort them  from the oldest to the newest
     this.events.sort((a, b) => a.getTimestamp - b.getTimestamp);
+    
     console.log("🚀 ~ events", this.events);
 
     // for each event we apply the projection

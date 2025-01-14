@@ -1,10 +1,10 @@
 import { APIGatewayProxyResultV2, Handler } from "aws-lambda";
-import { EventStore } from "@psm/core/EventStore";
+import { EventStore } from "@psm/core";
 import { randomUUID } from "crypto";
 import { Poet } from "../aggregates/Poet";
 import { PoetCommandFactory } from "../commands/PoetCommand.factory";
-import { InvalidCommandError } from "@psm/core/Errors/InvalidCommand.error";
-import { documentClient } from "@psm/core/DynamoDBInstance/DynamoDBInstance";
+import { InvalidCommandError } from "@psm/core";
+import { documentClient } from "@psm/core";
 
 //rule of thumb: stateless instnces OUTSIDE the handler, Stateful instances inside the handler
 

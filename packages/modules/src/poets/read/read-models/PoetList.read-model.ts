@@ -1,8 +1,8 @@
-import { PoetsListMaterializedView } from "../materialized-view/PoetList.materialized-view";
+import { PoetsListMaterializedView } from "../materialized-view/PoetList.materialized-view.js";
 import {
   PoetsListMaterializedViewDBShape,
   PoetsListPoet,
-} from "../materialized-view/types";
+} from "../materialized-view/types.js";
 
 export interface PoetsListReadModel {
   poets: PoetsListPoet[];

@@ -2,9 +2,9 @@ import { poetsProjectionsQueue } from "./queues/poetsProjectionsQueue";
 import { EventStoreTable } from "./tables/eventStore";
 import { MaterializedViewsTable } from "./tables/materializedViewsTable";
 
-export const eventStoreApi = new sst.aws.ApiGatewayV2("Api");
+export const api = new sst.aws.ApiGatewayV2("Api");
 
-eventStoreApi.route("GET /events", {
+api.route("GET /events", {
   link: [EventStoreTable, MaterializedViewsTable],
   handler: "packages/modules/src/poets/functions/getAllPoetEvents.handler",
   name: "event-store-getter",
@@ -14,8 +14,7 @@ eventStoreApi.route("GET /events", {
   },
 });
 
-
-eventStoreApi.route("GET /snitch", {
+api.route("GET /snitch", {
   link: [EventStoreTable, MaterializedViewsTable],
   handler: "packages/modules/src/audit/eventSnitch.handler.handler",
   name: "event-store-snitcher",
@@ -25,9 +24,7 @@ eventStoreApi.route("GET /snitch", {
   },
 });
 
-
-
-eventStoreApi.route("GET /poets/list", {
+api.route("GET /poets/list", {
   link: [MaterializedViewsTable],
   handler: "packages/modules/src/poets/functions/queryHandler.handler",
   name: "get-poets-list",
@@ -36,7 +33,7 @@ eventStoreApi.route("GET /poets/list", {
   },
 });
 
-eventStoreApi.route("POST /poets/commands", {
+api.route("POST /poets/commands", {
   link: [EventStoreTable],
   handler: "packages/modules/src/poets/functions/commandHandler.handler",
   name: "poets-command-handler",
@@ -45,7 +42,7 @@ eventStoreApi.route("POST /poets/commands", {
   },
 });
 
-eventStoreApi.route("POST /slams/commands", {
+api.route("POST /slams/commands", {
   link: [EventStoreTable],
   handler: "packages/modules/src/slam/functions/commandHandler.handler",
   name: "slams-command-handler",
@@ -53,6 +50,17 @@ eventStoreApi.route("POST /slams/commands", {
     EVENT_STORE_TABLE_NAME: EventStoreTable.name,
   },
 });
+
+api.route("GET /slams/list", {
+  link: [MaterializedViewsTable],
+  handler: "packages/modules/src/slam/functions/queryHandler.handler",
+  name: "get-slam-list",
+  environment: {
+    MATERIALIZED_VIEWS_TABLE_NAME: MaterializedViewsTable.name,
+  },
+});
+
+
 
 EventStoreTable.subscribe("event-store-listener", {
   handler: "packages/functions/src/listeners/eventStoreListener.handler",

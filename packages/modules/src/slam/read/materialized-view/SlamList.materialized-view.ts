@@ -217,7 +217,38 @@ export class SlamsListMaterializedView {
     this.#data.set(slam.id, slam);
   }
 
-  get viewToSave(): SlamsListMaterializedViewDBShape {
+  get count() {
+    return Object.keys(this.#data).length;
+  }
+
+  get countries() {
+    const countriesArray: Array<CountryId> = [];
+
+    Object.keys(this.#data).forEach((k) =>
+      countriesArray.push(this.#data.get(k)!.countryId)
+    );
+
+    return [...new Set(countriesArray)];
+  }
+
+  get slamArray() {
+    const slamArray = Object.keys(this.#data).map((k) => {
+      const slam = this.#data.get(k);
+      if (slam) {
+        return {
+          isEnded: slam.ended,
+          name: slam.name,
+          venue: slam.venue,
+          dateTime: slam.date,
+          callOpen: slam.callOpen,
+        };
+      }
+    });
+    return slamArray.filter((obj) => obj != undefined);
+  }
+
+  // DB Shape
+  public get viewToSave(): SlamsListMaterializedViewDBShape {
     return { slams: this.#data };
   }
 }

@@ -7,11 +7,19 @@ export abstract class Projector<
 > {
   protected events: Array<EventUnion> = [];
   protected eventStore: EventStore;
-  protected materializedView: MaterializedViewClass;
+  public _materializedView: MaterializedViewClass;
 
   constructor(eventStore: EventStore, materializedView: MaterializedViewClass) {
     this.eventStore = eventStore;
-    this.materializedView = materializedView;
+    this._materializedView = materializedView;
+  }
+
+  get materializedView() {
+    return this._materializedView;
+  }
+
+  set materializedView(mv: MaterializedViewClass) {
+    this._materializedView = mv;
   }
 
   abstract project(event: EventUnion): void;

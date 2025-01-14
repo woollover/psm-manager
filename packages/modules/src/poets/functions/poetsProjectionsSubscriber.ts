@@ -4,8 +4,8 @@ import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { PoetsEventFactory } from "../events/PoetsEvent.factory";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import { PoetsListProjector } from "../read/projectors/PoetsList.projector";
-import { EventStore } from "@psm/core/EventStore";
-import { MaterializedViewRepository } from "@psm/core/Repos/MaterializedViewRepo";
+import { EventStore } from "@psm/core";
+import { MaterializedViewRepository } from "@psm/core";
 import { PoetsListMaterializedViewDBShape } from "../read/materialized-view/types";
 
 const client = new DynamoDBClient({

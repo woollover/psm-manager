@@ -10,15 +10,15 @@ export default $config({
     };
   },
   async run() {
-    await import("./infra/tables/eventStore");
-    await import("./infra/tables/materializedViewsTable");
-    await import("./infra/queues/poetsProjectionsQueue");
-    await import("./infra/queues/deadLetterQueue");
+    await import("./infra/tables/eventStore.js");
+    await import("./infra/tables/materializedViewsTable.js");
+    await import("./infra/queues/poetsProjectionsQueue.js");
+    await import("./infra/queues/deadLetterQueue.js");
 
-    const api = await import("./infra/api");
+    const api = await import("./infra/api.js");
 
     return {
-      api: api.eventStoreApi.url,
+      api: api.api.url,
     };
   },
 });

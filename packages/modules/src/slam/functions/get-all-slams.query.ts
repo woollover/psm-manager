@@ -3,29 +3,11 @@ import {
   APIGatewayProxyResultV2,
   Handler,
 } from "aws-lambda";
-import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { MaterializedViewRepository } from "@psm/core";
-import { PoetListReadModel } from "../read/read-models/PoetList.read-model";
-import { PoetsListMaterializedViewDBShape } from "../read/materialized-view/types";
+import { documentClient, MaterializedViewRepository } from "@psm/core";
+import { SlamsListMaterializedViewDBShape } from "../read/materialized-view/SlamList.materialized-view";
+import { SlamListReadModel } from "../read/read-models/SlamList.read-model";
 
 //rule of thumb: stateless instnces OUTSIDE the handler, Stateful instances inside the handler
-
-const client = new DynamoDBClient({
-  region: process.env.EVENT_STORE_TABLE_REGION,
-});
-
-const documentClient = DynamoDBDocument.from(client, {
-  marshallOptions: {
-    removeUndefinedValues: true,
-    convertEmptyValues: true,
-    convertClassInstanceToMap: true,
-  },
-  unmarshallOptions: {
-    wrapNumbers: false,
-    convertWithoutMapWrapper: true,
-  },
-});
 
 // instantiate the eventStore, it's stateless so we can do it outside the handler
 
@@ -35,15 +17,15 @@ export const handler: Handler = async (_event: APIGatewayProxyEventV2) => {
 
   // instnatiate the materialized view repo
   const poetsMaterializedViewRepository =
-    new MaterializedViewRepository<PoetsListMaterializedViewDBShape>({
+    new MaterializedViewRepository<SlamsListMaterializedViewDBShape>({
       client: documentClient,
       tablename: process.env.MATERIALIZED_VIEWS_TABLE_NAME || "",
-      viewKey: "poets-list-materialized-view",
+      viewKey: "slam-list",
     });
   // load the materialized view
 
-  const mv = await poetsMaterializedViewRepository.load();
-  if (mv == null) {
+  const mvData = await poetsMaterializedViewRepository.load();
+  if (mvData == null) {
     return {
       headers: {
         "Content-Type": "application/json",
@@ -54,7 +36,9 @@ export const handler: Handler = async (_event: APIGatewayProxyEventV2) => {
   }
 
   // insantiate the Read Model
-  const poetsReadModel = new PoetListReadModel({ materializedViewData: mv });
+  const poetsReadModel = new SlamListReadModel({
+    materializedViewData: mvData,
+  });
   const data = poetsReadModel.data;
   // serve the read model
   const response: APIGatewayProxyResultV2 = {
