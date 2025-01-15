@@ -1,6 +1,6 @@
-import { poetsProjectionsQueue } from "./queues/poetsProjectionsQueue";
-import { EventStoreTable } from "./tables/eventStore";
-import { MaterializedViewsTable } from "./tables/materializedViewsTable";
+import { poetsProjectionsQueue } from "./queues/poetsProjectionsQueue.js";
+import { EventStoreTable } from "./tables/eventStore.js";
+import { MaterializedViewsTable } from "./tables/materializedViewsTable.js";
 
 export const api = new sst.aws.ApiGatewayV2("Api");
 
@@ -59,8 +59,6 @@ api.route("GET /slams/list", {
     MATERIALIZED_VIEWS_TABLE_NAME: MaterializedViewsTable.name,
   },
 });
-
-
 
 EventStoreTable.subscribe("event-store-listener", {
   handler: "packages/functions/src/listeners/eventStoreListener.handler",

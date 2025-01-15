@@ -1,6 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
+  "globalEnv": ["GATEWAY_URL"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -23,6 +24,7 @@
     },
     "dev": {
       "dependsOn": ["^sst"],
+      "env": ["NEXT_PUBLIC_GATEWAY_URL"],
       "cache": false,
       "persistent": true
     }

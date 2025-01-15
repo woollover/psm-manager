@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-});
+import "@mantine/core/styles.css";
+import { ReactQueryClientProvider } from "./components/ReactQueryClientProvider";
+import {
+  ColorSchemeScript,
+  MantineProvider,
+  mantineHtmlProps,
+} from "@mantine/core";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,10 +19,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
-      </body>
-    </html>
+    <ReactQueryClientProvider>
+      <head>
+        <ColorSchemeScript />
+      </head>
+      <html lang="en" {...mantineHtmlProps}>
+        <body>
+          <MantineProvider>{children}</MantineProvider>
+        </body>
+      </html>
+    </ReactQueryClientProvider>
   );
 }
