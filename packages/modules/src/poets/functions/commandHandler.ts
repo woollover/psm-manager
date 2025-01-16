@@ -40,7 +40,7 @@ export const handler: Handler = async (_event) => {
       body.command,
       body.payload
     );
-
+    console.log("commandCLass", commandClass);
     await poet.applyCommand(commandClass);
 
     // persist uncommitted events

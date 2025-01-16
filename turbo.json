@@ -14,11 +14,9 @@
     "check-types": {
       "dependsOn": ["^check-types"]
     },
-    "fullstack": {
-      "dependsOn": ["dev"]
-    },
 
     "sst": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
