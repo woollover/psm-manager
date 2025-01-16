@@ -141,6 +141,92 @@ export class EventStore {
     );
   }
 
+  async getEventsBetweenTimestamps({
+    start,
+    end,
+    aggregateId,
+  }: {
+    start: number;
+    end?: number;
+    aggregateId?: string;
+  }): Promise<Array<PSMEvent<any, string>>> {
+    console.log("🚀 Getting events by timestamp", { aggregateId, start, end });
+    if (aggregateId) {
+      const command = new QueryCommand({
+        TableName: this.tableName,
+        KeyConditionExpression: "aggregateId = :id",
+        FilterExpression: end ? "#ts BETWEEN :start AND :end" : "#ts >= :start",
+        ExpressionAttributeNames: {
+          "#ts": "timestamp",
+        },
+        ExpressionAttributeValues: {
+          ":id": aggregateId,
+          ":start": Number(start),
+          ...(end ? { ":end": Number(end) } : {}),
+        },
+        ScanIndexForward: true, // Ensure events are ordered by version
+      });
+
+      let response = await this.client.send(command);
+      console.log("RESPONSE: ", response);
+      return (
+        response.Items?.map((item) => {
+          return new PSMEvent({
+            aggregateId: item.aggregateId,
+            aggregateOffset: item.aggregateOffset,
+            globalOffset: item.globalOffset,
+            eventType: item.eventType,
+            payload:
+              typeof item.payload === "string"
+                ? JSON.parse(item.payload)
+                : item.payload,
+            version: item.version,
+            timestamp: item.timestamp,
+            eventId: item.eventId,
+          });
+        }) || []
+      );
+    }
+
+    const keyConditionExpression = `pivotKey = :pivotKey AND ${
+      end ? "#ts BETWEEN :start AND :end" : "#ts >= :start"
+    }`;
+    const command = new QueryCommand({
+      TableName: this.tableName,
+      IndexName: "timestampIndex",
+      KeyConditionExpression: keyConditionExpression,
+
+      ExpressionAttributeNames: {
+        "#ts": "timestamp",
+      },
+      ExpressionAttributeValues: {
+        ":pivotKey": "event",
+        ":start": Number(start),
+        ...(end ? { ":end": Number(end) } : {}),
+      },
+      ScanIndexForward: true,
+    });
+    console.log("COMMAND", command);
+    let response = await this.client.send(command);
+    console.log("RESPONSE: ", response);
+    return (
+      response.Items?.map((item) => {
+        return new PSMEvent({
+          aggregateId: item.aggregateId,
+          aggregateOffset: item.aggregateOffset,
+          globalOffset: item.globalOffset,
+          eventType: item.eventType,
+          payload:
+            typeof item.payload === "string"
+              ? JSON.parse(item.payload)
+              : item.payload,
+          version: item.version,
+          timestamp: item.timestamp,
+          eventId: item.eventId,
+        });
+      }) || []
+    );
+  }
   private async getNextAggregateOffset(aggregateId: string): Promise<number> {
     console.log("🚀 Getting next aggregate offset", { aggregateId });
     const command = new QueryCommand({

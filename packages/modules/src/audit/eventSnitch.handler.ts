@@ -48,26 +48,42 @@ export const handler: Handler = async (_event) => {
       }),
     };
   }
+
+  if (!_event.queryStringParameters) {
+    return {
+      statusCode: 400,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: "No params provided",
+      }),
+    };
+  }
+
   console.log(_event.queryStringParameters);
 
   var events = [];
 
   switch (strategy) {
     case "aggregateId":
-      const aggregateId = _event.queryStringParameters?.aggregateId;
+      const aggregateId = _event.queryStringParameters.aggregateId;
       events = await eventStore.getEvents(aggregateId!);
       break;
     case "eventType":
-      const eventType = _event.queryStringParameters?.eventType;
+      const eventType = _event.queryStringParameters.eventType;
       events = await eventStore.getEventsByType(eventType!);
       break;
     case "fromTimestamp":
-      const timestamp = _event.queryStringParameters?.timestamp;
-      events = await eventStore.getEventsByType("PoetCreated");
+      events = await eventStore.getEventsBetweenTimestamps({
+        aggregateId: _event.queryStringParameters.aggregateId,
+        start: _event.queryStringParameters.start!,
+        end: _event.queryStringParameters.end,
+      });
       break;
     case "globalOffset":
-      const start = Number(_event.queryStringParameters?.start);
-      const end = Number(_event.queryStringParameters?.end);
+      const start = Number(_event.queryStringParameters.start);
+      const end = Number(_event.queryStringParameters.end);
       events = await eventStore.getEventsByGlobalOffset(start!, end);
       break;
     default:
@@ -82,3 +98,4 @@ export const handler: Handler = async (_event) => {
     body: JSON.stringify({ events }),
   };
 };
+  

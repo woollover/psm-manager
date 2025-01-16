@@ -5,6 +5,7 @@ export const EventStoreTable = new sst.aws.Dynamo("EventStore", {
     eventType: "string",
     globalOffset: "number",
     pivotKey: "string",
+    timestamp: "number",
   },
   primaryIndex: { hashKey: "aggregateId", rangeKey: "aggregateOffset" },
 
@@ -16,6 +17,11 @@ export const EventStoreTable = new sst.aws.Dynamo("EventStore", {
     },
     eventTypeIndex: {
       hashKey: "eventType",
+      projection: "all",
+    },
+    timestampIndex: {
+      hashKey: "pivotKey",
+      rangeKey: "timestamp",
       projection: "all",
     },
   },
