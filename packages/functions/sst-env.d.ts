@@ -26,5 +26,9 @@ declare module "sst" {
       "type": "sst.aws.Queue"
       "url": string
     }
+    "SlamProjectons": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
   }
 }

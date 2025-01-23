@@ -55,6 +55,7 @@ export class SlamsListMaterializedView {
     const slamObj: SlamsListData = {
       id: event.getAggregateId,
       name: event.getPayload.name,
+      // TODO - Errror in parsing the event
       date: new Date(event.getPayload.dateTime).toISOString(),
       region: event.getPayload.regionalId,
       city: event.getPayload.city,

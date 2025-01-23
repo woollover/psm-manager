@@ -1,4 +1,5 @@
 import { poetsProjectionsQueue } from "./queues/poetsProjectionsQueue.js";
+import { slamProjectionsQueue } from "./queues/slamProjectionsQueue.js";
 import { EventStoreTable } from "./tables/eventStore.js";
 import { MaterializedViewsTable } from "./tables/materializedViewsTable.js";
 
@@ -52,20 +53,22 @@ api.route("POST /slams/commands", {
 });
 
 api.route("GET /slams/list", {
-  link: [MaterializedViewsTable],
-  handler: "packages/modules/src/slam/functions/queryHandler.handler",
+  link: [MaterializedViewsTable, EventStoreTable],
+  handler: "packages/modules/src/slam/functions/get-all-slams.query.handler",
   name: "get-slam-list",
   environment: {
+    EVENT_STORE_TABLE_NAME: EventStoreTable.name,
     MATERIALIZED_VIEWS_TABLE_NAME: MaterializedViewsTable.name,
   },
 });
 
 EventStoreTable.subscribe("event-store-listener", {
   handler: "packages/functions/src/listeners/eventStoreListener.handler",
-  link: [EventStoreTable, poetsProjectionsQueue],
+  link: [EventStoreTable, poetsProjectionsQueue, slamProjectionsQueue],
   environment: {
     EVENT_STORE_TABLE_NAME: EventStoreTable.name,
     POETS_PROJECTIONS_QUEUE_URL: poetsProjectionsQueue.url,
+    SLAM_PROJECTIONS_QUEUE_URL: slamProjectionsQueue.url,
   },
   name: "event-store-listener",
 });

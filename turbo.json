@@ -15,6 +15,10 @@
       "dependsOn": ["^check-types"]
     },
 
+    "test": {
+      "dependsOn": ["^build"]
+    },
+
     "sst": {
       "dependsOn": ["^build"],
       "cache": false,

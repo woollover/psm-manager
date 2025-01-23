@@ -1,7 +1,4 @@
-import {
-  AcceptPoetCommand,
-  AcceptPoetCommandInput,
-} from "./AcceptPoet.command";
+import { AcceptPoetCommand } from "./AcceptPoet.command";
 import { AssignMCCommand } from "./AssignMC.command";
 import { CandidatePoetCommand } from "./CandiadatePoet.command";
 import { CloseCallCommand } from "./CloseCall.command";

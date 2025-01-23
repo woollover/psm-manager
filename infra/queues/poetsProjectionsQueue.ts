@@ -1,6 +1,7 @@
-import { EventStoreTable } from "../tables/eventStore";
-import { MaterializedViewsTable } from "../tables/materializedViewsTable";
-import { deadLetterQueue } from "./deadLetterQueue";
+import { MaterializedViewsTable } from "infra/tables/materializedViewsTable.js";
+import { deadLetterQueue } from "./deadLetterQueue.js";
+import { EventStoreTable } from "infra/tables/eventStore.js";
+
 
 export const poetsProjectionsQueue = new sst.aws.Queue("PoetsProjections", {
   dlq: {

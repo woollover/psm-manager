@@ -18,6 +18,14 @@ export default defineConfig({
         "**/*.config.*",
       ],
     },
+    deps: {
+      optimizer: {
+        ssr: {
+          enabled: true,
+          include: ["@psm/core"],
+        },
+      },
+    },
   },
   plugins: [tsconfigPaths()],
 });

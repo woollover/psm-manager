@@ -1,4 +1,4 @@
-import { PSMEvent } from "@psm/core";
+import { Projector, PSMEvent } from "@psm/core";
 import { EventStore } from "@psm/core";
 import { PoetsListMaterializedView } from "../materialized-view/PoetList.materialized-view";
 import {
@@ -12,11 +12,11 @@ import {
 } from "src/poets/events";
 import { PoetsListMaterializedViewDBShape } from "../materialized-view/types";
 
-export class PoetsListProjector {
+export class PoetsListProjector extends Projector<
+  PoetEvent,
+  PoetsListMaterializedView
+> {
   #events: PSMEvent<any, string>[] = [];
-  #eventStore: EventStore;
-  #materializedView: PoetsListMaterializedView;
-
   constructor({
     eventStore,
     materializedViewData,
@@ -24,35 +24,28 @@ export class PoetsListProjector {
     eventStore: EventStore;
     materializedViewData: PoetsListMaterializedViewDBShape | null;
   }) {
-    this.#eventStore = eventStore;
-    this.#materializedView = new PoetsListMaterializedView(
-      materializedViewData
-    );
-  }
-
-  get materializedView() {
-    return this.#materializedView;
+    super(eventStore, new PoetsListMaterializedView(materializedViewData));
   }
 
   async project(event: PoetEvent) {
     switch (event.getEventType) {
       case "PoetCreated":
-        this.#materializedView.createPoet(event as PoetCreatedEvent);
+        this.materializedView.createPoet(event as PoetCreatedEvent);
         break;
       case "PoetEdited":
-        this.#materializedView.updatePoet(event as PoetEditedEvent);
+        this.materializedView.updatePoet(event as PoetEditedEvent);
         break;
       case "PoetSetAsMC":
-        this.#materializedView.setPoetAsMC(event as PoetSetAsMCEvent);
+        this.materializedView.setPoetAsMC(event as PoetSetAsMCEvent);
         break;
       case "PoetSetAsPoet":
-        this.#materializedView.setPoetAsPoet(event as PoetSetAsPoetEvent);
+        this.materializedView.setPoetAsPoet(event as PoetSetAsPoetEvent);
         break;
       case "PoetDeleted":
-        this.#materializedView.deletePoet(event as PoetDeletedEvent);
+        this.materializedView.deletePoet(event as PoetDeletedEvent);
         break;
       case "PoetReactivated":
-        this.#materializedView.reactivatePoet(event as PoetReactivatedEvent);
+        this.materializedView.reactivatePoet(event as PoetReactivatedEvent);
         break;
       default:
         throw new Error("Event type not supported");
@@ -64,8 +57,8 @@ export class PoetsListProjector {
   }: {
     originEventType: T;
   }) {
-    this.#materializedView = new PoetsListMaterializedView({ poets: [] });
-    const events = await this.#eventStore.getEventsByType(originEventType);
+    this.materializedView = new PoetsListMaterializedView({ poets: [] });
+    const events = await this.eventStore.getEventsByType(originEventType);
     const baseEvents = events.filter((e) => e.getEventType === originEventType);
     this.#events = [];
     if (!baseEvents) {
@@ -76,7 +69,7 @@ export class PoetsListProjector {
     console.log("🚀 ~ aggregateIds", aggregateIds);
 
     for (const aggregateId of aggregateIds) {
-      const events = await this.#eventStore.getEvents(aggregateId);
+      const events = await this.eventStore.getEvents(aggregateId);
       console.log("aggregateId", aggregateId);
       console.log("events", events);
 

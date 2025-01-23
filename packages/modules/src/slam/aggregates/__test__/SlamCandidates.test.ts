@@ -9,7 +9,7 @@ import { OpenCallCommand } from "src/slam/commands/OpenCall.command";
 
 describe("SlamCandidates", () => {
   // create the instnace
-  const slam = new Slam("slam-1234");
+  const slam = new Slam("slam-12345");
 
   test("should be defined", () => {
     expect(slam).toBeDefined();
@@ -29,11 +29,13 @@ describe("SlamCandidates", () => {
       })
     );
 
+    console.log(slam);
+
     test("should try to candidate a poet, but call is not open", () => {
       expect(() => {
         slam.applyCommand(
           new CandidatePoetCommand("CandidatePoetCommand", {
-            slamId: "slam-1234",
+            slamId: "slam-12345",
             poetId: "poet-1234",
           })
         );
@@ -45,7 +47,7 @@ describe("SlamCandidates", () => {
     test("should open the call", () => {
       slam.applyCommand(
         new OpenCallCommand("OpenCallCommand", {
-          slamId: "slam-1234",
+          slamId: "slam-12345",
         })
       );
       expect(slam.isOpen).toBe(true);
@@ -54,7 +56,7 @@ describe("SlamCandidates", () => {
     test("then we should add a candidate correctly", () => {
       slam.applyCommand(
         new CandidatePoetCommand("CandidatePoetCommand", {
-          slamId: "slam-1234",
+          slamId: "slam-12345",
           poetId: "poet-1234",
         })
       );
@@ -65,7 +67,7 @@ describe("SlamCandidates", () => {
       expect(() => {
         slam.applyCommand(
           new CandidatePoetCommand("CandidatePoetCommand", {
-            slamId: "slam-1234",
+            slamId: "slam-12345",
             poetId: "poet-1234",
           })
         );
@@ -74,14 +76,14 @@ describe("SlamCandidates", () => {
     test("if we close the call, we can't candidate anymore", () => {
       slam.applyCommand(
         new CloseCallCommand("CloseCallCommand", {
-          slamId: "slam-1234",
+          slamId: "slam-12345",
         })
       );
       expect(slam.isOpen).toBe(false);
       expect(() => {
         slam.applyCommand(
           new CandidatePoetCommand("CandidatePoetCommand", {
-            slamId: "slam-1234",
+            slamId: "slam-12345",
             poetId: "poet-1234",
           })
         );

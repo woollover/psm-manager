@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, expect, test, vitest } from "vitest";
-import { Slam } from "../Slam";
 import {
   AssignMCCommand,
   CreateSlamCommand,
   DeleteSlamCommand,
   UnassignMCCommand,
 } from "src/slam/commands";
+import { Slam } from "../Slam";
 import { InvariantValidationError } from "@psm/core";
 
 describe("Slam Aggregate Tests", () => {

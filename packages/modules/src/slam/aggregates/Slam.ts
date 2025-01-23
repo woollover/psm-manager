@@ -24,6 +24,7 @@ export class Slam extends AggregateRoot {
   private deleted: boolean = false;
 
   protected mutate(event: SlamEvent): void {
+    console.log("EVENT PAYLOAD ====> ", event.payload);
     switch (event.eventType) {
       case "SlamCreated":
         this.countryId = event.getPayload.countryId;
@@ -147,7 +148,6 @@ export class Slam extends AggregateRoot {
       case "CreateSlamCommand":
         console.log("Applying CreateSlam Command");
         await command.validateOrThrow(command.payload);
-        console.log("if I'm here, I did not throw correctly");
         // eventually do other validations over command
         const slamCreatedPayload: SlamEventPayload<"SlamCreated"> = {
           name: command.payload.name,
@@ -310,7 +310,6 @@ export class Slam extends AggregateRoot {
           })
         );
         break;
-
       default:
         throw new InvalidCommandError("Command does not exists", []);
     }

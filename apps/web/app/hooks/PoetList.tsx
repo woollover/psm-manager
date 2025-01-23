@@ -1,27 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-
-export interface GetPoetListResponse {
-  data: {
-    poets: Poet[];
-    count: number;
-    mcs: Poet[];
-    mcCount: number;
-    totalCount: number;
-  };
-}
-export interface Poet {
-  firstName: string;
-  lastName: string;
-  isMC: boolean;
-  aggregateId: string;
-  id: string;
-  birthDate: string;
-  instagramHandle: string;
-  email: string;
-  isPoet: boolean;
-}
+import { GetPoetListResponse } from "../api/responses/GetPoetList.response";
 
 export default function PoetsList() {
   const { data, isLoading, isPending } = useQuery<GetPoetListResponse>({
