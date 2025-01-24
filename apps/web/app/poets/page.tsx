@@ -1,6 +1,6 @@
 "use client";
 import { Container } from "@mantine/core";
-import PoetsList from "../hooks/PoetList";
+import PoetsList from "../components/PoetList";
 import { PoetChips } from "../components/PoetChips";
 
 export default function PoetsIndex() {

@@ -1,4 +1,3 @@
-import { Slam } from "../aggregates/Slam";
 import { CallClosedEvent } from "./CallClosed.event";
 import { CallOpenedEvent } from "./CallOpened.event";
 import { MCAssignedEvent } from "./MCAssigned.event";

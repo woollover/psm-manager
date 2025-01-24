@@ -1,6 +1,10 @@
-"use client";
-import PoetsList from "../hooks/PoetList";
+import { Container } from "@mantine/core";
+import SlamList from "./components/SlamList";
 
-export default function PoetsIndex() {
-  return <PoetsList />;
+export default function SLamIndex() {
+  return (
+    <Container>
+      <SlamList />
+    </Container>
+  );
 }

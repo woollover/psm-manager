@@ -8,7 +8,7 @@
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
     "build": "turbo build",
-    "dev": "turbo run dev",
+    "dev": "next dev",
     "dev:fullstack": "turbo fullstack",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""

@@ -1,4 +1,3 @@
-import { KinesisStreamingDestinationOutput } from "@aws-sdk/client-dynamodb";
 import { CountryId } from "@psm/common";
 import { NotFoundError } from "@psm/core";
 import { DeleteSlamCommand } from "src/slam/commands";
@@ -48,7 +47,9 @@ export class SlamsListMaterializedView {
   #data: Map<string, SlamsListData> = new Map();
 
   constructor(materializedView: SlamsListMaterializedViewDBShape | null) {
-    this.#data = materializedView ? materializedView.slams : new Map();
+    this.#data = materializedView
+      ? new Map(Object.entries(materializedView.slams))
+      : new Map();
   }
 
   createSlam(event: SlamCreatedEvent): SlamsListMaterializedView {
@@ -211,6 +212,7 @@ export class SlamsListMaterializedView {
   endSlam(event: SlamEndedEvent) {
     const slam = this.#data.get(event.getAggregateId);
     if (!slam) {
+      console.error("SLAM NOT FOUND!!! WTF!");
       throw new NotFoundError("slam not found");
     }
     slam.started = true;
@@ -219,30 +221,34 @@ export class SlamsListMaterializedView {
   }
 
   get count() {
-    return Object.keys(this.#data).length;
+    let count = 0;
+    this.#data.forEach((v, k) => {
+      count++;
+    });
+    return count;
   }
 
   get countries() {
     const countriesArray: Array<CountryId> = [];
 
-    Object.keys(this.#data).forEach((k) =>
-      countriesArray.push(this.#data.get(k)!.countryId)
-    );
+    this.#data.forEach((v, k) => {
+      const slam = this.#data.get(k);
+      console.log(slam);
+      if (slam) {
+        countriesArray.push(slam.countryId);
+      }
+    });
 
     return [...new Set(countriesArray)];
   }
 
   get slamArray() {
-    const slamArray = Object.keys(this.#data).map((k) => {
+    const slamArray: SlamsListData[] = [];
+
+    this.#data.forEach((v, k) => {
       const slam = this.#data.get(k);
       if (slam) {
-        return {
-          isEnded: slam.ended,
-          name: slam.name,
-          venue: slam.venue,
-          dateTime: slam.date,
-          callOpen: slam.callOpen,
-        };
+        slamArray.push(slam);
       }
     });
     return slamArray.filter((obj) => obj != undefined);

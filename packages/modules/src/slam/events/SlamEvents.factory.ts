@@ -11,6 +11,7 @@ import { PoetCandidatedEvent } from "./PoetCandidated.event";
 import { CallClosedEvent } from "./CallClosed.event";
 import { PoetAcceptedEvent } from "./PoetAccepted.event";
 import { PoetRejectedEvent } from "./PoetRejected.event";
+import { SlamEndedEvent } from "./SlamEnded.event";
 
 type SlamEventData = EventData & { payload: SlamEventPayloadUnion };
 
@@ -107,6 +108,13 @@ export class SlamEventFactory {
         return new PoetRejectedEvent({
           ...baseEventData,
           payload: poetRejectedPayload,
+        });
+
+      case "SlamEnded":
+        const slamEndedPayload = payloadBody as SlamEventPayload<"SlamEnded">;
+        return new SlamEndedEvent({
+          ...baseEventData,
+          payload: slamEndedPayload,
         });
 
       default:

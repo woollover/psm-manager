@@ -28,14 +28,26 @@ export class SlamListReadModel {
     this.#materializedView = new SlamsListMaterializedView(
       materializedViewData
     );
+    console.log(this.#materializedView["viewToSave"]);
   }
 
   get data(): SlamListReadModelShape {
     const readModel: SlamListReadModelShape = {
       count: this.#materializedView.count,
       countries: this.#materializedView.countries,
-      slams: this.#materializedView.slamArray,
+      slams: this.#materializedView.slamArray.map((a) => {
+        return {
+          id: a.id,
+          venue: a.venue,
+          name: a.name,
+          dateTime: a.date,
+          isEnded: a.ended,
+          callOpen: a.callOpen,
+        };
+      }),
     };
+
+    console.log("READMODEL ", readModel);
 
     return readModel;
   }

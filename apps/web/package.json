@@ -17,6 +17,7 @@
     "@mantine/form": "^7.16.0",
     "@mantine/hooks": "^7.16.0",
     "@repo/ui": "workspace:*",
+    "@psm/common": "workspace:*",
     "@tanstack/react-query": "^5.64.1",
     "dayjs": "^1.11.13",
     "next": "^15.1.0",

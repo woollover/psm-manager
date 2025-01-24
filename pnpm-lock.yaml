@@ -100,6 +100,9 @@ importers:
       '@mantine/hooks':
         specifier: ^7.16.0
         version: 7.16.0(react@19.0.0)
+      '@psm/common':
+        specifier: workspace:*
+        version: link:../../shared/common
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui

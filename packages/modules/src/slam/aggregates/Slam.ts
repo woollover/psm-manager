@@ -310,6 +310,18 @@ export class Slam extends AggregateRoot {
           })
         );
         break;
+
+      case "EndSlamCommand":
+        console.log("Applying EndSlam Command");
+        await command.validateOrThrow(command.payload);
+        const slamEndedPayload: SlamEventPayload<"SlamEnded"> = {};
+        this.apply(
+          SlamEventFactory.createEvent("SlamEnded", {
+            payload: slamEndedPayload,
+            aggregateId: this.id,
+          })
+        );
+        break;
       default:
         throw new InvalidCommandError("Command does not exists", []);
     }

@@ -18,7 +18,7 @@ export const handler: Handler = async (_event) => {
   const body = JSON.parse(_event.body!);
   console.log("📥 Body received:", body);
 
-  const aggregateId = body.payload.aggregateId || `slam-${randomUUID()}`; // TO REFACTOR
+  const aggregateId = body.payload.slamId || `slam-${randomUUID()}`; // TO REFACTOR
 
   // pull up the aggregate
 

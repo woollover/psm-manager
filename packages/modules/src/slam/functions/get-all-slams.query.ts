@@ -13,7 +13,7 @@ import { SlamListReadModel } from "../read/read-models/SlamList.read-model";
 
 export const handler: Handler = async (_event: APIGatewayProxyEventV2) => {
   const aggregateId = _event.pathParameters?.aggregateId;
-  console.log("🚀 Poet ID:", aggregateId);
+
 
   // instnatiate the materialized view repo
   const poetsMaterializedViewRepository =
