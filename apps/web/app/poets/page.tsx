@@ -1,13 +1,13 @@
 "use client";
 import { Container } from "@mantine/core";
-import PoetsList from "../components/PoetList";
 import { PoetChips } from "../components/PoetChips";
+import PoetsTable from "../components/PoetsTable";
 
 export default function PoetsIndex() {
   return (
     <Container>
       <PoetChips />
-      <PoetsList />
+      <PoetsTable />
     </Container>
   );
 }
