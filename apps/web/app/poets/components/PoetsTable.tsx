@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   GetPoetListResponse,
   Poet,
-} from "../api/responses/GetPoetList.response.js";
+} from "../../api/responses/GetPoetList.response.js";
 import { Table } from "@mantine/core";
 
 export default function PoetsTable() {

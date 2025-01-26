@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { GetPoetListResponse } from "../api/responses/GetPoetList.response.js";
+import { GetPoetListResponse } from "../../api/responses/GetPoetList.response.js";
 
 export default function PoetsList() {
   const { data, isLoading, isPending } = useQuery<GetPoetListResponse>({

@@ -1,5 +1,5 @@
 import { Container, Grid, SimpleGrid, Skeleton } from "@mantine/core";
-import { GetPoetListResponse } from "../api/responses/GetPoetList.response";
+import { GetPoetListResponse } from "../../api/responses/GetPoetList.response";
 import { useQuery } from "@tanstack/react-query";
 
 const PRIMARY_COL_HEIGHT = "300px";

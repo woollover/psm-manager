@@ -1,5 +1,14 @@
-import { HeaderSimple } from "./components/Header";
+import { Container, Space, Title } from "@mantine/core";
+import { CreatePoetForm } from "./poets/components/forms/CreatePoetForm";
 
 export default function Home() {
-  return <div></div>;
+  return (
+    <>
+      <Container>
+        <Title>Test Components</Title>
+        <Space />
+        <CreatePoetForm />
+      </Container>
+    </>
+  );
 }
