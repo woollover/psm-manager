@@ -13,10 +13,8 @@ import { PoetAcceptedEvent } from "./PoetAccepted.event";
 import { PoetRejectedEvent } from "./PoetRejected.event";
 import { SlamEndedEvent } from "./SlamEnded.event";
 
-type SlamEventData = EventData & { payload: SlamEventPayloadUnion };
-
 export class SlamEventFactory {
-  static createEvent(eventType: SlamEventType, eventData: SlamEventData) {
+  static createEvent(eventType: SlamEventType, eventData: any) {
     const baseEventData = {
       timestamp: eventData.timestamp || new Date().getTime(),
       aggregateId: eventData.aggregateId ?? "evt-" + randomUUID(),

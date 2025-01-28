@@ -3,7 +3,7 @@ import {
   InvalidCommandError,
 } from "../Errors/InvalidCommand.error";
 
-export abstract class Command<I, CommandName extends string> {
+export abstract class Command<I extends object, CommandName extends string> {
   #commandName: CommandName;
   readonly #errors: CommandValidationError<I>[] = [];
   public readonly payload: I;

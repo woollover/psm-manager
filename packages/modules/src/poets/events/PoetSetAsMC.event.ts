@@ -31,3 +31,9 @@ export class PoetSetAsMCEvent extends PSMEvent<
     });
   }
 }
+
+declare module "@psm/core" {
+  interface EventRegistry {
+    PoetSetAsMC: PoetSetAsMCEventPayload;
+  }
+}

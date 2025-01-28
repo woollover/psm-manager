@@ -1,9 +1,9 @@
 import { randomUUID } from "crypto";
 
-export interface EventData {
-  payload: Record<string, any>;
+export interface EventData<TPayload> {
+  payload: TPayload;
+  aggregateId: string;
   timestamp?: number;
-  aggregateId?: string;
   aggregateOffset?: number;
   globalOffset?: number;
 }

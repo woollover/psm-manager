@@ -31,3 +31,9 @@ export class PoetReactivatedEvent extends PSMEvent<
     });
   }
 }
+
+declare module "@psm/core" {
+  interface EventRegistry {
+    PoetReactivated: PoetReactivatedEventPayload;
+  }
+}

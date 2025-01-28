@@ -1,20 +1,22 @@
-import { randomUUID } from "crypto";
 import {
   PoetDeletedEvent,
   PoetEditedEvent,
-  PoetEventType,
   PoetReactivatedEvent,
   PoetSetAsMCEvent,
   PoetSetAsPoetEvent,
 } from ".";
-import { PoetCreatedEvent } from "./PoetCreated.event";
-import { EventData } from "@psm/core";
+import { PoetCreatedEvent, PoetCreatedEventPayload } from "./PoetCreated.event";
+import { EventData, EventRegistry } from "@psm/core";
 
 export class PoetsEventFactory {
-  static createEvent(eventType: PoetEventType, eventData: EventData) {
+  static createEvent<T extends keyof EventRegistry>(
+    eventType: T,
+    eventData: EventData<EventRegistry[T]>
+    //^?
+  ) {
     const baseEventData = {
       timestamp: eventData.timestamp || new Date().getTime(),
-      aggregateId: eventData.aggregateId ?? "evt-" + randomUUID(),
+      aggregateId: eventData.aggregateId,
       aggregateOffset: eventData.aggregateOffset || 0,
       globalOffset: eventData.globalOffset || 0,
     };
@@ -34,8 +36,8 @@ export class PoetsEventFactory {
             firstName: payload.firstName,
             lastName: payload.lastName,
             email: payload.email,
-            birthDate: payload.birthDate,
             instagramHandle: payload.instagramHandle,
+            birthDate: payload.birthDate,
           },
           ...baseEventData,
         });

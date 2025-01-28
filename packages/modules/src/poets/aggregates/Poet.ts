@@ -151,9 +151,8 @@ export class Poet extends AggregateRoot {
 
           this.apply(
             PoetsEventFactory.createEvent("PoetEdited", {
-              aggregateId: this.id,
               payload: command.payload,
-              timestamp: new Date().getTime(),
+              aggregateId: this.id,
             })
           );
         }
@@ -178,7 +177,9 @@ export class Poet extends AggregateRoot {
           this.apply(
             PoetsEventFactory.createEvent("PoetReactivated", {
               aggregateId: this.id,
-              payload: command.payload,
+              payload: {
+                aggregateId: this.id,
+              },
               timestamp: new Date().getTime(),
             })
           );

@@ -4,7 +4,7 @@ import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { PoetsEventFactory } from "../events/PoetsEvent.factory";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import { PoetsListProjector } from "../read/projectors/PoetsList.projector";
-import { EventStore } from "@psm/core";
+import { EventData, EventRegistry, EventStore } from "@psm/core";
 import { MaterializedViewRepository } from "@psm/core";
 import { PoetsListMaterializedViewDBShape } from "../read/materialized-view/types";
 
@@ -61,17 +61,18 @@ export const handler: Handler = async (_event) => {
   for (const event of _event.Records) {
     // create a factory to return the correct Event Object
     console.log("📥 Message", event);
-    const eventType = event.messageAttributes.eventType.stringValue;
+    const eventType = event.messageAttributes.eventType
+      .stringValue as keyof EventRegistry;
 
     // get the event body object
     const eventData = JSON.parse(event.body);
     const unmarshalledEventData = unmarshall(eventData, {
       wrapNumbers: false,
-    });
+    }) as EventData<EventRegistry[typeof eventType]>;
 
     const eventInstance = PoetsEventFactory.createEvent(eventType, {
-      ...unmarshalledEventData,
       payload: unmarshalledEventData.payload,
+      aggregateId: eventData.aggregateId,
     });
     // console.log("📥 Event Object", eventObject);
     poetsProjector.project(eventInstance);

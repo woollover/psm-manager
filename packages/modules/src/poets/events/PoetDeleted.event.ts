@@ -17,7 +17,7 @@ export class PoetDeletedEvent extends PSMEvent<
   }: {
     payload: PoetDeletedEventPayload;
     timestamp: number;
-    aggregateId?: string | undefined;
+    aggregateId: string;
     aggregateOffset?: number | undefined;
     globalOffset?: number | undefined;
   }) {
@@ -29,5 +29,11 @@ export class PoetDeletedEvent extends PSMEvent<
       timestamp: timestamp,
       globalOffset: globalOffset,
     });
+  }
+}
+
+declare module "@psm/core" {
+  interface EventRegistry {
+    PoetDeleted: PoetDeletedEventPayload;
   }
 }

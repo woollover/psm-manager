@@ -35,3 +35,9 @@ export class PoetEditedEvent extends PSMEvent<
     });
   }
 }
+
+declare module "@psm/core" {
+  interface EventRegistry {
+    PoetEdited: PoetEditedEventPayload;
+  }
+}
