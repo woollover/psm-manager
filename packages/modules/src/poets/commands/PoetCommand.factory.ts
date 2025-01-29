@@ -4,26 +4,23 @@ import {
   EditPoetCommand,
   PoetCommandInput,
   PoetCommands,
-  PoetCommandType,
   ReactivatePoetCommand,
   SetPoetAsMCCommand,
   SetPoetAsPoetCommand,
 } from ".";
 
+import type { Command, CommandRegistry } from "@psm/core";
+
 export class PoetCommandFactory {
-  static createCommand<T extends PoetCommands["commandName"]>(
-    ...args: Extract<PoetCommands, { commandName: T }> extends {
-      payload: infer P;
-    }
-      ? [commandName: T, payload: P]
-      : [commandName: T]
+  static createCommand<T extends keyof CommandRegistry>(
+    commandName: T,
+    payload: CommandRegistry[T]
   ) {
-    const [commandName, payload] = args;
     switch (commandName) {
       case "CreatePoetCommand":
         return new CreatePoetCommand(
           "CreatePoetCommand",
-          payload as PoetCommandInput<"CreatePoetCommand">
+          payload as CommandRegistry["CreatePoetCommand"]
         );
       case "EditPoetCommand":
         return new EditPoetCommand(
@@ -43,7 +40,7 @@ export class PoetCommandFactory {
       case "SetPoetAsPoetCommand":
         return new SetPoetAsPoetCommand(
           "SetPoetAsPoetCommand",
-          payload as PoetCommandInput<"SetPoetAsPoetCommand">
+          payload as CommandRegistry["SetPoetAsPoetCommand"]
         );
       case "ReactivatePoetCommand":
         return new ReactivatePoetCommand(

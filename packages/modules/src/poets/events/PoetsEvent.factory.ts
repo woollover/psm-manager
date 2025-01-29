@@ -4,8 +4,8 @@ import {
   PoetReactivatedEvent,
   PoetSetAsMCEvent,
   PoetSetAsPoetEvent,
+  PoetCreatedEvent
 } from ".";
-import { PoetCreatedEvent, PoetCreatedEventPayload } from "./PoetCreated.event";
 import { EventData, EventRegistry } from "@psm/core";
 
 export class PoetsEventFactory {

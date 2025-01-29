@@ -16,3 +16,9 @@ export class DeletePoetCommand extends Command<
     }
   }
 }
+
+declare module "@psm/core" {
+  interface CommandRegistry {
+    DeletePoetCommand: DeletePoetCommandInput;
+  }
+}

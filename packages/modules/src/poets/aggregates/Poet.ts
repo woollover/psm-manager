@@ -163,9 +163,9 @@ export class Poet extends AggregateRoot {
           await command.validateOrThrow(command.payload);
           this.apply(
             PoetsEventFactory.createEvent("PoetDeleted", {
-              aggregateId: this.id,
+              //                 ^?
               payload: command.payload,
-              timestamp: new Date().getTime(),
+              aggregateId: this.id,
             })
           );
         }

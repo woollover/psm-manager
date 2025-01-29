@@ -16,3 +16,9 @@ export class SetPoetAsMCCommand extends Command<
     }
   }
 }
+
+declare module "@psm/core" {
+  interface CommandRegistry {
+    SetPoetAsMCCommand: SetPoetAsMCCommandInput;
+  }
+}

@@ -47,3 +47,9 @@ export class EditPoetCommand extends Command<
     }
   }
 }
+
+declare module "@psm/core" {
+  interface CommandRegistry {
+    EditPoetCommand: EditPoetCommandInput;
+  }
+}

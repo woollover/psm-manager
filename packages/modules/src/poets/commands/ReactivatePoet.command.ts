@@ -16,3 +16,9 @@ export class ReactivatePoetCommand extends Command<
     }
   }
 }
+
+declare module "@psm/core" {
+  interface CommandRegistry {
+    ReactivatePoetCommand: ReactivatePoetCommandInput;
+  }
+}

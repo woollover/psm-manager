@@ -1,3 +1,5 @@
-export interface CommandRegistry {}
+interface CommandRegistry {}
 
-export interface EventRegistry {}
+interface EventRegistry {}
+
+export type { CommandRegistry, EventRegistry };
