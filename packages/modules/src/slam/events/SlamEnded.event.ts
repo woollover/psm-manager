@@ -26,3 +26,9 @@ export class SlamEndedEvent extends PSMEvent<SlamEndedPayload, "SlamEnded"> {
     });
   }
 }
+
+declare module "@psm/core" {
+  interface EventRegistry {
+    SlamEndedEvent: SlamEndedPayload;
+  }
+}

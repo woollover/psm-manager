@@ -31,3 +31,9 @@ export class MCUnassignedEvent extends PSMEvent<
     });
   }
 }
+
+declare module "@psm/core" {
+  interface EventRegistry {
+    MCUnassignedEvent: MCUnassignedEventPayload;
+  }
+}

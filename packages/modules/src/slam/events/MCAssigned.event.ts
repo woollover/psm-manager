@@ -31,3 +31,9 @@ export class MCAssignedEvent extends PSMEvent<
     });
   }
 }
+
+declare module "@psm/core" {
+  interface EventRegistry {
+    MCassignedEvent: MCAssignedEventPayload;
+  }
+}

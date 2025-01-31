@@ -1,5 +1,5 @@
 import { SlamEventPayload, SlamEventPayloadUnion, SlamEventType } from ".";
-import { EventData } from "@psm/core";
+import { EventData, EventRegistry } from "@psm/core";
 import { randomUUID } from "crypto";
 import { SlamCreatedEvent } from "./SlamCreated.event";
 import { SlamDeletedEvent } from "./SlamDeleted.event";
@@ -29,7 +29,7 @@ export class SlamEventFactory {
 
     switch (eventType) {
       case "SlamCreated":
-        const payload = payloadBody as SlamEventPayload<"SlamCreated">;
+        const payload = payloadBody as EventRegistry["SlamCreated"];
         return new SlamCreatedEvent({
           ...baseEventData,
           payload: {

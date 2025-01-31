@@ -29,3 +29,9 @@ export class SlamDeletedEvent extends PSMEvent<
     });
   }
 }
+
+declare module "@psm/core" {
+  interface EventRegistry {
+    SlamDeleted: SlamDeletedPayload;
+  }
+}

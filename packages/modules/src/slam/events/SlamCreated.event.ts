@@ -37,3 +37,9 @@ export class SlamCreatedEvent extends PSMEvent<
     });
   }
 }
+
+declare module "@psm/core" {
+  interface EventRegistry {
+    SlamCreated: SlamCreatedPayload;
+  }
+}

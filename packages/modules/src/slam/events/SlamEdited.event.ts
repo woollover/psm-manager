@@ -34,3 +34,9 @@ export class SlamEditedEvent extends PSMEvent<SlamEditedPayload, "SlamEdited"> {
     });
   }
 }
+
+declare module "@psm/core" {
+  interface EventRegistry {
+    SlamEditedEvent: SlamEditedPayload;
+  }
+}

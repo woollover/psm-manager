@@ -1,9 +1,9 @@
 import { PSMEvent } from "@psm/core";
 
-export interface SlamStartedPayload {}
+export interface SlamStartedEventPayload {}
 
 export class SlamStartedEvent extends PSMEvent<
-  SlamStartedPayload,
+  SlamStartedEventPayload,
   "SlamStarted"
 > {
   constructor({
@@ -13,7 +13,7 @@ export class SlamStartedEvent extends PSMEvent<
     aggregateOffset,
     globalOffset,
   }: {
-    payload: SlamStartedPayload;
+    payload: SlamStartedEventPayload;
     timestamp: number;
     aggregateId: string;
     aggregateOffset?: number | undefined;
@@ -27,5 +27,11 @@ export class SlamStartedEvent extends PSMEvent<
       aggregateOffset,
       globalOffset,
     });
+  }
+}
+
+declare module "@psm/core" {
+  interface EventRegistry {
+    SlamStartedEvent: SlamStartedEventPayload;
   }
 }

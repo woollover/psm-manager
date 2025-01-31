@@ -29,3 +29,9 @@ export class CallClosedEvent extends PSMEvent<
     });
   }
 }
+
+declare module "@psm/core" {
+  interface EventRegistry {
+    CallCloseEvent: SlamCallClosedPayload;
+  }
+}

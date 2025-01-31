@@ -32,3 +32,9 @@ export class PoetRejectedEvent extends PSMEvent<
     });
   }
 }
+
+declare module "@psm/core" {
+  interface EventRegistry {
+    PoetRejectedEvent: PoetRejectedEventPayload;
+  }
+}

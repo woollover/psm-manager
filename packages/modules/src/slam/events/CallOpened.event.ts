@@ -29,3 +29,9 @@ export class CallOpenedEvent extends PSMEvent<
     });
   }
 }
+
+declare module "@psm/core" {
+  interface EventRegistry {
+    CallOpenedEvent: SlamCallOpenedPayload;
+  }
+}
