@@ -1,6 +1,19 @@
-import { PoetEvent } from "./poets/events";
-import { SlamEvent } from "./slam/events";
+import { EventRegistry } from "@psm/core";
 
-export type PSMAllEvents = SlamEvent | PoetEvent;
+import { CommandRegistry } from "@psm/core";
 
-export type PSMAllEventNames = PSMAllEvents["eventType"];
+export function printEvent<T extends keyof EventRegistry>(
+  event: T,
+  payload: EventRegistry[T]
+) {}
+
+console.log(printEvent("SlamDeleted", {}));
+
+export function printCommand<T extends keyof CommandRegistry>(
+  event: T,
+  payload: CommandRegistry[T]
+) {}
+
+console.log(printCommand("EditPoetCommand", {
+  aggregateId: ""
+}));

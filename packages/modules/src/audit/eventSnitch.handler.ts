@@ -25,14 +25,14 @@ export type SearchParams =
       end: number | undefined;
     };
 
-export type SnitchStrategy = SearchParams["strategy"] | undefined;
+export type SnitchStrategy = SearchParams["strategy"] | null;
 
 export const StrategiesArray: SnitchStrategy[] = [
   "aggregateId",
   "eventType",
   "fromTimestamp",
   "globalOffset",
-];
+] as const;
 
 export const handler: Handler = async (_event) => {
   const strategy: SnitchStrategy = _event.queryStringParameters?.strategy;
@@ -98,4 +98,3 @@ export const handler: Handler = async (_event) => {
     body: JSON.stringify({ events }),
   };
 };
-  

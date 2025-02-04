@@ -38,7 +38,7 @@ export class EventStore {
         aggregateId: event.getAggregateId,
         aggregateOffset: aggregateOffset,
         eventType: event.getEventType,
-        payload: event.getPayload,
+        payload: event.payload,
         timestamp: Math.floor(new Date(event.getTimestamp).getTime()), // Convert to Unix timestamp
         globalOffset: globalOffset,
         pivotKey: "event",

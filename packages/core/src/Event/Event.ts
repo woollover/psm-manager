@@ -53,9 +53,6 @@ export class PSMEvent<PayloadType, EventType extends string> {
     return this.eventId;
   }
 
-  get getPayload(): PayloadType {
-    return this.payload;
-  }
   get getAggregateOffset(): number {
     return this.aggregateOffset;
   }

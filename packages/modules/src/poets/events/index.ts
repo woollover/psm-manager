@@ -5,14 +5,6 @@ import { PoetSetAsMCEvent } from "./PoetSetAsMC.event";
 import { PoetReactivatedEvent } from "./PoetReactivated.event";
 import { PoetSetAsPoetEvent } from "./PoetSetAsPoet.event";
 
-export const PoetEventsList = [
-  "PoetCreated",
-  "PoetEdited",
-  "PoetDeleted",
-  "PoetSetAsMC",
-  "PoetSetAsPoet",
-  "PoetReactivated",
-] as const;
 
 // union of all event classes in the domain
 export type PoetEvent =

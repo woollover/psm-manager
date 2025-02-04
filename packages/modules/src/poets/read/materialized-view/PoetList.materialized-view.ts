@@ -123,13 +123,13 @@ export class PoetsListMaterializedView {
   searchPoetByName(searchKey: string) {
     return this.#data.filter((poet) => {
       const searchField = poet.lastName + poet.firstName + poet.instagramHandle;
-      return searchField.includes(searchKey);
+      return searchField.toLowerCase().includes(searchKey.toLowerCase());
     });
   }
 
   searchPoetByInstagramHandle(searchKey: string) {
     return this.#data.filter((poet) =>
-      poet.instagramHandle.includes(searchKey)
+      poet.instagramHandle.toLowerCase().includes(searchKey.toLowerCase())
     );
   }
 }
