@@ -28,12 +28,12 @@ export class PoetsListMaterializedView {
   createPoet(event: PoetCreatedEvent) {
     const poet: PoetsListPoet = {
       id: event.getAggregateId,
-      firstName: event.getPayload.firstName,
-      lastName: event.getPayload.lastName,
+      firstName: event.payload.firstName,
+      lastName: event.payload.lastName,
       isMC: false,
       isPoet: true,
-      instagramHandle: event.getPayload.instagramHandle,
-      birthDate: event.getPayload.birthDate,
+      instagramHandle: event.payload.instagramHandle,
+      birthDate: event.payload.birthDate,
     };
     this.#data.push(poet);
     console.log("🚀 ~ PoetsListMaterializedView ~ createPoet ~ poet:", poet);
@@ -45,7 +45,7 @@ export class PoetsListMaterializedView {
         ? {
             ...p,
             ...Object.fromEntries(
-              Object.entries(event.getPayload).filter(
+              Object.entries(event.payload).filter(
                 ([_, value]) => value !== undefined
               )
             ),

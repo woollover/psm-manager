@@ -1,7 +1,6 @@
 import { SendMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
+import { AllEventsNames, EventRegistry } from "@psm/core";
 import { Handler } from "aws-lambda";
-//@ts-ignore
-import { PSMAllEventNames } from "../../../modules/src/index";
 
 const poetsProjectionsQueueUrl = process.env.POETS_PROJECTIONS_QUEUE_URL;
 const slamProjectionsQueueUrl = process.env.SLAM_PROJECTIONS_QUEUE_URL;
@@ -25,18 +24,19 @@ export const handler: Handler = async (_event) => {
     //console.log("📥 Event type:", event.eventSource);
     //console.log("📥 Event type:", event);
     const savedEvent = event.dynamodb.NewImage;
-    // get the event type
-    const eventType = savedEvent.eventType.S as PSMAllEventNames;
-
+    // DynamoDB attributes are strongly typed
+    const eventType: AllEventsNames = savedEvent.eventType.S;
     const aggregateId = savedEvent.aggregateId.S as string;
 
     // get the aggregate id
     console.log("📥 Event type:", eventType);
 
-    switch (eventType) {
+    switch (eventType as AllEventsNames) {
       case "PoetCreated":
       case "PoetDeleted":
-      case "PoetEdited":
+      case "poet.edited":
+      //@ts-expect-error this should not be an error
+      case "fsdfs":
       case "PoetSetAsMC":
       case "PoetSetAsPoet":
       case "PoetReactivated":
@@ -93,8 +93,23 @@ export const handler: Handler = async (_event) => {
         );
         await sqs.send(slamMessageCommand);
         break;
+      case "SlamPoetAdded":
+      case "SlamPoetRemoved":
+      case "SlamPoetReplaced":
+      case "SlamPoetWithdrawn":
+      case "SlamPoetReactivated":
+      case "SlamPoetDisqualified":
+        break;
+      default:
+        // type of EventNames should be a disc union of all event names to make unreachable work
+
+        unreacheable(eventType);
     }
   }
 
   return;
+};
+
+const unreacheable: (x: never) => never = () => {
+  throw new Error("This should never be reached");
 };

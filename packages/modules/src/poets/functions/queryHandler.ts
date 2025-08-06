@@ -30,8 +30,6 @@ const documentClient = DynamoDBDocument.from(client, {
 // instantiate the eventStore, it's stateless so we can do it outside the handler
 
 export const handler: Handler = async (_event: APIGatewayProxyEventV2) => {
-  const aggregateId = _event.pathParameters?.aggregateId;
-  console.log("🚀 Poet ID:", aggregateId);
 
   // instnatiate the materialized view repo
   const poetsMaterializedViewRepository =

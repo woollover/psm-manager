@@ -44,7 +44,7 @@ export type SlamEvent =
 
 // typemap of the according payload
 type SlamEventPayloadMap = {
-  [E in SlamEvent as E["eventType"]]: E["getPayload"];
+  [E in SlamEvent as E["eventType"]]: E["payload"];
 };
 
 // list of active event type names

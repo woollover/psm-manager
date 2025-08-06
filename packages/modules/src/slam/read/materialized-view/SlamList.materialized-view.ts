@@ -55,13 +55,13 @@ export class SlamsListMaterializedView {
   createSlam(event: SlamCreatedEvent): SlamsListMaterializedView {
     const slamObj: SlamsListData = {
       id: event.getAggregateId,
-      name: event.getPayload.name,
+      name: event.payload.name,
       // TODO - Errror in parsing the event
-      date: new Date(event.getPayload.dateTime).toISOString(),
-      region: event.getPayload.regionalId,
-      city: event.getPayload.city,
-      countryId: event.getPayload.countryId,
-      venue: event.getPayload.venue,
+      date: new Date(event.payload.dateTime).toISOString(),
+      region: event.payload.regionalId,
+      city: event.payload.city,
+      countryId: event.payload.countryId,
+      venue: event.payload.venue,
       started: false,
       ended: false,
       callOpen: false,
@@ -82,10 +82,10 @@ export class SlamsListMaterializedView {
     if (!slam) {
       throw new NotFoundError("slam not found");
     }
-    if (event.getPayload.dateTime) {
-      slam.date = new Date(event.getPayload.dateTime).toISOString();
+    if (event.payload.dateTime) {
+      slam.date = new Date(event.payload.dateTime).toISOString();
     }
-    const payload = event.getPayload;
+    const payload = event.payload;
     Object.keys(payload).forEach((key) => {
       const k = key as keyof SlamEditedPayload;
       if (!payload[k]) {
@@ -127,7 +127,7 @@ export class SlamsListMaterializedView {
     if (!slam) {
       throw new NotFoundError("slam not found");
     }
-    slam.mcs.push(event.getPayload.mcId);
+    slam.mcs.push(event.payload.mcId);
 
     this.#data.set(slam.id, slam);
   }
@@ -137,7 +137,7 @@ export class SlamsListMaterializedView {
     if (!slam) {
       throw new NotFoundError("slam not found");
     }
-    slam.mcs.filter((id) => id != event.getPayload.mcId);
+    slam.mcs.filter((id) => id != event.payload.mcId);
 
     this.#data.set(slam.id, slam);
   }
@@ -167,7 +167,7 @@ export class SlamsListMaterializedView {
     }
 
     slam.candidates = Array.from([
-      ...new Set([...slam.candidates, event.getPayload.poetId]),
+      ...new Set([...slam.candidates, event.payload.poetId]),
     ]);
 
     this.#data.set(slam.id, slam);
@@ -178,7 +178,7 @@ export class SlamsListMaterializedView {
     if (!slam) {
       throw new NotFoundError("slam not found");
     }
-    slam.poets = Array.from(new Set([...slam.poets, event.getPayload.poetId]));
+    slam.poets = Array.from(new Set([...slam.poets, event.payload.poetId]));
 
     this.#data.set(slam.id, slam);
   }
@@ -192,8 +192,8 @@ export class SlamsListMaterializedView {
       new Set([
         ...slam.rejectedPoets,
         {
-          poet: event.getPayload.poetId,
-          reason: event.getPayload.reason || null,
+          poet: event.payload.poetId,
+          reason: event.payload.reason || null,
         },
       ])
     );

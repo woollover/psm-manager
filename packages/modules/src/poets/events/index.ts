@@ -5,7 +5,6 @@ import { PoetSetAsMCEvent } from "./PoetSetAsMC.event";
 import { PoetReactivatedEvent } from "./PoetReactivated.event";
 import { PoetSetAsPoetEvent } from "./PoetSetAsPoet.event";
 
-
 // union of all event classes in the domain
 export type PoetEvent =
   | PoetCreatedEvent
@@ -17,7 +16,7 @@ export type PoetEvent =
 
 // typemap of the according payload
 export type PoetEventPayloadMap = {
-  [E in PoetEvent as E["eventType"]]: E["getPayload"];
+  [E in PoetEvent as E["eventType"]]: E["payload"];
 };
 
 // list of active event type names

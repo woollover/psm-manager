@@ -27,12 +27,12 @@ export class Slam extends AggregateRoot {
     console.log("EVENT PAYLOAD ====> ", event.payload);
     switch (event.eventType) {
       case "SlamCreated":
-        this.countryId = event.getPayload.countryId;
-        this.regionalId = event.getPayload.regionalId;
-        this.city = event.getPayload.city;
-        this.venue = event.getPayload.venue;
-        this.dateTime = event.getPayload.dateTime;
-        this.name = event.getPayload.name;
+        this.countryId = event.payload.countryId;
+        this.regionalId = event.payload.regionalId;
+        this.city = event.payload.city;
+        this.venue = event.payload.venue;
+        this.dateTime = event.payload.dateTime;
+        this.name = event.payload.name;
         break;
 
       case "SlamDeleted":
@@ -40,47 +40,45 @@ export class Slam extends AggregateRoot {
         break;
 
       case "SlamEdited":
-        this.countryId = event.getPayload.countryId
-          ? event.getPayload.countryId
+        this.countryId = event.payload.countryId
+          ? event.payload.countryId
           : this.countryId;
-        this.regionalId = event.getPayload.regionalId
-          ? event.getPayload.regionalId
+        this.regionalId = event.payload.regionalId
+          ? event.payload.regionalId
           : this.regionalId;
-        this.city = event.getPayload.city ? event.getPayload.city : this.city;
-        this.venue = event.getPayload.venue
-          ? event.getPayload.venue
-          : this.venue;
-        this.dateTime = event.getPayload.dateTime
-          ? event.getPayload.dateTime
+        this.city = event.payload.city ? event.payload.city : this.city;
+        this.venue = event.payload.venue ? event.payload.venue : this.venue;
+        this.dateTime = event.payload.dateTime
+          ? event.payload.dateTime
           : this.dateTime;
-        this.name = event.getPayload.name ? event.getPayload.name : this.name;
+        this.name = event.payload.name ? event.payload.name : this.name;
         break;
 
       case "MCAssigned":
         this.ensureSlamIsNotDeleted()
           .ensureSlamHasNotAlreadyAnMC()
-          .ensureMcIsNotAssigned(event.getPayload.mcId)
+          .ensureMcIsNotAssigned(event.payload.mcId)
           .ensureSlamIsNotStarted()
           .ensureSlamIsNotEnded()
           .ensureSlamHasNotAlreadyAnMC();
 
-        this.mcs.push(event.getPayload.mcId);
+        this.mcs.push(event.payload.mcId);
         break;
 
       case "MCUnassigned":
         this.ensureSlamIsNotDeleted()
           .ensureSlamIsNotStarted()
           .ensureSlamIsNotEnded()
-          .ensureSlamHasThisMCAssinged(event.getPayload.mcId);
-        this.mcs = this.mcs.filter((mc) => mc !== event.getPayload.mcId);
+          .ensureSlamHasThisMCAssinged(event.payload.mcId);
+        this.mcs = this.mcs.filter((mc) => mc !== event.payload.mcId);
         break;
 
       case "PoetCandidated":
         this.ensureSlamIsNotDeleted()
           .ensureSalmAcceptCandidates()
-          .ensurePoetIsNotAlreadyCandidate(event.getPayload.poetId);
+          .ensurePoetIsNotAlreadyCandidate(event.payload.poetId);
 
-        this.candidates.push(event.getPayload.poetId);
+        this.candidates.push(event.payload.poetId);
         break;
 
       case "CallOpened":
@@ -103,9 +101,9 @@ export class Slam extends AggregateRoot {
           .ensureSlamIsNotStarted()
           .ensureSlamIsNotEnded()
           .ensureSlamCallIsOpen()
-          .ensurePoetIsCandidate(event.getPayload.poetId);
+          .ensurePoetIsCandidate(event.payload.poetId);
 
-        this.poets.push(event.getPayload.poetId);
+        this.poets.push(event.payload.poetId);
 
         break;
 
@@ -114,10 +112,10 @@ export class Slam extends AggregateRoot {
           .ensureSlamIsNotStarted()
           .ensureSlamIsNotEnded()
           .ensureSlamCallIsOpen()
-          .ensurePoetIsCandidate(event.getPayload.poetId);
-        if (this.poets.includes(event.getPayload.poetId)) {
+          .ensurePoetIsCandidate(event.payload.poetId);
+        if (this.poets.includes(event.payload.poetId)) {
           this.poets = this.poets.filter(
-            (poet) => poet !== event.getPayload.poetId
+            (poet) => poet !== event.payload.poetId
           );
         }
 

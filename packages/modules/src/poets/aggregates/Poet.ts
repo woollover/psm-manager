@@ -17,27 +17,27 @@ export class Poet extends AggregateRoot {
     switch (event.eventType) {
       case "PoetCreated":
         // TODO this logic can be a method in the future
-        this.firstName = event.getPayload.firstName;
-        this.lastName = event.getPayload.lastName;
-        this.email = event.getPayload.email;
-        this.instagramHandle = event.getPayload.instagramHandle;
-        this.birthDate = event.getPayload.birthDate;
+        this.firstName = event.payload.firstName;
+        this.lastName = event.payload.lastName;
+        this.email = event.payload.email;
+        this.instagramHandle = event.payload.instagramHandle;
+        this.birthDate = event.payload.birthDate;
         break;
 
       case "PoetEdited":
         console.log("🚀 Mutating PoetEditedEvent");
-        console.log("🚀 Mutating PoetEditedEvent payload:", event.getPayload);
-        if (event.getPayload.firstName) {
-          this.firstName = event.getPayload.firstName;
+        console.log("🚀 Mutating PoetEditedEvent payload:", event.payload);
+        if (event.payload.firstName) {
+          this.firstName = event.payload.firstName;
         }
-        if (event.getPayload.lastName) {
-          this.lastName = event.getPayload.lastName;
+        if (event.payload.lastName) {
+          this.lastName = event.payload.lastName;
         }
-        if (event.getPayload.email) {
-          this.email = event.getPayload.email;
+        if (event.payload.email) {
+          this.email = event.payload.email;
         }
-        if (event.getPayload.instagramHandle) {
-          this.instagramHandle = event.getPayload.instagramHandle;
+        if (event.payload.instagramHandle) {
+          this.instagramHandle = event.payload.instagramHandle;
         }
         break;
       case "PoetSetAsMC":
@@ -53,7 +53,7 @@ export class Poet extends AggregateRoot {
           ]);
         }
         console.log("🚀 Mutating PoetSetAsMCEvent");
-        console.log("🚀 Mutating PoetSetAsMCEvent payload:", event.getPayload);
+        console.log("🚀 Mutating PoetSetAsMCEvent payload:", event.payload);
         this.isMc = true;
         break;
 
@@ -69,25 +69,19 @@ export class Poet extends AggregateRoot {
           ]);
         }
         console.log("🚀 Mutating PoetSetAsPoetEvent");
-        console.log(
-          "🚀 Mutating PoetSetAsPoetEvent payload:",
-          event.getPayload
-        );
+        console.log("🚀 Mutating PoetSetAsPoetEvent payload:", event.payload);
         this.isMc = false;
         break;
 
       case "PoetDeleted":
         console.log("🚀 Mutating PoetDeletedEvent");
-        console.log("🚀 Mutating PoetDeletedEvent payload:", event.getPayload);
+        console.log("🚀 Mutating PoetDeletedEvent payload:", event.payload);
         this.isDeleted = true;
         break;
 
       case "PoetReactivated":
         console.log("🚀 Mutating PoetReactivatedEvent");
-        console.log(
-          "🚀 Mutating PoetReactivatedEvent payload:",
-          event.getPayload
-        );
+        console.log("🚀 Mutating PoetReactivatedEvent payload:", event.payload);
         this.isDeleted = false;
         break;
       default:

@@ -64,6 +64,7 @@ export class EventStore {
             retriesLeft: retries - 1,
           });
           retries--;
+          await this.sleep(2 ** (3 - retries) * 1000); // Exponential backoff
         } else {
           console.error("Failed to save event", {
             aggregateId: event.getAggregateId,
@@ -310,5 +311,9 @@ export class EventStore {
         });
       }) || []
     );
+  }
+
+  private sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

@@ -36,8 +36,8 @@ export class PoetEditedEvent extends PSMEvent<
   }
 }
 
-declare module "@psm/core" {
+declare global {
   interface EventRegistry {
-    PoetEdited: PoetEditedEventPayload;
+    readonly "poet.edited": PoetEditedEventPayload;
   }
 }
